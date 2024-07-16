@@ -3,7 +3,7 @@ const joi=require('joi');
 const bycrypt=require('bcrypt');
 require('dotenv').config();
 const passwordComplexity = require('joi-password-complexity');
-
+const jwt=require('jsonwebtoken')
 
 const userSchema=new mongoose.Schema({
     firstName:{
@@ -40,7 +40,7 @@ const userSchema=new mongoose.Schema({
         type:String,
         required:true,
         minlength:10,
-        maxlength:50,
+        maxlength:100,
         trim:true
     },
     address:{
@@ -80,65 +80,9 @@ const complexityOptions = {
 };
 
 
-/*
-userSchema.pre('save',function(next){
-    const user=this;
-    
-    if(!user.isModified('firstName') ) return next();
-    bycrypt.hash(user.firstName,process.env.BCRYPT_SALT_ROUNDS,(err,hash)=>{
-        if(err) return next(err);
-        user.firstName=hash;
-        next();
-    });
-    if(!user.isModified('lastName') ) return next();
-    bycrypt.hash(user.lastName,process.env.BCRYPT_SALT_ROUNDS,(err,hash)=>{
-        if(err) return next(err);
-        user.lastName=hash;
-        next();
-    });
-    if(!user.isModified('cin') ) return next();
-    bycrypt.hash(user.cin,process.env.BCRYPT_SALT_ROUNDS,(err,hash)=>{
-        if(err) return next(err);
-        user.cin=hash;
-        next();
-    });
-    if(!user.isModified('email') ) return next();
-    bycrypt.hash(user.email,process.env.BCRYPT_SALT_ROUNDS,(err,hash)=>{
-        if(err) return next(err);
-        user.email=hash;
-        next();
-    });
-    if(!user.isModified('password') ) return next();
-    bycrypt.hash(user.password,process.env.BCRYPT_SALT_ROUNDS,(err,hash)=>{
-        if(err) return next(err);
-        user.password=hash;
-        next();
-    });
-    if(!user.isModified('address') ) return next();
-    bycrypt.hash(user.address,process.env.BCRYPT_SALT_ROUNDS,(err,hash)=>{
-        if(err) return next(err);
-        user.address=hash;
-        next();
-    });
-    if(!user.isModified('phoneNumber') ) return next();
-    bycrypt.hash(user.phoneNumber,process.env.BCRYPT_SALT_ROUNDS,(err,hash)=>{
-        if(err) return next(err);
-        user.phoneNumber=hash;
-        next();
-    });
-    if(!user.isModified('store') ) return next();
-    bycrypt.hash(user.store,process.env.BCRYPT_SALT_ROUNDS,(err,hash)=>{
-        if(err) return next(err);
-        user.store=hash;
-        next();
-    });
-    if(!user.isModified('role') ) return next();
-    bycrypt.hash(user.role,process.env.BCRYPT_SALT_ROUNDS,(err,hash)=>{
-        if(err) return next(err);
-        user.role=hash;
-        next();
-    });
-});*/
+userSchema.methods.generateAuthToken=function(){
+    return jwt.sign({id:this._id,role:this.role},process.env.JWT_SECRET);
+}
 
 const validateRegisterUser=(obj)=>{
     const schema=joi.object({
@@ -153,7 +97,14 @@ const validateRegisterUser=(obj)=>{
     return schema.validate(obj);
 }
 
+const validateLoginUser=(obj)=>{
+    const schema=joi.object({
+        email:joi.string().email().required().pattern(/^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{3,}$/),
+        password:joi.string().required(),
+    })
+    return schema.validate(obj);
+}
 
 const User=mongoose.models.User || mongoose.model("User",userSchema);
 
-module.exports={User,validateRegisterUser}
+module.exports={User,validateRegisterUser,validateLoginUser}
