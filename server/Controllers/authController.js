@@ -2,6 +2,8 @@ const asyncHandler=require('express-async-handler');
 const { User,validateRegisterUser, validateLoginUser } = require('../Models/User');
 const mongoose=require('mongoose');
 const bycrypt=require("bcrypt");
+const { getConnection, connections } = require('../Utils/dbconnection');
+const { Store } = require('../Models/Store');
 
 
 
@@ -15,7 +17,8 @@ const bycrypt=require("bcrypt");
  const registerUser=asyncHandler(async(req,res)=>{
     const {error}=validateRegisterUser(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-    const userConnection=mongoose.createConnection(`${process.env.DB_URI_P1}Users${process.env.DB_URI_P2}`);
+    const userConnection=getConnection('Users');
+    
     const userModel= userConnection.model('User',User.schema);
     let user=await userModel.findOne({email:req.body.email});
     if(user) return res.status(400).send('User already exists');
@@ -29,8 +32,15 @@ const bycrypt=require("bcrypt");
         password:hashedPassword,
         address:req.body.address,
         phoneNumber:req.body.phoneNumber,
-    })
-
+        role:req.body.role,
+        store:req.body.store
+    });
+    const storeModel= userConnection.model('Store',Store.schema);
+    let store= await storeModel.findById(user.store);
+    if(!store) return res.status(400).send('Store not found');
+    store.user.push(user._id);
+    await store.save();
+    
     return res.status(201).send(user);
  })
 
@@ -46,7 +56,8 @@ const bycrypt=require("bcrypt");
  const loginUser=asyncHandler(async(req,res)=>{
     const {error}=validateLoginUser(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-    const userConnection=mongoose.createConnection(`${process.env.DB_URI_P1}Users${process.env.DB_URI_P2}`);
+   
+    const userConnection=getConnection('Users');
     const userModel= userConnection.model('User',User.schema);
     const user=await userModel.findOne({email:req.body.email});
     if(!user) return res.status(400).send('invalid email or password');
@@ -60,7 +71,6 @@ const bycrypt=require("bcrypt");
         lastName:user.lastName,
         role:user.role
     })
-    
  })
 
 module.exports={registerUser,loginUser};

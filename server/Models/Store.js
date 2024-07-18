@@ -31,11 +31,12 @@ const storeSchema=new mongoose.Schema({
         required:true,
         trim:true,
     },
-    user:{
+    user:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User',
-        required:true
-    }
+        required:true,
+        default:[]
+    }]
 },{timestamps:true});
 
 
@@ -45,7 +46,7 @@ const validateStore=(obj)=>{
         storeName:joi.string().min(5).max(50).required().trim(),
         address:joi.string().min(5).max(50).required().trim(),
         description:joi.string().min(5).required().trim(),
-        user:joi.required()
+        
     });
     return schema.validate(obj);
 }

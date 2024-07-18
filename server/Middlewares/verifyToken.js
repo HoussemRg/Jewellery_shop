@@ -16,4 +16,24 @@ function verifyToken(req,res,next){
     }   
 }
 
-module.exports={verifyToken};
+function verifyTokenForOnlySuperAdmin(req,res,next){
+    verifyToken(req,res,()=>{
+        if(req.user.role=="superAdmin"){
+            next();
+        }else{
+            return res.status(403).send("unothorized, Acess denied !");
+        }
+    })
+}
+
+function verifyTokenForOnlySuperAdminOrAdmin(req,res,next){
+    verifyToken(req,res,()=>{
+        if(req.user.role=="superAdmin" || req.user.role=="admin"){
+            next();
+        }else{
+            return res.status(403).send("unothorized, Acess denied !");
+        }
+    })
+}
+
+module.exports={verifyToken,verifyTokenForOnlySuperAdmin,verifyTokenForOnlySuperAdminOrAdmin};

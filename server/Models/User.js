@@ -60,15 +60,18 @@ const userSchema=new mongoose.Schema({
     },
     store:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'Store'
+        ref:'Store',
+        
     },
     role:{
         type:String,
         enum:['admin','superAdmin','vendor'],
-        default:"admin"
+        required:true
     }
 
 },{timestamps:true});
+
+
 
 const complexityOptions = {
     min: 10,  
@@ -92,7 +95,9 @@ const validateRegisterUser=(obj)=>{
         email:joi.string().email().required().pattern(/^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{3,}$/),
         password:joi.string().required(),
         phoneNumber:joi.string().required(),
-        address: joi.string().required().trim().min(10).max(50)
+        address: joi.string().required().trim().min(10).max(50),
+        role:joi.string().valid('admin','superAdmin', 'vendor').optional(),
+        store:joi.required()
     })
     return schema.validate(obj);
 }
@@ -105,6 +110,20 @@ const validateLoginUser=(obj)=>{
     return schema.validate(obj);
 }
 
+const validateUpdateUser=(obj)=>{
+    const schema=joi.object({
+        firstName:joi.string().min(3).max(50).trim(),
+        lastName:joi.string().min(3).max(50).trim(),
+        cin:joi.string().required().trim().pattern(/^[0-9]+$/),
+        
+        password:joi.string().allow('', null),
+        phoneNumber:joi.string(),
+        address: joi.string().trim().min(10).max(50),
+        role:joi.string().valid('admin','superAdmin', 'vendor').optional(),
+        
+    })
+}
+
 const User=mongoose.models.User || mongoose.model("User",userSchema);
 
-module.exports={User,validateRegisterUser,validateLoginUser}
+module.exports={User,validateRegisterUser,validateLoginUser,validateUpdateUser}
