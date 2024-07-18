@@ -50,7 +50,8 @@ const getAllStores=asyncHandler(async(req,res)=>{
     const StoreModel = connection.model('Store', Store.schema);
     
     const stores = await StoreModel.find().select("-database");
-    res.status(200).send(stores);
+    const count=await StoreModel.countDocuments();
+    res.status(200).send({stores:stores,count:count});
 
 });
 

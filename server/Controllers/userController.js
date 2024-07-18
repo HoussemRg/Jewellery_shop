@@ -21,7 +21,8 @@ const { getConnection } = require('../Utils/dbconnection');
         model:'Store',
         select: '_id storeName description address'
     });
-    res.status(200).send(users);
+    const count=await userModel.countDocuments({role:"admin"});
+    res.status(200).send({users:users,count:count});
  })
 
 /**---------------------------------
@@ -40,7 +41,8 @@ const { getConnection } = require('../Utils/dbconnection');
         model:'Store',
         select: '_id storeName description address'
     });
-    res.status(200).send(users);
+    const count=await userModel.countDocuments({role:"vendor"});
+    res.status(200).send({users:users,count:count});
  })
 
 /**---------------------------------
@@ -134,5 +136,14 @@ const getUsersForSpecificStore=asyncHandler(async(req,res)=>{
     res.status(200).send("User deleted successfully");
     
  })
+
+  /**---------------------------------
+ * @desc get  users number 
+ * @route /api/users/count
+ * @resquest Get
+ * @acess only super admin
+ ------------------------------------*/
+
+
 
  module.exports={getAllAdmins,getAllvendors,getSingleUser,updateUser,deleteUser};
