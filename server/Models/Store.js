@@ -11,7 +11,7 @@ const storeSchema=new mongoose.Schema({
         trim:true,
         maxlength:50,
         minlength:5,
-        unique:true
+        
     },
     address:{
         type:String,
@@ -51,26 +51,15 @@ const validateStore=(obj)=>{
     return schema.validate(obj);
 }
 
+const validateUpdateStore=(obj)=>{
+    const schema=joi.object({
+        storeName:joi.string().min(5).max(50).trim(),
+        address:joi.string().min(5).max(50).trim(),
+        description:joi.string().min(5).trim(),
+    });
+    return schema.validate(obj);
+}
 const Store=mongoose.model('Store',storeSchema);
 
-module.exports={Store,validateStore};
+module.exports={Store,validateStore,validateUpdateStore};
 
-/*
-storeSchema.pre('save',function(next){
-    const store=this;
-    if (store.isModified('storeName')) {
-        store.storeName = encrypt(store.storeName).encryptedData;
-    }
-    if (store.isModified('address')) {
-        store.address = encrypt(store.address).encryptedData;
-    }
-    if (store.isModified('description')) {
-        store.description = encrypt(store.description).encryptedData;
-    }
-    if (store.isModified('database')) {
-        store.description = encrypt(store.description).encryptedData;
-    }
-    next();
-    
-});
-*/

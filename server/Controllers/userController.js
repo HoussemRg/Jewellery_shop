@@ -64,6 +64,27 @@ const getSingleUser=(asyncHandler(async(req,res)=>{
 }))
 
 /**---------------------------------
+ * @desc get users for a specific store 
+ * @route /api/users/store/:storeId
+ * @resquest Get
+ * @acess private for only admin or superAdmin
+ ------------------------------------*/
+/*
+const getUsersForSpecificStore=asyncHandler(async(req,res)=>{
+    const storeId=req.params.storeId;
+    const connection = getConnection('Users');
+    const StoreModel = connection.model('Store', Store.schema);
+    connection.model('User',User.schema);
+    const store=await StoreModel.findById(storeId).select(' user -_id').populate({
+        path:'user',
+        model:'User',
+        select:"-password -store "
+    })
+    return res.status(200).send(store.user);
+})
+
+*/
+/**---------------------------------
  * @desc update single user 
  * @route /api/users/:id
  * @resquest Put
@@ -93,9 +114,9 @@ const getSingleUser=(asyncHandler(async(req,res)=>{
  })
 
  /**---------------------------------
- * @desc update single user 
+ * @desc delete  user 
  * @route /api/users/:id
- * @resquest Put
+ * @resquest delete
  * @acess only admin or super admin
  ------------------------------------*/
  const deleteUser=asyncHandler(async(req,res)=>{
