@@ -1,21 +1,17 @@
-const mongoose=require('mongoose');
+const mongoose = require('mongoose');
 
-let connections={
+let connections = {};
 
-}
-
-const getConnection=(dbName)=>{
-    
-    if(connections[dbName]){
-        
+const getConnection = (dbName) => {
+    if (connections[dbName]) {
         return connections[dbName];
-        
     }
-    const connection=mongoose.createConnection(`${process.env.DB_URI_P1}${dbName}${process.env.DB_URI_P2}`);
-    connections[dbName]=connection;
 
-    
+   
+
+    const connection = mongoose.createConnection(`${process.env.DB_URI_P1}${dbName}${process.env.DB_URI_P2}`);
+    connections[dbName] = connection;
     return connection;
 }
 
-module.exports={getConnection,connections}
+module.exports = { getConnection, connections };

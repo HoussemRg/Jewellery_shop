@@ -36,6 +36,12 @@ const storeSchema=new mongoose.Schema({
         ref:'User',
         required:true,
         default:[]
+    }],
+    product:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Product',
+        required:true,
+        default:[]
     }]
 },{timestamps:true});
 

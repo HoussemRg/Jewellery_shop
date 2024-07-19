@@ -5,6 +5,7 @@ const { validateStore, Store, validateUpdateStore } = require('../Models/Store')
 const { User } = require('../Models/User');
 const { getConnection, connections } = require('../Utils/dbconnection');
 const { createDatabase } = require('../Utils/dbcreating');
+const { Product } = require('../Models/Product');
 
 
 
@@ -23,6 +24,7 @@ const { createDatabase } = require('../Utils/dbcreating');
     const StoreModel = connection.model('Store', Store.schema);
     let store=await StoreModel.findOne({storeName:req.body.storeName});
     if(store) return res.status(400).send("Store alreadt exists");
+    const sanitizedStoreName = req.body.storeName.replace(/ /g, '_');
     store = await StoreModel.create({
         storeName: req.body.storeName,
         address: req.body.address,
@@ -30,11 +32,11 @@ const { createDatabase } = require('../Utils/dbcreating');
         database: `${ sanitizedStoreName}`,
         
     });  
-    const sanitizedStoreName = store._id.replace(/ /g, '_');
-    const newDatabase =mongoose.createConnection(
+    
+    /*const newDatabase =mongoose.createConnection(
         `${process.env.DB_URI_P1}${sanitizedStoreName}${process.env.DB_URI_P2}`,      
     );
-    console.log(newDatabase);
+    console.log(newDatabase)*/
     //createDatabase(sanitizedStoreName);
     
     return res.status(201).send(store);
@@ -116,6 +118,12 @@ const getSingleStore=asyncHandler(async(req,res)=>{
     store.user.forEach(async(userId) => {
         await UserModel.findByIdAndDelete(userId);
     });
+    const storeConnection=getConnection(store.database);
+    const productModel=storeConnection.model('Product',Product.schema);
+    store.product.forEach(async(productId) => {
+        await productModel.findByIdAndDelete(productId);
+    });
+    
     await StoreModel.findByIdAndDelete(storeId);
     return res.status(200).send("Store deleted successfully");
  })

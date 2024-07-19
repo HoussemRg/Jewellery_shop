@@ -137,12 +137,7 @@ const getUsersForSpecificStore=asyncHandler(async(req,res)=>{
     
  })
 
-  /**---------------------------------
- * @desc get  users number 
- * @route /api/users/count
- * @resquest Get
- * @acess only super admin
- ------------------------------------*/
+  
 
 
 
