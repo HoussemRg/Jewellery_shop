@@ -28,7 +28,7 @@ const path = require('path');
         carat:req.body.carat,
         productPhoto:req.file ? req.file.buffer : fs.readFileSync(path.join(__dirname,'../assets/productPhoto.jpg')),
         purchasePrice:req.body.purchasePrice,
-        sellingPrice:req.body.sellingPrice,
+        unitPrice:req.body.unitPrice,
         stockQuantity:req.body.stockQuantity,
         store:store._id
     });

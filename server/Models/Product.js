@@ -32,7 +32,7 @@ const productSchema=new mongoose.Schema({
         type:Number,
         required:true,        
     },
-    sellingPrice:{
+    unitPrice:{
         type:Number,
         required:true,        
     },
@@ -49,7 +49,7 @@ const validateCreateProduct=(obj)=>{
         carat:joi.number().required(),
         store:joi.string(),
         purchasePrice:joi.number().required(),
-        sellingPrice:joi.number().required(),
+        unitPrice:joi.number().required(),
         stockQuantity:joi.number().required(),
     });
     return schema.validate(obj);
@@ -61,7 +61,7 @@ const validateUpdateProduct=(obj)=>{
         description:joi.string().trim().min(3).max(200),
         carat:joi.number(),
         purchasePrice:joi.number(),
-        sellingPrice:joi.number(),
+        unitPrice:joi.number(),
         stockQuantity:joi.number(),
     });
     return schema.validate(obj);
