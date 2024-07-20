@@ -26,6 +26,7 @@ const path = require('path');
         productName:req.body.productName,
         description:req.body.description,
         carat:req.body.carat,
+        weight:req.body.weight,
         productPhoto:req.file ? req.file.buffer : fs.readFileSync(path.join(__dirname,'../assets/productPhoto.jpg')),
         purchasePrice:req.body.purchasePrice,
         unitPrice:req.body.unitPrice,
