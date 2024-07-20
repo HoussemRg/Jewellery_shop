@@ -7,7 +7,7 @@ const { validateId } = require('../Middlewares/verifyId');
 
 const productRoutes=express.Router();
 
-productRoutes.post('/create',verifyTokenForOnlySuperAdminOrAdmin,uploadProductPhoto.single('image'),createProduct);
+productRoutes.post('/create/:storeId',verifyTokenForOnlySuperAdminOrAdmin,validateId,uploadProductPhoto.single('image'),createProduct);
 
 productRoutes.get('/:storeId',verifyTokenForOnlySuperAdminOrAdmin,validateId,getAllProducts);
 

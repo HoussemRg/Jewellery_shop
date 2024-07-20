@@ -1,15 +1,16 @@
-const mongoose=require('mongoose');
 const asyncHandler=require('express-async-handler');
 const { validateCreateProduct, Product, validateUpdateProduct } = require('../Models/Product');
 const fs=require('fs');
 const { getConnection } = require('../Utils/dbconnection');
 const { Store } = require('../Models/Store');
 const path = require('path');
+const { Category } = require('../Models/Category');
+const { SubCategory } = require('../Models/SubCategory');
 
 
 /**---------------------------------
  * @desc create new product 
- * @route /api/products
+ * @route /api/products/:storeId
  * @request Post
  * @access for only admin or super admin
  ------------------------------------*/
@@ -18,10 +19,16 @@ const path = require('path');
     if(error) return res.status(400).send(error.details[0].message);
     const storeConnection=getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
-    let store= await StoreModel.findById(req.body.store);
+    let store= await StoreModel.findById(req.params.storeId);
     if(!store) return res.status(400).send("Store not found");
     const databaseConnection=getConnection(store.database);
     const ProductModel=databaseConnection.model('Product',Product.schema);
+    const CategoryModel=databaseConnection.model('Category',Category.schema);
+    const SubCategoryModel=databaseConnection.model('SubCategory',SubCategory.schema);
+    let category=await CategoryModel.findById(req.body.category);
+    if(!category) return res.status(400).send("Category not found");
+    let subCategory=await SubCategoryModel.findById(req.body.subCategory);
+    if(!subCategory) return res.status(400).send("Category not found");
     let product=await ProductModel.create({
         productName:req.body.productName,
         description:req.body.description,
@@ -31,9 +38,16 @@ const path = require('path');
         purchasePrice:req.body.purchasePrice,
         unitPrice:req.body.unitPrice,
         stockQuantity:req.body.stockQuantity,
-        store:store._id
+        store:store._id,
+        category:req.body.category,
+        subCategory:req.body.subCategory
     });
+    
     store.product.push(product._id);
+    category.product.push(product._id);
+    subCategory.product.push(product._id);
+    await category.save();
+    await subCategory.save();
     await store.save();
     return res.status(201).send(product);
  })

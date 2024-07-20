@@ -24,7 +24,7 @@ const subCategorySchema=new mongoose.Schema({
     }]
 });
 
-const validateCreateCategort=(obj)=>{
+const validateCreateSubCategory=(obj)=>{
     const schema=joi.object({
         subCategoryName:joi.string().required().trim().min(3).max(50),
         subCategoryDescription:joi.string().required().trim().min(5).max(200),
@@ -32,7 +32,7 @@ const validateCreateCategort=(obj)=>{
     return schema.validate(obj);
 }
 
-const validateUpdateCategort=(obj)=>{
+const validateUpdateSubCategory=(obj)=>{
     const schema=joi.object({
         subCategoryName:joi.string().trim().min(3).max(50),
         subCategoryDescription:joi.string().trim().min(5).max(200),
@@ -40,6 +40,6 @@ const validateUpdateCategort=(obj)=>{
     return schema.validate(obj);
 }
 
-const SubCategory=mongoose.model('Categorie',subCategorySchema);
+const SubCategory=mongoose.model('SubCategorie',subCategorySchema);
 
-module.exports={SubCategory,validateCreateCategort,validateUpdateCategort}
+module.exports={SubCategory,validateCreateSubCategory,validateUpdateSubCategory}

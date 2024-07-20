@@ -24,7 +24,7 @@ const categorySchema=new mongoose.Schema({
     }]
 });
 
-const validateCreateCategort=(obj)=>{
+const validateCreateCategory=(obj)=>{
     const schema=joi.object({
         categoryName:joi.string().required().trim().min(3).max(50),
         categoryDescription:joi.string().required().trim().min(5).max(200),
@@ -32,7 +32,7 @@ const validateCreateCategort=(obj)=>{
     return schema.validate(obj);
 }
 
-const validateUpdateCategort=(obj)=>{
+const validateUpdateCategory=(obj)=>{
     const schema=joi.object({
         categoryName:joi.string().trim().min(3).max(50),
         categoryDescription:joi.string().trim().min(5).max(200),
@@ -42,4 +42,4 @@ const validateUpdateCategort=(obj)=>{
 
 const Category=mongoose.model('Categorie',categorySchema);
 
-module.exports={Category,validateCreateCategort,validateUpdateCategort}
+module.exports={Category,validateCreateCategory,validateUpdateCategory}
