@@ -14,11 +14,11 @@ const { SubCategory } = require('../Models/SubCategory');
 const createCategory=asyncHandler(async(req,res)=>{
     const {error}=validateCreateCategory(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-    const storeConnection=getConnection("Users");
+    const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(req.params.storeId);
     if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=getConnection(store.database);
+    const databaseConnection=await getConnection(store.database);
     const CategoryModel=databaseConnection.model('Category',Category.schema);
     const category=await CategoryModel.create({
         categoryName:req.body.categoryName,
@@ -36,11 +36,11 @@ const createCategory=asyncHandler(async(req,res)=>{
 -------------------------------------*/
 const getAllCategories=asyncHandler(async(req,res)=>{
     const storeId=req.params.storeId;
-    const storeConnection=getConnection("Users");
+    const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
     if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=getConnection(store.database);
+    const databaseConnection=await getConnection(store.database);
     const CategoryModel=databaseConnection.model('Category',Category.schema);
    
     const categoryies=await CategoryModel.find().select("-product");
@@ -57,11 +57,11 @@ const getAllCategories=asyncHandler(async(req,res)=>{
  ------------------------------------*/
 const getSingleCategory=asyncHandler(async(req,res)=>{
     const storeId=req.params.storeId;
-    const storeConnection=getConnection("Users");
+    const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
     if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=getConnection(store.database);
+    const databaseConnection=await getConnection(store.database);
     const CategortyModel=databaseConnection.model('Category',Category.schema);
     databaseConnection.model('Product',Product.schema);
     const category=await CategortyModel.findById(req.params.categoryId).populate({
@@ -83,11 +83,11 @@ const getSingleCategory=asyncHandler(async(req,res)=>{
     const {error}=validateUpdateCategory(req.body);
     if(error) return res.status(400).send(error.details[0].message);
     const storeId=req.params.storeId;
-    const storeConnection=getConnection("Users");
+    const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
     if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=getConnection(store.database);
+    const databaseConnection=await getConnection(store.database);
     const CategoryModel=databaseConnection.model('Category',Category.schema);
     let category=await CategoryModel.findById(req.params.categoryId);
     if(!category) return res.status(400).send("Product not found");
@@ -111,11 +111,11 @@ const getSingleCategory=asyncHandler(async(req,res)=>{
 
 const deleteCategory=asyncHandler(async(req,res)=>{
     const storeId=req.params.storeId;
-    const storeConnection=getConnection("Users");
+    const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
     if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=getConnection(store.database);
+    const databaseConnection=await getConnection(store.database);
     const CategoryModel=databaseConnection.model('Category',Category.schema);
     let category=await CategoryModel.findById(req.params.categoryId);
     if(!category) return res.status(400).send("Category not found");

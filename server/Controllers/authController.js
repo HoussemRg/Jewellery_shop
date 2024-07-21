@@ -17,7 +17,7 @@ const { Store } = require('../Models/Store');
  const registerUser=asyncHandler(async(req,res)=>{
     const {error}=validateRegisterUser(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-    const userConnection=getConnection('Users');
+    const userConnection=await getConnection('Users');
     
     const userModel= userConnection.model('User',User.schema);
     let user=await userModel.findOne({email:req.body.email});
@@ -57,7 +57,7 @@ const { Store } = require('../Models/Store');
     const {error}=validateLoginUser(req.body);
     if(error) return res.status(400).send(error.details[0].message);
    
-    const userConnection=getConnection('Users');
+    const userConnection=await getConnection('Users');
     const userModel= userConnection.model('User',User.schema);
     const user=await userModel.findOne({email:req.body.email});
     if(!user) return res.status(400).send('invalid email or password');

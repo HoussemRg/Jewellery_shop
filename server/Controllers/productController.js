@@ -17,11 +17,11 @@ const { SubCategory } = require('../Models/SubCategory');
  const createProduct=asyncHandler(async(req,res)=>{
     const {error}=validateCreateProduct(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-    const storeConnection=getConnection("Users");
+    const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(req.params.storeId);
     if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=getConnection(store.database);
+    const databaseConnection=await getConnection(store.database);
     const ProductModel=databaseConnection.model('Product',Product.schema);
     const CategoryModel=databaseConnection.model('Category',Category.schema);
     const SubCategoryModel=databaseConnection.model('SubCategory',SubCategory.schema);
@@ -61,11 +61,11 @@ const { SubCategory } = require('../Models/SubCategory');
 
 const getAllProducts=asyncHandler(async(req,res)=>{
     const storeId=req.params.storeId;
-    const storeConnection=getConnection("Users");
+    const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
     if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=getConnection(store.database);
+    const databaseConnection=await getConnection(store.database);
     const ProductModel=databaseConnection.model('Product',Product.schema);
    
     const products=await ProductModel.find();
@@ -82,11 +82,11 @@ const getAllProducts=asyncHandler(async(req,res)=>{
  ------------------------------------*/
 const getSingleProduct=asyncHandler(async(req,res)=>{
     const storeId=req.params.storeId;
-    const storeConnection=getConnection("Users");
+    const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
     if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=getConnection(store.database);
+    const databaseConnection=await getConnection(store.database);
     const ProductModel=databaseConnection.model('Product',Product.schema);
     const product=await ProductModel.findById(req.params.productId);
     if(!product) return res.status(400).send("Product not found");
@@ -104,11 +104,11 @@ const updateProduct=asyncHandler(async(req,res)=>{
     const {error}=validateUpdateProduct(req.body);
     if(error) return res.status(400).send(error.details[0].message);
     const storeId=req.params.storeId;
-    const storeConnection=getConnection("Users");
+    const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
     if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=getConnection(store.database);
+    const databaseConnection=await getConnection(store.database);
     const ProductModel=databaseConnection.model('Product',Product.schema);
     let product=await ProductModel.findById(req.params.productId);
     if(!product) return res.status(400).send("Product not found");
@@ -130,11 +130,11 @@ const updateProduct=asyncHandler(async(req,res)=>{
  ------------------------------------*/
  const deleteProduct=asyncHandler(async(req,res)=>{
     const storeId=req.params.storeId;
-    const storeConnection=getConnection("Users");
+    const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
     if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=getConnection(store.database);
+    const databaseConnection=await getConnection(store.database);
     const ProductModel=databaseConnection.model('Product',Product.schema);
     let product=await ProductModel.findById(req.params.productId);
     if(!product) return res.status(400).send("Product not found");
@@ -149,11 +149,11 @@ const updateProductPhoto=asyncHandler(async(req,res)=>{
         return res.status(400).send("No image provided");
     }
     const storeId=req.params.storeId;
-    const storeConnection=getConnection("Users");
+    const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
     if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=getConnection(store.database);
+    const databaseConnection=await getConnection(store.database);
     const ProductModel=databaseConnection.model('Product',Product.schema);
     let product=await ProductModel.findById(req.params.productId);
     if(!product) return res.status(400).send("Product not found");

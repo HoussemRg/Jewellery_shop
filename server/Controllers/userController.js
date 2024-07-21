@@ -12,7 +12,7 @@ const { getConnection } = require('../Utils/dbconnection');
  ------------------------------------*/
 
  const getAllAdmins=asyncHandler(async(req,res)=>{
-    const userConnection=getConnection('Users');
+    const userConnection=await getConnection('Users');
     const userModel= userConnection.model('User',User.schema);
     
     userConnection.model('Store', Store.schema);
@@ -33,7 +33,7 @@ const { getConnection } = require('../Utils/dbconnection');
  ------------------------------------*/
 
  const getAllvendors=asyncHandler(async(req,res)=>{
-    const userConnection=getConnection('Users');
+    const userConnection=await getConnection('Users');
     const userModel= userConnection.model('User',User.schema);
     userConnection.model('Store', Store.schema);
     const users=await userModel.find({role:"vendor"}).select("-password -role").populate({
@@ -53,7 +53,7 @@ const { getConnection } = require('../Utils/dbconnection');
  ------------------------------------*/
 const getSingleUser=(asyncHandler(async(req,res)=>{
     const userId=req.params.id;
-    const userConnection=getConnection('Users');
+    const userConnection=await getConnection('Users');
     const userModel= userConnection.model('User',User.schema);
     userConnection.model('Store',Store.schema);
     const user=await userModel.findById(userId).select("-password ").populate({
@@ -97,7 +97,7 @@ const getUsersForSpecificStore=asyncHandler(async(req,res)=>{
     const {error}=validateRegisterUser(req.body);
     if(error) return res.status(400).send(error.details[0].message);
     const userId=req.params.id;
-    const userConnection=getConnection('Users');
+    const userConnection=await getConnection('Users');
     const userModel= userConnection.model('User',User.schema);
     let user=await userModel.findById(userId);
     if(!user) return res.status(400).send("User not found");
@@ -123,7 +123,7 @@ const getUsersForSpecificStore=asyncHandler(async(req,res)=>{
  ------------------------------------*/
  const deleteUser=asyncHandler(async(req,res)=>{
     const userId=req.params.id;
-    const userConnection=getConnection('Users');
+    const userConnection=await getConnection('Users');
     const userModel= userConnection.model('User',User.schema);
     let user=await userModel.findById(userId);
     if(!user) return res.status(400).send("User not found");

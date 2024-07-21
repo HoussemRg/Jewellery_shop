@@ -18,7 +18,7 @@ const { Product } = require('../Models/Product');
  const createStore = asyncHandler(async (req, res) => {
     const { error } = validateStore(req.body);
     if (error) return res.status(401).send(error.details[0].message);
-    const connection = getConnection('Users');
+    const connection = await  getConnection('Users');
     
     
     const StoreModel = connection.model('Store', Store.schema);
@@ -48,7 +48,7 @@ const { Product } = require('../Models/Product');
  * @access private for only super admin
  ------------------------------------*/
 const getAllStores=asyncHandler(async(req,res)=>{
-    const connection = getConnection('Users');
+    const connection =await  getConnection('Users');
     const StoreModel = connection.model('Store', Store.schema);
     
     const stores = await StoreModel.find().select("-database");
@@ -65,7 +65,7 @@ const getAllStores=asyncHandler(async(req,res)=>{
  ------------------------------------*/
 const getSingleStore=asyncHandler(async(req,res)=>{
     const storeId=req.params.id;
-    const connection = getConnection('Users');
+    const connection =await  getConnection('Users');
     const StoreModel = connection.model('Store', Store.schema);
     connection.model('User',User.schema);
     const store=await StoreModel.findById(storeId).select(' -database ').populate({
@@ -88,7 +88,7 @@ const getSingleStore=asyncHandler(async(req,res)=>{
     const { error }=validateUpdateStore(req.body);
     if(error) return res.status(400).send(error.details[0].message);
     const storeId=req.params.id;
-    const connection = getConnection('Users');
+    const connection =await  getConnection('Users');
     const StoreModel = connection.model('Store', Store.schema);
     connection.model('User',User.schema);
     let newStore=req.body;
@@ -110,7 +110,7 @@ const getSingleStore=asyncHandler(async(req,res)=>{
  ------------------------------------*/
  const deleteStore=asyncHandler(async (req,res)=>{
     const storeId=req.params.id;
-    const connection = getConnection('Users');
+    const connection =await  getConnection('Users');
     const StoreModel = connection.model('Store', Store.schema);
     const UserModel=connection.model('User',User.schema);
     const store=await StoreModel.findById(storeId);
@@ -118,7 +118,7 @@ const getSingleStore=asyncHandler(async(req,res)=>{
     store.user.forEach(async(userId) => {
         await UserModel.findByIdAndDelete(userId);
     });
-    const storeConnection=getConnection(store.database);
+    const storeConnection=await getConnection(store.database);
     const productModel=storeConnection.model('Product',Product.schema);
     store.product.forEach(async(productId) => {
         await productModel.findByIdAndDelete(productId);
