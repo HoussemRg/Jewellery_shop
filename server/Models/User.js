@@ -93,7 +93,7 @@ const validateRegisterUser=(obj)=>{
         lastName:joi.string().min(3).max(50).trim().required(),
         cin:joi.string().required().trim().pattern(/^[0-9]+$/),
         email:joi.string().email().required().pattern(/^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{3,}$/),
-        password:joi.string().required(),
+        password:joi.string().min(10).required(),
         phoneNumber:joi.string().required(),
         address: joi.string().required().trim().min(10).max(50),
         role:joi.string().valid('admin','superAdmin', 'vendor').optional(),
@@ -105,7 +105,7 @@ const validateRegisterUser=(obj)=>{
 const validateLoginUser=(obj)=>{
     const schema=joi.object({
         email:joi.string().email().required().pattern(/^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{3,}$/),
-        password:joi.string().required(),
+        password:joi.string().min(10).required(),
     })
     return schema.validate(obj);
 }

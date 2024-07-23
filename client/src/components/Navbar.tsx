@@ -1,20 +1,26 @@
-import { useTheme,AppBar,Toolbar,IconButton, InputBase } from '@mui/material';
-import React from 'react'
-import {DarkModeOutlined, LightModeOutlined, Menu as MenuIcon, Search, SettingsOutlined} from '@mui/icons-material'
+import { useTheme,AppBar,Toolbar,IconButton, InputBase, Button, Box, Typography, Menu, MenuItem } from '@mui/material';
+import React, { useState } from 'react'
+import {ArrowDropDownOutlined, DarkModeOutlined, LightModeOutlined, Menu as MenuIcon, Search, SettingsOutlined} from '@mui/icons-material'
 import { useDispatch } from 'react-redux'
 import FlexBetween from './FlexBetween';
 import { themeActions } from '../slices/themeSlice';
-
+import Photo from '../assets/photo.png'
+import { UserState } from '../slices/authSlice';
+import { Link } from 'react-router-dom';
 interface NavbarProps {
-    
+    user:UserState | null;
     isSideBarOpened: boolean;
     setIsSideBarOpened: React.Dispatch<React.SetStateAction<boolean>>;
     
   }
 
-const Navbar :React.FC<NavbarProps>= ({isSideBarOpened,setIsSideBarOpened}) => {
+const Navbar :React.FC<NavbarProps>= ({user,isSideBarOpened,setIsSideBarOpened}) => {
     const dispatch =useDispatch();
     const theme=useTheme();
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const isOpen = Boolean(anchorEl);
+    const handleClick = (event:React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
+    const handleClose = () => setAnchorEl(null);
   return (
     <AppBar sx={{
         position:'static',
@@ -48,6 +54,56 @@ const Navbar :React.FC<NavbarProps>= ({isSideBarOpened,setIsSideBarOpened}) => {
                 <IconButton  >
                     <SettingsOutlined sx={{fontSize:"25px"}} />
                 </IconButton>
+                <FlexBetween>
+            <Button
+              onClick={handleClick}
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                textTransform: "none",
+                gap: "1rem",
+              }}
+            >
+              <Box
+                component="img"
+                alt="profile"
+                src={Photo}
+                height="32px"
+                width="32px"
+                borderRadius="50%"
+                sx={{ objectFit: "cover" }}
+              />
+              <Box textAlign="left">
+                <Typography
+                  fontWeight="bold"
+                  fontSize="0.85rem"
+                  sx={{ color: theme.palette.secondary[100] }}
+                >
+                  {user?.firstName + ' ' + user?.lastName}
+                </Typography>
+                <Typography
+                  fontSize="0.75rem"
+                  sx={{ color: theme.palette.secondary[200] }}
+                >
+                  {user?.role}
+                </Typography>
+              </Box>
+              <ArrowDropDownOutlined
+                sx={{ color: theme.palette.secondary[300], fontSize: "25px" }}
+              />
+            </Button>
+            <Menu
+              anchorEl={anchorEl}
+              open={isOpen}
+              onClose={handleClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            >
+              <MenuItem onClick={handleClose}>Edit profile</MenuItem>
+              <MenuItem onClick={handleClose}>Log Out</MenuItem>
+              
+            </Menu>
+          </FlexBetween>
             </FlexBetween>
         </Toolbar>
     </AppBar>

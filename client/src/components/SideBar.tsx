@@ -178,7 +178,7 @@ const SideBar:React.FC<SideBarProps> = ({isNonMobile,drawerWidth,isSideBarOpened
                 }}
                 
                 >
-                <ListItemIcon sx={{":active":{color:theme.palette.primary[600]}, color:theme.palette.secondary[200],ml: "1rem", minWidth: 32}}>
+                <ListItemIcon sx={{":active":{color:theme.palette.primary[600]}, color:theme.palette.secondary[100],ml: "1rem", minWidth: 32}}>
                 {icon}
                 </ListItemIcon>
                 <ListItemText primary={text} ><Link to={link} /></ListItemText> 
