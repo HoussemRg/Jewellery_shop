@@ -1,6 +1,24 @@
 import { ThemeOptions } from '@mui/material/styles';
 
-// Define the type for color tokens
+// Extend the PaletteColor interface to include custom color keys
+declare module '@mui/material/styles' {
+  interface PaletteColor {
+    0?: string;
+    10?: string;
+    50?: string;
+    100?: string;
+    200?: string;
+    300?: string;
+    400?: string;
+    500?: string;
+    600?: string;
+    700?: string;
+    800?: string;
+    900?: string;
+    1000?: string;
+  }
+}
+
 interface ColorTokens {
   [key: string]: string;
 }
@@ -9,14 +27,14 @@ interface TokenPalette {
   grey: ColorTokens;
   primary: ColorTokens;
   secondary: ColorTokens;
+  neutral: ColorTokens; // Adding neutral to the TokenPalette interface
 }
 
-// Color design tokens export
 export const tokensDark: TokenPalette = {
   grey: {
-    0: "#ffffff", // manually adjusted
-    10: "#f6f6f6", // manually adjusted
-    50: "#f0f0f0", // manually adjusted
+    0: "#ffffff",
+    10: "#f6f6f6",
+    50: "#f0f0f0",
     100: "#e0e0e0",
     200: "#c2c2c2",
     300: "#a3a3a3",
@@ -26,23 +44,21 @@ export const tokensDark: TokenPalette = {
     700: "#3d3d3d",
     800: "#292929",
     900: "#141414",
-    1000: "#000000", // manually adjusted
+    1000: "#000000",
   },
   primary: {
-    // blue
     100: "#d3d4de",
     200: "#a6a9be",
     300: "#7a7f9d",
     400: "#4d547d",
     500: "#21295c",
-    600: "#191F45", // manually adjusted
+    600: "#191F45",
     700: "#141937",
     800: "#0d1025",
     900: "#070812",
   },
   secondary: {
-    // yellow
-    50: "#f0f0f0", // manually adjusted
+    50: "#f0f0f0",
     100: "#fff6e0",
     200: "#ffedc2",
     300: "#ffe3a3",
@@ -53,14 +69,25 @@ export const tokensDark: TokenPalette = {
     800: "#665429",
     900: "#332a14",
   },
+  neutral: {
+    100: "#e0e0e0",
+    200: "#c2c2c2",
+    300: "#a3a3a3",
+    400: "#858585",
+    500: "#666666",
+    600: "#525252",
+    700: "#3d3d3d",
+    800: "#292929",
+    900: "#141414",
+  }
 };
 
-// Function that reverses the color palette
 function reverseTokens(tokens: TokenPalette): TokenPalette {
   const reversedTokens: TokenPalette = {
     grey: {},
     primary: {},
-    secondary: {}
+    secondary: {},
+    neutral: {}
   };
 
   Object.entries(tokens).forEach(([key, val]) => {
@@ -79,14 +106,12 @@ function reverseTokens(tokens: TokenPalette): TokenPalette {
 
 export const tokensLight = reverseTokens(tokensDark);
 
-// MUI theme settings
 export const themeSettings = (mode: 'light' | 'dark'): ThemeOptions => {
   return {
     palette: {
       mode: mode,
       ...(mode === "dark"
         ? {
-            // Palette values for dark mode
             primary: {
               ...tokensDark.primary,
               main: tokensDark.primary[400],
@@ -97,8 +122,8 @@ export const themeSettings = (mode: 'light' | 'dark'): ThemeOptions => {
               main: tokensDark.secondary[300],
             },
             neutral: {
-              ...tokensDark.grey,
-              main: tokensDark.grey[500],
+              ...tokensDark.neutral,
+              main: tokensDark.neutral[500],
             },
             background: {
               default: tokensDark.primary[600],
@@ -106,7 +131,6 @@ export const themeSettings = (mode: 'light' | 'dark'): ThemeOptions => {
             },
           }
         : {
-            // Palette values for light mode
             primary: {
               ...tokensLight.primary,
               main: tokensDark.grey[50],
@@ -118,7 +142,7 @@ export const themeSettings = (mode: 'light' | 'dark'): ThemeOptions => {
               light: tokensDark.secondary[700],
             },
             neutral: {
-              ...tokensLight.grey,
+              ...tokensLight.neutral,
               main: tokensDark.grey[500],
             },
             background: {

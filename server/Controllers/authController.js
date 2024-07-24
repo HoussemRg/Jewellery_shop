@@ -69,7 +69,8 @@ const { Store } = require('../Models/Store');
         token:token,
         firstName:user.firstName,
         lastName:user.lastName,
-        role:user.role
+        role:user.role,
+        store:user.store
     })
  })
 

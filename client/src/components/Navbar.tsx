@@ -6,7 +6,6 @@ import FlexBetween from './FlexBetween';
 import { themeActions } from '../slices/themeSlice';
 import Photo from '../assets/photo.png'
 import { UserState } from '../slices/authSlice';
-import { Link } from 'react-router-dom';
 interface NavbarProps {
     user:UserState | null;
     isSideBarOpened: boolean;

@@ -1,15 +1,18 @@
 import { Box, Button, FormControl, FormLabel, TextField, Typography } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { AuthData, loginUser } from '../apiCalls/authApiCall';
 import { useDispatch } from '../hooks';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
 const Login: React.FC = () => {
     const dispatch=useDispatch();
     const navigate = useNavigate(); 
+    const user = useSelector((state: RootState) => state.auth.user);
   const formSchema = yup.object({
     email: yup.string().email('Email format is not valid').required('Email is required'),
     password: yup.string().required('Password is required').min(10, 'Password length should be at least 10 characters'),
@@ -19,11 +22,15 @@ const Login: React.FC = () => {
     resolver: yupResolver(formSchema),
   });
 
- 
+ useEffect(()=>{
+  if(user){
+    navigate('/dashboard');
+  }
+ },[user,navigate]);
 
   const submitForm = (data: AuthData) => {
     dispatch(loginUser({email:data.email,password:data.password}));
-    navigate('/dashboard');
+  
   };
 
   return (

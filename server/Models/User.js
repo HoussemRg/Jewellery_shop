@@ -84,7 +84,7 @@ const complexityOptions = {
 
 
 userSchema.methods.generateAuthToken=function(){
-    return jwt.sign({id:this._id,role:this.role},process.env.JWT_SECRET);
+    return jwt.sign({id:this._id,role:this.role,store:this.store},process.env.JWT_SECRET);
 }
 
 const validateRegisterUser=(obj)=>{

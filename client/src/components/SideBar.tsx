@@ -34,7 +34,7 @@ const SideBar:React.FC<SideBarProps> = ({isNonMobile,drawerWidth,isSideBarOpened
     {
       text:"Products",
       icon:<ShoppingCartOutlined />,
-      link:""
+      link:"/products"
     },
     {
       text:"Customers",
@@ -164,29 +164,36 @@ const SideBar:React.FC<SideBarProps> = ({isNonMobile,drawerWidth,isSideBarOpened
               )
             }
             
-            return (
-              <ListItem disablePadding key={text}>
-                <ListItemButton
-                sx={{
-                  backgroundColor:  "transparent",
-                  ":active":{
-                    backgroundColor:theme.palette.secondary[300],
-                    color:theme.palette.primary[600]
-                  },
-                  color:theme.palette.secondary[100],
-                  py: 0.3
-                }}
-                
-                >
-                <ListItemIcon sx={{":active":{color:theme.palette.primary[600]}, color:theme.palette.secondary[100],ml: "1rem", minWidth: 32}}>
-                {icon}
-                </ListItemIcon>
-                <ListItemText primary={text} ><Link to={link} /></ListItemText> 
-                </ListItemButton>
-                
-                
-              </ListItem>
-            )
+             return (
+                  <ListItem disablePadding key={text}>
+                    <ListItemButton
+                      component={Link} // Use Link as the component for navigation
+                      to={link}
+                      sx={{
+                        backgroundColor: "transparent",
+                        ":hover": {
+                          backgroundColor: theme.palette.secondary[300],
+                          color: theme.palette.primary[600]
+                        },
+                        color: theme.palette.secondary[100],
+                        py: 0.3
+                      }}
+                      onClick={() => setActiveItem(text)} // Set the active item
+                    >
+                      <ListItemIcon
+                        sx={{
+                          ":hover": { color: theme.palette.primary[600] },
+                          color: theme.palette.secondary[100],
+                          ml: "1rem",
+                          minWidth: 32
+                        }}
+                      >
+                        {icon}
+                      </ListItemIcon>
+                      <ListItemText primary={text} />
+                    </ListItemButton>
+                  </ListItem>
+                );
           })}
         </List>
       </Box>

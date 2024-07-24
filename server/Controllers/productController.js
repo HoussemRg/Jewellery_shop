@@ -10,7 +10,7 @@ const { SubCategory } = require('../Models/SubCategory');
 
 /**---------------------------------
  * @desc create new product 
- * @route /api/products/:storeId
+ * @route /api/products
  * @request Post
  * @access for only admin or super admin
  ------------------------------------*/
@@ -19,7 +19,7 @@ const { SubCategory } = require('../Models/SubCategory');
     if(error) return res.status(400).send(error.details[0].message);
     const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
-    let store= await StoreModel.findById(req.params.storeId);
+    let store= await StoreModel.findById(req.user.store);
     if(!store) return res.status(400).send("Store not found");
     const databaseConnection=await getConnection(store.database);
     const ProductModel=databaseConnection.model('Product',Product.schema);
@@ -54,34 +54,54 @@ const { SubCategory } = require('../Models/SubCategory');
 
 /**---------------------------------
  * @desc get all products for a store 
- * @route /api/products/:storeId
+ * @route /api/products
  * @request Get
  * @access for only admin or super admin
  ------------------------------------*/
 
 const getAllProducts=asyncHandler(async(req,res)=>{
-    const storeId=req.params.storeId;
+    const storeId=req.user.store;
+    const PRODUCTS_PER_PAGE=8;
+    const page=req.query;
     const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
     if(!store) return res.status(400).send("Store not found");
     const databaseConnection=await getConnection(store.database);
     const ProductModel=databaseConnection.model('Product',Product.schema);
-   
-    const products=await ProductModel.find();
+    const products=await ProductModel.find().skip((page-1)*PRODUCTS_PER_PAGE).limit(PRODUCTS_PER_PAGE).sort({createdAt:-1});
+    return res.status(200).send(products)
+})
+
+/**---------------------------------
+ * @desc get number of products 
+ * @route /api/products/count
+ * @request Get
+ * @access for only admin or super admin
+ ------------------------------------*/
+
+ const getNumberOfProducts=asyncHandler(async(req,res)=>{
+    const storeId=req.user.store;
+    
+    const storeConnection=await getConnection("Users");
+    const StoreModel=storeConnection.model('Store',Store.schema);
+    let store= await StoreModel.findById(storeId);
+    if(!store) return res.status(400).send("Store not found");
+    const databaseConnection=await getConnection(store.database);
+    const ProductModel=databaseConnection.model('Product',Product.schema);
     const count=await ProductModel.countDocuments();
-    return res.status(200).send({products,count})
+    return res.status(200).send({count:count})
 })
 
 
 /**---------------------------------
  * @desc get single product 
- * @route /api/products/:storeId/:productId
+ * @route /api/products/:productId
  * @request Get
  * @access public
  ------------------------------------*/
 const getSingleProduct=asyncHandler(async(req,res)=>{
-    const storeId=req.params.storeId;
+    const storeId=req.user.store;
     const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
@@ -103,7 +123,7 @@ const getSingleProduct=asyncHandler(async(req,res)=>{
 const updateProduct=asyncHandler(async(req,res)=>{
     const {error}=validateUpdateProduct(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-    const storeId=req.params.storeId;
+    const storeId=req.user.store;
     const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
@@ -129,7 +149,7 @@ const updateProduct=asyncHandler(async(req,res)=>{
  * @access only admin and super admin
  ------------------------------------*/
  const deleteProduct=asyncHandler(async(req,res)=>{
-    const storeId=req.params.storeId;
+    const storeId=req.user.store;
     const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
@@ -148,7 +168,7 @@ const updateProductPhoto=asyncHandler(async(req,res)=>{
     if(!req.file){
         return res.status(400).send("No image provided");
     }
-    const storeId=req.params.storeId;
+    const storeId=req.user.store;
     const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
@@ -164,4 +184,4 @@ const updateProductPhoto=asyncHandler(async(req,res)=>{
 })
 
 
-module.exports={createProduct,getAllProducts,getSingleProduct,updateProduct,deleteProduct,updateProductPhoto};
+module.exports={createProduct,getAllProducts,getSingleProduct,updateProduct,deleteProduct,updateProductPhoto,getNumberOfProducts};
