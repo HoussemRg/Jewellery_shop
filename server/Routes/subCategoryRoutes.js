@@ -7,7 +7,7 @@ const subCategoryRoute=express.Router();
 
 subCategoryRoute.post('/create/:storeId',verifyTokenForOnlySuperAdminOrAdmin,validateId,createSubCategory);
 
-subCategoryRoute.get('/:storeId',verifyToken,validateId,getAllSubCategories);
+subCategoryRoute.get('/',verifyToken,validateId,getAllSubCategories);
 
 subCategoryRoute.get('/:storeId/:subCategoryId',verifyToken,validateId,getSingleSubCategory);
 

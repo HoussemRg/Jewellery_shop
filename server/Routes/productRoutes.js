@@ -11,14 +11,14 @@ productRoutes.post('/create',verifyTokenForOnlySuperAdminOrAdmin,validateId,uplo
 
 productRoutes.get('/',verifyTokenForOnlySuperAdminOrAdmin,validateId,getAllProducts);
 
-productRoutes.get('/count',verifyTokenForOnlySuperAdminOrAdmin,validateId,getNumberOfProducts);
+productRoutes.get('/count',verifyToken,validateId,getNumberOfProducts);
 
-productRoutes.get('/:storeId/:productId',verifyToken,validateId,getSingleProduct);
+productRoutes.get('/:productId',verifyToken,validateId,getSingleProduct);
 
-productRoutes.put('/:storeId/:productId',verifyTokenForOnlySuperAdminOrAdmin,validateId,updateProduct);
+productRoutes.put('/:productId',verifyTokenForOnlySuperAdminOrAdmin,validateId,uploadProductPhoto.single('image'),updateProduct);
 
-productRoutes.delete('/:storeId/:productId',verifyTokenForOnlySuperAdminOrAdmin,validateId,deleteProduct);
+productRoutes.delete('/:productId',verifyTokenForOnlySuperAdminOrAdmin,validateId,deleteProduct);
 
-productRoutes.put('/:storeId/:productId',verifyTokenForOnlySuperAdminOrAdmin,validateId,uploadProductPhoto.single('image'),updateProductPhoto);
+productRoutes.put('/:productId',verifyTokenForOnlySuperAdminOrAdmin,validateId,uploadProductPhoto.single('image'),updateProductPhoto);
 
 module.exports={productRoutes};

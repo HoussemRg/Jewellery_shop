@@ -16,7 +16,7 @@ const createSubCategory=asyncHandler(async(req,res)=>{
     if(error) return res.status(400).send(error.details[0].message);
     const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
-    let store= await StoreModel.findById(req.params.storeId);
+    let store= await StoreModel.findById(req.user.store);
     if(!store) return res.status(400).send("Store not found");
     const databaseConnection=await getConnection(store.database);
     const SubCategoryModel=databaseConnection.model('SubCategory',SubCategory.schema);
@@ -35,7 +35,7 @@ const createSubCategory=asyncHandler(async(req,res)=>{
  * @access public
 -------------------------------------*/
 const getAllSubCategories=asyncHandler(async(req,res)=>{
-    const storeId=req.params.storeId;
+    const storeId=req.user.store;
     const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
@@ -55,7 +55,7 @@ const getAllSubCategories=asyncHandler(async(req,res)=>{
  * @access public
  ------------------------------------*/
  const getSingleSubCategory=asyncHandler(async(req,res)=>{
-    const storeId=req.params.storeId;
+    const storeId=req.user.store;
     const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
@@ -82,7 +82,7 @@ const getAllSubCategories=asyncHandler(async(req,res)=>{
  const updateSubCategory=asyncHandler(async(req,res)=>{
     const {error}=validateUpdateSubCategory(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-    const storeId=req.params.storeId;
+    const storeId=req.user.store;
     const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
@@ -109,7 +109,7 @@ const getAllSubCategories=asyncHandler(async(req,res)=>{
  ------------------------------------*/
 
  const deleteSubCategory=asyncHandler(async(req,res)=>{
-    const storeId=req.params.storeId;
+    const storeId=req.user.store;
     const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);

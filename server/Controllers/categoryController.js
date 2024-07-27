@@ -15,11 +15,11 @@ const createCategory=asyncHandler(async(req,res)=>{
     const {error}=validateCreateCategory(req.body);
     if(error) return res.status(400).send(error.details[0].message);
     const storeConnection=await getConnection("Users");
-    const StoreModel=storeConnection.model('Store',Store.schema);
-    let store= await StoreModel.findById(req.params.storeId);
+    const StoreModel=storeConnection.models.Store || storeConnection.model('Store', Store.schema);
+    let store= await StoreModel.findById(req.user.store);
     if(!store) return res.status(400).send("Store not found");
     const databaseConnection=await getConnection(store.database);
-    const CategoryModel=databaseConnection.model('Category',Category.schema);
+    const CategoryModel=databaseConnection.models.Category || databaseConnection.model('Category', Category.schema);
     const category=await CategoryModel.create({
         categoryName:req.body.categoryName,
         categoryDescription:req.body.categoryDescription
@@ -35,7 +35,7 @@ const createCategory=asyncHandler(async(req,res)=>{
  * @access public
 -------------------------------------*/
 const getAllCategories=asyncHandler(async(req,res)=>{
-    const storeId=req.params.storeId;
+    const storeId=req.user.store;
     const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
@@ -56,7 +56,7 @@ const getAllCategories=asyncHandler(async(req,res)=>{
  * @access public
  ------------------------------------*/
 const getSingleCategory=asyncHandler(async(req,res)=>{
-    const storeId=req.params.storeId;
+    const storeId=req.user.store;
     const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
@@ -82,7 +82,7 @@ const getSingleCategory=asyncHandler(async(req,res)=>{
  const updateCategory=asyncHandler(async(req,res)=>{
     const {error}=validateUpdateCategory(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-    const storeId=req.params.storeId;
+    const storeId=req.user.store;
     const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);
@@ -110,7 +110,7 @@ const getSingleCategory=asyncHandler(async(req,res)=>{
  ------------------------------------*/
 
 const deleteCategory=asyncHandler(async(req,res)=>{
-    const storeId=req.params.storeId;
+    const storeId=req.user.store;
     const storeConnection=await getConnection("Users");
     const StoreModel=storeConnection.model('Store',Store.schema);
     let store= await StoreModel.findById(storeId);

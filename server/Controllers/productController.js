@@ -62,14 +62,25 @@ const { SubCategory } = require('../Models/SubCategory');
 const getAllProducts=asyncHandler(async(req,res)=>{
     const storeId=req.user.store;
     const PRODUCTS_PER_PAGE=8;
-    const page=req.query;
+    const {page}=req.query;
+    
     const storeConnection=await getConnection("Users");
-    const StoreModel=storeConnection.model('Store',Store.schema);
+    const StoreModel=storeConnection.models.Store || storeConnection.model('Store', Store.schema);
     let store= await StoreModel.findById(storeId);
     if(!store) return res.status(400).send("Store not found");
     const databaseConnection=await getConnection(store.database);
-    const ProductModel=databaseConnection.model('Product',Product.schema);
-    const products=await ProductModel.find().skip((page-1)*PRODUCTS_PER_PAGE).limit(PRODUCTS_PER_PAGE).sort({createdAt:-1});
+    const ProductModel=databaseConnection.models.Product || databaseConnection.model('Product', Product.schema);
+    databaseConnection.models.Category || databaseConnection.model('Category', Category.schema);
+    databaseConnection.models.SubCategory || databaseConnection.model('SubCategory', SubCategory.schema);
+    const products=await ProductModel.find().sort({createdAt:-1}).skip((page-1)*PRODUCTS_PER_PAGE).limit(PRODUCTS_PER_PAGE).populate({
+        path:'category',
+        model:'Category',
+        select:"-product"
+    }).populate({
+        path:'subCategory',
+        model:'SubCategory',
+        select:"-product"
+    });
     return res.status(200).send(products)
 })
 
@@ -120,27 +131,36 @@ const getSingleProduct=asyncHandler(async(req,res)=>{
  * @access only admin and super admin
  ------------------------------------*/
 
-const updateProduct=asyncHandler(async(req,res)=>{
-    const {error}=validateUpdateProduct(req.body);
-    if(error) return res.status(400).send(error.details[0].message);
-    const storeId=req.user.store;
-    const storeConnection=await getConnection("Users");
-    const StoreModel=storeConnection.model('Store',Store.schema);
-    let store= await StoreModel.findById(storeId);
-    if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const ProductModel=databaseConnection.model('Product',Product.schema);
-    let product=await ProductModel.findById(req.params.productId);
-    if(!product) return res.status(400).send("Product not found");
-    const newProduct=req.body;
-    product=await ProductModel.findByIdAndUpdate(req.params.productId,
-        {$set:newProduct},
-        {new:true}
-    );
-    return res.status(201).send(product);
-    
+ const updateProduct = asyncHandler(async (req, res) => {
+    const { error } = validateUpdateProduct(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
-})
+    const storeId = req.user.store;
+    const storeConnection = await getConnection("Users");
+    const StoreModel = storeConnection.model('Store', Store.schema);
+    let store = await StoreModel.findById(storeId);
+    if (!store) return res.status(400).send("Store not found");
+
+    const databaseConnection = await getConnection(store.database);
+    const ProductModel = databaseConnection.model('Product', Product.schema);
+    let product = await ProductModel.findById(req.params.productId);
+    if (!product) return res.status(400).send("Product not found");
+
+    
+    const newProduct = { ...req.body };
+
+    if (req.file) {
+        newProduct.image = req.file.filename; 
+    }
+
+    product = await ProductModel.findByIdAndUpdate(
+        req.params.productId,
+        { $set: newProduct },
+        { new: true }
+    );
+
+    return res.status(200).send(product);
+});
 
 /**---------------------------------
  * @desc delete product 

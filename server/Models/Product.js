@@ -54,7 +54,7 @@ const productSchema=new mongoose.Schema({
         ref:'SubCategory',
         required:true
     },
-});
+},{timestamps:true});
 
 const validateCreateProduct=(obj)=>{
     const schema=joi.object({
