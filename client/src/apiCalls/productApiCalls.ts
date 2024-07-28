@@ -5,6 +5,7 @@ import { Action, Dispatch } from 'redux';
 import { AppThunk, RootState } from '../store';
 import { productActions } from '../slices/productSlice';
 import { ThunkAction } from 'redux-thunk';
+import { FilterProductData } from '../components/FilterProducts';
 type ThunkResult<R> = ThunkAction<R, RootState, unknown, Action<string>>;
 
 const getAllProducts = (page: number):AppThunk<Promise<void>> => {
@@ -116,4 +117,25 @@ const deleteProduct=(id:string): ThunkResult<Promise<void>>=>{
         }
     }
 }
-export { getAllProducts, getProductsNumber, createProduct ,deleteProduct,updateProduct };
+
+const getFilteredProducts=(params:Partial<FilterProductData>): ThunkResult<Promise<void>>=>{
+    return async(dispatch:Dispatch,getState)=>{
+        try{
+            const res=await axios.get(`http://localhost:3001/api/products/filter`,{params:params,headers:{
+                Authorization: "Bearer " + getState().auth.user?.token
+            }}
+            )
+            dispatch(productActions.getProductFiltered(res.data));
+            console.log(res.data);
+            toast.success("filtered");
+        }catch(err){
+            const error = err as AxiosError;
+            if (error.response) {
+                toast.error(error.response.data as string, { autoClose: 1200 });
+            } else {
+                toast.error('An unknown error occurred', { autoClose: 1200 });
+            }
+        }
+    }
+}
+export { getAllProducts, getProductsNumber, createProduct ,deleteProduct,updateProduct,getFilteredProducts };

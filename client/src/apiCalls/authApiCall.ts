@@ -19,6 +19,7 @@ const loginUser=(user:AuthData):  ThunkResult<Promise<void>>=>{
             const res=await axios.post(`http://localhost:3001/api/auth/login`,user);
             
             dispatch(authActions.login(res.data));
+            localStorage.setItem("user",JSON.stringify(res.data))
         }catch (err:unknown) {
             const error = err as AxiosError;
             if (error.response) {

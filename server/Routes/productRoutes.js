@@ -1,6 +1,6 @@
 const express=require('express');
 const { verifyTokenForOnlySuperAdminOrAdmin, verifyToken } = require('../Middlewares/verifyToken');
-const { createProduct, getAllProducts, getSingleProduct, updateProduct, deleteProduct, updateProductPhoto, getNumberOfProducts } = require('../Controllers/productController');
+const { createProduct, getAllProducts, getSingleProduct, updateProduct, deleteProduct, updateProductPhoto, getNumberOfProducts, filterProducts } = require('../Controllers/productController');
 const { uploadProductPhoto } = require('../Middlewares/uploadPhoto');
 const { validateId } = require('../Middlewares/verifyId');
 
@@ -11,7 +11,9 @@ productRoutes.post('/create',verifyTokenForOnlySuperAdminOrAdmin,validateId,uplo
 
 productRoutes.get('/',verifyTokenForOnlySuperAdminOrAdmin,validateId,getAllProducts);
 
-productRoutes.get('/count',verifyToken,validateId,getNumberOfProducts);
+productRoutes.get('/count',verifyToken,getNumberOfProducts);
+
+productRoutes.get('/filter',verifyToken,filterProducts);
 
 productRoutes.get('/:productId',verifyToken,validateId,getSingleProduct);
 
@@ -20,5 +22,7 @@ productRoutes.put('/:productId',verifyTokenForOnlySuperAdminOrAdmin,validateId,u
 productRoutes.delete('/:productId',verifyTokenForOnlySuperAdminOrAdmin,validateId,deleteProduct);
 
 productRoutes.put('/:productId',verifyTokenForOnlySuperAdminOrAdmin,validateId,uploadProductPhoto.single('image'),updateProductPhoto);
+
+
 
 module.exports={productRoutes};

@@ -203,5 +203,112 @@ const updateProductPhoto=asyncHandler(async(req,res)=>{
     return res.status(201).send(updatedProduct);
 })
 
+/**---------------------------------
+ * @desc filter products 
+ * @route /api/products/filter
+ * @request get
+ * @access public
+ ------------------------------------*/
 
-module.exports={createProduct,getAllProducts,getSingleProduct,updateProduct,deleteProduct,updateProductPhoto,getNumberOfProducts};
+const filterProducts=asyncHandler(async(req,res)=>{
+    const storeId=req.user.store;
+    const storeConnection=await getConnection("Users");
+    const StoreModel=storeConnection.model('Store',Store.schema);
+    let store= await StoreModel.findById(storeId);
+    if(!store) return res.status(400).send("Store not found");
+    const databaseConnection=await getConnection(store.database);
+    const ProductModel=databaseConnection.model('Product',Product.schema);
+    const {productName,categoryName,subCategoryName,carat,weight,stockQuantity,minPrice,maxPrice}=req.query;
+    let matchConditions={};
+
+    if(productName){
+        matchConditions.productName={$regex:productName,$options:'i'};
+    }
+    if(carat){
+        matchConditions.carat={...matchConditions.carat,$gte:Number(carat)};
+    }
+    if(weight){
+        matchConditions.weight={...matchConditions.weight,$gte:Number(weight)};
+    }
+    if(stockQuantity){
+        matchConditions.stockQuantity={...matchConditions.stockQuantity,$gte:Number(stockQuantity)};
+    }
+    
+    let pipeline = [
+        {
+            $lookup: {
+                from: 'categories',
+                localField: 'category',
+                foreignField: '_id',
+                as: 'category'
+            }
+        },
+        {
+            $unwind: {
+                path: '$category',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from: 'subcategories',
+                localField: 'subCategory',
+                foreignField: '_id',
+                as: 'subCategory'
+            }
+        },
+        {
+            $unwind: {
+                path: '$subCategory',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $addFields: {
+                minCalculatedPrice: {
+                    $multiply: ['$unitPrice', '$weight']
+                },
+                maxCalculatedPrice: {
+                    $multiply: ['$unitPrice', '$weight']
+                },
+            }
+        },
+        {
+            $project: {
+                
+                'category.product': 0,
+                'subCategory.product': 0,
+            }
+        }
+    ];
+    if(categoryName){
+        pipeline.push({
+            $match:{
+                'category.categoryName':{$regex:categoryName,$options:'i'}
+            }
+        })
+    }
+    if(subCategoryName){
+        pipeline.push({
+            $match:{
+                'subCategory.subCategoryName':{$regex:subCategoryName,$options:'i'}
+            }
+        })
+    }
+    if(minPrice){
+        matchConditions.minCalculatedPrice={...matchConditions.minCalculatedPrice,$gte:Number(minPrice)}
+    }
+    if(maxPrice){
+        matchConditions.maxCalculatedPrice={...matchConditions.maxCalculatedPrice,$lte:Number(maxPrice)}
+    }
+    if(Object.keys(matchConditions).length>0){
+        pipeline.push({
+            $match:matchConditions
+        })
+    }
+    const products=await ProductModel.aggregate(pipeline);
+    return res.status(200).send(products);
+})
+
+
+module.exports={createProduct,getAllProducts,getSingleProduct,updateProduct,deleteProduct,updateProductPhoto,getNumberOfProducts,filterProducts};

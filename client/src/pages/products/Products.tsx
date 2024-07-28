@@ -12,7 +12,7 @@ const Products: React.FC = () => {
     const dispatch = useDispatch();
     const { products, productsCount } = useSelector((state: RootState) => state.product);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    
+    const {filteredProducts} =useSelector((state:RootState)=>state.product)
     const isNonMobile = useMediaQuery("(min-width: 1000px)");
     const PRODUCT_PER_PAGE: number = 8;
     const pages: number = Math.ceil(productsCount / PRODUCT_PER_PAGE);
@@ -32,11 +32,19 @@ const Products: React.FC = () => {
     const deleteProductFunction=(id:string)=>{
       dispatch(deleteProduct(id));
     }
+
+    const [filtered,setFiltered]=useState<boolean>(false);
+    const handleSetFiltering=()=>{
+        setFiltered(true);
+    }
+    const handleClearFiltering=()=>{
+        setFiltered(false);
+    }
     return (
         <Box m="1.5rem 2.5rem">
             <Box>
                 <Header title="PRODUCTS" subtitle='See list of products' />
-                <Box my="1.5rem"><FilterProducts /></Box>
+                <Box my="1.5rem"><FilterProducts handleSetFiltering={handleSetFiltering} handleClearFiltering={handleClearFiltering} /></Box>
                 <Box
                     mt="20px"
                     display="grid"
@@ -48,13 +56,21 @@ const Products: React.FC = () => {
                         "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
                     }}
                 >
-                    {products.map(product => (
+                    {!filtered ? products.map(product => (
             <Product
               key={product._id}
               product={product}
               delete={deleteProductFunction}
             />
-          ))}
+          ))      :
+          filteredProducts.map(product => (
+            <Product
+              key={product._id}
+              product={product}
+              delete={deleteProductFunction}
+            />
+          ))
+          }
                 </Box>
             </Box>
             <Box width="100%" display="flex" justifyContent="center" alignItems="center" py="30px">

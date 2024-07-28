@@ -37,6 +37,7 @@ export interface ProductState {
     productsCount: number;
     isProductCreated: boolean;
     isProductUpdated:boolean;
+    filteredProducts:ProductType[]
 }
 
 const initialState: ProductState = {
@@ -45,6 +46,7 @@ const initialState: ProductState = {
     productsCount: 0,
     isProductCreated: false,
     isProductUpdated:false,
+    filteredProducts:[]
 }
 
 const productSlice = createSlice({
@@ -77,6 +79,9 @@ const productSlice = createSlice({
         setIsProductUpdated:(state, action: PayloadAction<boolean>)=>{
             state.isProductUpdated = action.payload;
         },
+        getProductFiltered:(state,action: PayloadAction<ProductType[]>)=>{
+            state.filteredProducts=action.payload
+        }
         
     }
 });
