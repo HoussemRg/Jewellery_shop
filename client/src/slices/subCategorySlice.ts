@@ -6,12 +6,19 @@ export interface SubCategoryState{
     subCategoryName:string,
     subCategoryDescription:string
 }
+
+export interface SubCategorySliceState {
+    subCategories: SubCategoryState[];
+    subCategoryNumber: number; 
+  }
+  
+const initialState: SubCategorySliceState = {
+    subCategories: [],
+    subCategoryNumber: 0,
+  };
 const subCategorySlice=createSlice({
     name:'subcategory',
-    initialState:{
-        subCategories:[],
-        subCategoryNumber:0
-    },
+    initialState,
     reducers:{
         getAllSubCategories:(state,action)=>{
             state.subCategories=action.payload

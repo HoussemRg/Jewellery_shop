@@ -6,12 +6,19 @@ export interface CategoryState{
     categoryName:string,
     categoryDescription:string
 }
+
+export interface CategorySliceState {
+    categories: CategoryState[];
+    categoryNumber: number; 
+  }
+  
+const initialState: CategorySliceState = {
+    categories: [],
+    categoryNumber: 0,
+  };
 const categorySlice=createSlice({
     name:'category',
-    initialState:{
-        categories:[],
-        categoryNumber:0
-    },
+    initialState,
     reducers:{
         getAllCategories:(state,action)=>{
             state.categories=action.payload

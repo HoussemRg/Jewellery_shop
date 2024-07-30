@@ -3,13 +3,14 @@ import { createSlice } from "@reduxjs/toolkit";
 
 
 const storedUser = localStorage.getItem("user");
-const initialUserState = storedUser ? JSON.parse(storedUser) : null;
-
+const initialState = storedUser ? JSON.parse(storedUser) : null;
+export interface AuthState{
+        user: UserLoggedInState | null;
+    
+}
 const authSlice = createSlice({
     name: 'auth',
-    initialState: {
-        user: initialUserState
-    },
+    initialState,
     reducers: {
         login: (state, action) => {
             state.user = action.payload;

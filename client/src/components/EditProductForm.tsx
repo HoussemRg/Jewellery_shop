@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import {  useSelector } from 'react-redux';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, TextField, useMediaQuery, useTheme } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import * as yup from "yup";
@@ -11,6 +11,7 @@ import { CategoryState } from '../slices/categorySlice';
 import { SubCategoryState } from '../slices/subCategorySlice';
 import { getAllProducts, updateProduct } from '../apiCalls/productApiCalls';
 import { ProductData } from './AddProductForm';
+import { useDispatch } from '../hooks';
 
 interface EditProductState {
     _id: string;

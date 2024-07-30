@@ -2,35 +2,31 @@ import axios, { AxiosError } from 'axios';
 import { Id, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Action, Dispatch } from 'redux';
-import { AppThunk, RootState } from '../store';
+import { AppDispatch, AppThunk, RootState } from '../store';
 import { productActions } from '../slices/productSlice';
 import { ThunkAction } from 'redux-thunk';
 import { FilterProductData } from '../components/FilterProducts';
 type ThunkResult<R> = ThunkAction<R, RootState, unknown, Action<string>>;
 
-const getAllProducts = (page: number):AppThunk<Promise<void>> => {
-    return async (dispatch: Dispatch,getState: () => RootState) => {
-        try {
-            const res = await axios.get(`http://localhost:3001/api/products?page=${page}`, {
-                headers: {
-                    Authorization: "Bearer " + getState().auth.user?.token
-                }
-            });
-            dispatch(productActions.getProducts(res.data));
-            
-        } catch (err: unknown) {
-            const error = err as AxiosError;
-            if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
-            } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+const getAllProducts = (page: number): AppThunk => async (dispatch: AppDispatch, getState) => {
+    try {
+        const res = await axios.get(`http://localhost:3001/api/products?page=${page}`, {
+            headers: {
+                Authorization: "Bearer " + getState().auth.user?.token
             }
+        });
+        dispatch(productActions.getProducts(res.data));
+    } catch (err: unknown) {
+        const error = err as AxiosError;
+        if (error.response) {
+            toast.error(error.response.data as string, { autoClose: 1200 });
+        } else {
+            toast.error('An unknown error occurred', { autoClose: 1200 });
         }
     }
-}
+};
 
-const getProductsNumber = ():AppThunk<Promise<void>> => {
-    return async (dispatch: Dispatch, getState) => {
+const getProductsNumber = (): AppThunk => async (dispatch:AppDispatch,getState) => {
         try {
             const res = await axios.get(`http://localhost:3001/api/products/count`, {
                 headers: {
@@ -47,10 +43,9 @@ const getProductsNumber = ():AppThunk<Promise<void>> => {
             }
         }
     }
-}
 
-const createProduct = (product: FormData): AppThunk<Promise<void>> => {
-    return async (dispatch: Dispatch, getState) => {
+
+const createProduct = (product: FormData)=> async (dispatch: AppDispatch, getState: () => RootState) => {
         let id: Id | undefined;
         try {
             id = toast.loading("Creating product, Please wait...");
@@ -70,10 +65,9 @@ const createProduct = (product: FormData): AppThunk<Promise<void>> => {
             }
         }
     }
-}
 
-const updateProduct = (product: FormData,productId:string):AppThunk<Promise<void>>  => {
-    return async (dispatch: Dispatch, getState) => {
+
+const updateProduct = (product: FormData,productId:string):AppThunk  =>  async (dispatch: AppDispatch, getState) => {
         let id: Id | undefined;
         try {
             id = toast.loading("Updating product, Please wait...");
@@ -94,10 +88,9 @@ const updateProduct = (product: FormData,productId:string):AppThunk<Promise<void
             }
         }
     }
-}
 
-const deleteProduct=(id:string): ThunkResult<Promise<void>>=>{
-    return async(dispatch:Dispatch,getState)=>{
+
+const deleteProduct=(id:string):AppThunk=> async(dispatch:AppDispatch,getState)=>{
         try{
             
             await axios.delete(`http://localhost:3001/api/products/${id}`,{
@@ -117,7 +110,7 @@ const deleteProduct=(id:string): ThunkResult<Promise<void>>=>{
             }
         }
     }
-}
+
 
 const getFilteredProducts=(params:Partial<FilterProductData>,page:number): ThunkResult<Promise<void>>=>{
     let id: Id | undefined;

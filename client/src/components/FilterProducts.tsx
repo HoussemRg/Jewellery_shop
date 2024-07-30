@@ -12,7 +12,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { useDispatch } from '../hooks';
 import { getFilteredProducts } from '../apiCalls/productApiCalls';
-import { productActions } from '../slices/productSlice';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,

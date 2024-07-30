@@ -57,11 +57,11 @@ const AddProductForm: React.FC<FormProps> = ({ handleClose, open, categories, su
     purchasePrice: yup.number().required('Product purchase price is required'),
     unitPrice: yup.number().required('Product unit price is required'),
     stockQuantity: yup.number().required('Product stock quantity is required'),
-    category: yup.string().required('Product category is required'),
-    subCategory: yup.string().required('Product sub-category is required')
+    category: yup.string().required('Product category is required').notOneOf([''], 'Category is required'),
+    subCategory: yup.string().required('Product sub-category is required').notOneOf([''], 'SubCategory is required'),
   });
 
-  const { register, handleSubmit, formState: { errors },watch,reset } = useForm<ProductData>({
+  const { register, handleSubmit, formState: { errors },reset } = useForm<ProductData>({
     resolver: yupResolver(formSchema),
     
   });
@@ -92,8 +92,7 @@ const AddProductForm: React.FC<FormProps> = ({ handleClose, open, categories, su
     dispatch(createProduct(formData));
     reset();
   }
-  const watchCategory = watch("category");
-  const watchSubCategory = watch("subCategory");
+  
   useEffect(() => {
     if (isProductCreated) {
       dispatch(getProductsNumber());
@@ -165,7 +164,7 @@ const AddProductForm: React.FC<FormProps> = ({ handleClose, open, categories, su
             select
             label="Select Category"
           
-            value={watchCategory}
+            defaultValue=''
             error={!!errors.category}
             helperText={errors.category?.message}
             {...register('category')}
@@ -179,7 +178,7 @@ const AddProductForm: React.FC<FormProps> = ({ handleClose, open, categories, su
           <TextField
             id="subCategory"
             select
-            value={watchSubCategory}
+            defaultValue=''
             label="Select Sub-Category"
             error={!!errors.subCategory}
             helperText={errors.subCategory?.message}

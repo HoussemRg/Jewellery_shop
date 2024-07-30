@@ -1,6 +1,6 @@
 import { HighlightOffOutlined } from '@mui/icons-material';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, TextField, useMediaQuery, useTheme } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
@@ -19,6 +19,7 @@ export interface FormProps {
 
 
 export interface UserData {
+  
   firstName: string,
   lastName: string,
   cin: string,
@@ -47,26 +48,25 @@ const AddUserForm: React.FC<FormProps> = ({ handleClose, open }) => {
     address: yup.string().required('Address required'),
     phoneNumber: yup.string().required('Phone Number is required'),
     role: yup.string().required('Role category is required'),
-    store: yup.string().required('Store category is required'),
+    store: yup.string().required('Store category is required').notOneOf([''], 'Store is required'),
   });
 
-  const { register, handleSubmit, formState: { errors },reset,watch } = useForm<UserData>({
+  const { register, handleSubmit, formState: { errors },reset } = useForm<UserData>({
     resolver: yupResolver(formSchema),
 
   });
-  const watchStore = watch("store");
-  //const watchRole = watch("role");
+ 
   const stores=[
     {
-        id:"669c67f0f81299154926a3ea",
+        id:"1",
         store:"669c67f0f81299154926a3ea"
     },
     {
-        id:"669c67f0f81299154926a3ea",
+        id:"2",
         store:"669c67f0f81299154926a3ea"
     },
     {
-        id:"669c67f0f81299154926a3ea",
+        id:"3",
         store:"669c67f0f81299154926a3ea"
     }
 ]
@@ -92,7 +92,7 @@ const roles=[
   }
 
   useEffect(() => {
-    if (isUserCreated) {
+    if (isUserCreated && user) {
       dispatch(getVendorsPerStore(user?.store));
       dispatch(userActions.setIsUserCreated(false));
     }
@@ -213,7 +213,7 @@ const roles=[
                   id="store"
                   select
                   label="Select Store"
-                  value={watchStore}
+                  defaultValue=''
                   error={!!errors.store}
                   helperText={errors.store?.message}
                   {...register('store')}

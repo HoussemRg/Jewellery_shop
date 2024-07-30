@@ -4,10 +4,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import {  Dispatch } from 'redux';
 import { AppThunk, RootState } from '../store';
 
-import { userActions, UserType } from '../slices/userSlice';
+import { userActions } from '../slices/userSlice';
+import { UserData } from '../components/AddUserForm';
 
 
-const registerUser=(user:UserType):AppThunk<Promise<void>> =>{
+const registerUser=(user:UserData):AppThunk<Promise<void>> =>{
     return async(dispatch:Dispatch)=>{
         try{
             await axios.post(`http://localhost:3001/api/auth/register`,user);
@@ -45,7 +46,7 @@ const getVendorsPerStore = (storeId:string):AppThunk<Promise<void>> => {
     }
 }
 
-const updateUser = (newUser:UserType,userId:string):AppThunk<Promise<void>> => {
+const updateUser = (newUser:UserData,userId:string):AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         try {
             const res = await axios.put(`http://localhost:3001/api/users/${userId}`,newUser, {

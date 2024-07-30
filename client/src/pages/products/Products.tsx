@@ -2,9 +2,8 @@ import { Box, Pagination, useMediaQuery } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import FilterProducts from "../../components/FilterProducts";
-import { useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { useDispatch } from "../../hooks";
 import {
   deleteProduct,
   getAllProducts, 
@@ -13,9 +12,10 @@ import {
 import { productActions } from "../../slices/productSlice";
 import ProductsGrid from "./ProductsGrid";
 import ProductsFiltred from "./ProductsFiltred";
+import { useDispatch } from "../../hooks";
  
 const Products: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch =useDispatch() ;
   const { products, productsCount } = useSelector(
     (state: RootState) => state.product
   );
