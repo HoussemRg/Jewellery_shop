@@ -9,6 +9,7 @@ import Layout from './pages/layout/Layout';
 import Home from './pages/global/Home';
 import { ToastContainer } from 'react-toastify';
 import Products from './pages/products/Products';
+import Vendors from './pages/users/Vendors';
 
 function App() {
   const mode=useSelector((state:RootState)=> state.theme.mode);
@@ -25,7 +26,9 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route   element={<Layout />}>
           <Route  path='/dashboard' element={ user  ? <Dashboard /> : <Navigate to="/"  />} />
-          <Route  path='/products' element={ user  ? <Products /> : <Navigate to="/"  />} />  
+          <Route  path='/products' element={ user  ? <Products /> : <Navigate to="/"  />} />
+          <Route  path='/vendors' element={ user  ? <Vendors /> : <Navigate to="/"  />} />
+
         </Route>
 
       </Routes>

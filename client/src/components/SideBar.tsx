@@ -41,7 +41,7 @@ const SideBar: React.FC<SideBarProps> = ({ isNonMobile, drawerWidth, isSideBarOp
         { text: "Discounts", icon: <DiscountOutlined />, link: "" },
         { text: "Management", icon: null, link: "" },
         { text: "Store", icon: <StorefrontOutlined />, link: "" },
-        { text: "Vendors", icon: <PersonPinOutlined />, link: "" },
+        { text: "Vendors", icon: <PersonPinOutlined />, link: "/vendors" },
         { text: "Performance", icon: <TrendingUpOutlined />, link: "" },
     ];
 

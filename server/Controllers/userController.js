@@ -27,20 +27,25 @@ const { getConnection } = require('../Utils/dbconnection');
 
 /**---------------------------------
  * @desc get All vendors  
- * @route /api/users/vendors
+ * @route /api/users/vendors/storeId
  * @resquest Get
  * @acess for only super admin
  ------------------------------------*/
-
- const getAllvendors=asyncHandler(async(req,res)=>{
-    const userConnection=await getConnection('Users');
-    const userModel= userConnection.model('User',User.schema);
-    userConnection.model('Store', Store.schema);
-    const users=await userModel.find({role:"vendor"}).select("-password -role").populate({
+/*
+const users=await userModel.find({role:"vendor",store:storeId}).select("-password -role").populate({
         path:'store',
         model:'Store',
         select: '_id storeName description address'
     });
+*/
+ const getAllvendors=asyncHandler(async(req,res)=>{
+    const storeId = req.user.store;
+    const storeConnection = await getConnection("Users");
+    const StoreModel = storeConnection.model('Store', Store.schema);
+    let store = await StoreModel.findById(storeId);
+    if (!store) return res.status(400).send("Store not found");
+    const userModel= storeConnection.model('User',User.schema);
+    const users=await userModel.find({role:"vendor",store:storeId}).select("-password -role");
     const count=await userModel.countDocuments({role:"vendor"});
     res.status(200).send({users:users,count:count});
  })

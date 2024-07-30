@@ -1,14 +1,15 @@
 import {  Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { themeReducers, ThemeState } from './slices/themeSlice';
-import { authReducers, UserState } from './slices/authSlice';
+import { authReducers, UserLoggedInState } from './slices/authSlice';
 import { productReducers, ProductState } from './slices/productSlice';
 import { categoryReducer, CategoryState } from './slices/categorySlice';
 import { subCategoryReducer, SubCategoryState } from './slices/subCategorySlice';
+import { userReducer, UserState } from './slices/userSlice';
 
 export type RootState = {
     theme: ThemeState;
     auth: {
-        user: UserState | null;
+        user: UserLoggedInState | null;
     };
     product: ProductState; 
     category: {
@@ -19,6 +20,7 @@ export type RootState = {
         subCategories: SubCategoryState[];
         subCategoryNumber: number;
     };
+    user: UserState
 };
 
 const store = configureStore({
@@ -28,6 +30,7 @@ const store = configureStore({
         product: productReducers,
         category: categoryReducer,
         subCategory: subCategoryReducer,
+        user:userReducer
     },
    });
 

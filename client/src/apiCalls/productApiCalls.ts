@@ -99,6 +99,7 @@ const updateProduct = (product: FormData,productId:string):AppThunk<Promise<void
 const deleteProduct=(id:string): ThunkResult<Promise<void>>=>{
     return async(dispatch:Dispatch,getState)=>{
         try{
+            
             await axios.delete(`http://localhost:3001/api/products/${id}`,{
                 headers:{
                     Authorization: "Bearer " + getState().auth.user?.token
@@ -118,22 +119,23 @@ const deleteProduct=(id:string): ThunkResult<Promise<void>>=>{
     }
 }
 
-const getFilteredProducts=(params:Partial<FilterProductData>): ThunkResult<Promise<void>>=>{
+const getFilteredProducts=(params:Partial<FilterProductData>,page:number): ThunkResult<Promise<void>>=>{
+    let id: Id | undefined;
     return async(dispatch:Dispatch,getState)=>{
+        id = toast.loading("Searching products, Please wait...");
         try{
-            const res=await axios.get(`http://localhost:3001/api/products/filter`,{params:params,headers:{
+            const res=await axios.get(`http://localhost:3001/api/products/filter?page=${page}`,{params:params,headers:{
                 Authorization: "Bearer " + getState().auth.user?.token
             }}
             )
-            dispatch(productActions.getProductFiltered(res.data));
-            console.log(res.data);
-            toast.success("filtered");
+            dispatch(productActions.getProductFiltered(res.data?.products));
+            dispatch(productActions.getFilteredProductsCount(res.data?.count));
+            dispatch(productActions.setIsProductsFiltered(true))
+            toast.update(id, { render: "Products filtered", type: "success", isLoading: false, autoClose: 1200 });
         }catch(err){
             const error = err as AxiosError;
-            if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
-            } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+            if (id) {
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
             }
         }
     }

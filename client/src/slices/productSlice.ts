@@ -37,7 +37,9 @@ export interface ProductState {
     productsCount: number;
     isProductCreated: boolean;
     isProductUpdated:boolean;
-    filteredProducts:ProductType[]
+    filteredProducts:ProductType[];
+    filteredProductsCount:number;
+    isProductsFiltered:boolean
 }
 
 const initialState: ProductState = {
@@ -46,7 +48,9 @@ const initialState: ProductState = {
     productsCount: 0,
     isProductCreated: false,
     isProductUpdated:false,
-    filteredProducts:[]
+    filteredProducts:[],
+    filteredProductsCount:0,
+    isProductsFiltered:false
 }
 
 const productSlice = createSlice({
@@ -81,7 +85,19 @@ const productSlice = createSlice({
         },
         getProductFiltered:(state,action: PayloadAction<ProductType[]>)=>{
             state.filteredProducts=action.payload
-        }
+        },
+        getFilteredProductsCount:(state,action: PayloadAction<number>)=>{
+            state.filteredProductsCount=action.payload;
+        },
+        setIsProductsFiltered:(state,action: PayloadAction<boolean>)=>{
+            state.isProductsFiltered=action.payload
+        },
+        resetFiltredProducts:(state)=>{
+            state.filteredProducts=[]
+        },
+        resetFiltredProductsCount:(state)=>{
+            state.filteredProductsCount=0
+        },
         
     }
 });

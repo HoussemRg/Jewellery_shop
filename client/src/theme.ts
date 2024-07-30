@@ -25,9 +25,11 @@ interface ColorTokens {
 
 interface TokenPalette {
   grey: ColorTokens;
-  primary: ColorTokens;
-  secondary: ColorTokens;
-  neutral: ColorTokens; // Adding neutral to the TokenPalette interface
+  mainColor: ColorTokens; // Renamed from 'primary'
+  accentColor: ColorTokens; // Renamed from 'secondary'
+  neutral: ColorTokens;
+  green: ColorTokens;
+  red: ColorTokens;
 }
 
 export const tokensDark: TokenPalette = {
@@ -46,7 +48,7 @@ export const tokensDark: TokenPalette = {
     900: "#141414",
     1000: "#000000",
   },
-  primary: {
+  mainColor: { // Previously 'primary'
     100: "#d3d4de",
     200: "#a6a9be",
     300: "#7a7f9d",
@@ -57,7 +59,7 @@ export const tokensDark: TokenPalette = {
     800: "#0d1025",
     900: "#070812",
   },
-  secondary: {
+  accentColor: { // Previously 'secondary'
     50: "#f0f0f0",
     100: "#fff6e0",
     200: "#ffedc2",
@@ -79,15 +81,41 @@ export const tokensDark: TokenPalette = {
     700: "#3d3d3d",
     800: "#292929",
     900: "#141414",
-  }
+  },
+  green: { // New color category
+    50: "#e0f2f1",
+    100: "#b9e0dc",
+    200: "#80cbc4",
+    300: "#4db6ac",
+    400: "#26a69a",
+    500: "#009688",
+    600: "#00897b",
+    700: "#00796b",
+    800: "#004d40",
+    900: "#00251a",
+  },
+  red: { // New color category
+    50: "#ffebee",
+    100: "#ffcdd2",
+    200: "#ef9a9a",
+    300: "#e57373",
+    400: "#ef5350",
+    500: "#f44336",
+    600: "#e53935",
+    700: "#d32f2f",
+    800: "#c62828",
+    900: "#b71c1c",
+  },
 };
 
 function reverseTokens(tokens: TokenPalette): TokenPalette {
   const reversedTokens: TokenPalette = {
     grey: {},
-    primary: {},
-    secondary: {},
-    neutral: {}
+    mainColor: {},
+    accentColor: {},
+    neutral: {},
+    green: {},
+    red: {},
   };
 
   Object.entries(tokens).forEach(([key, val]) => {
@@ -113,33 +141,41 @@ export const themeSettings = (mode: 'light' | 'dark'): ThemeOptions => {
       ...(mode === "dark"
         ? {
             primary: {
-              ...tokensDark.primary,
-              main: tokensDark.primary[400],
-              light: tokensDark.primary[400],
+              ...tokensDark.mainColor,
+              main: tokensDark.mainColor[400],
+              light: tokensDark.mainColor[400],
             },
             secondary: {
-              ...tokensDark.secondary,
-              main: tokensDark.secondary[300],
+              ...tokensDark.accentColor,
+              main: tokensDark.accentColor[300],
             },
             neutral: {
               ...tokensDark.neutral,
               main: tokensDark.neutral[500],
             },
             background: {
-              default: tokensDark.primary[600],
-              paper: tokensDark.primary[500],
+              default: tokensDark.mainColor[600],
+              paper: tokensDark.mainColor[500],
+            },
+            green: {
+              ...tokensDark.green,
+              main: tokensDark.green[500],
+            },
+            red: {
+              ...tokensDark.red,
+              main: tokensDark.red[500],
             },
           }
         : {
-            primary: {
-              ...tokensLight.primary,
+            mainColor: {
+              ...tokensLight.mainColor,
               main: tokensDark.grey[50],
               light: tokensDark.grey[100],
             },
-            secondary: {
-              ...tokensLight.secondary,
-              main: tokensDark.secondary[600],
-              light: tokensDark.secondary[700],
+            accentColor: {
+              ...tokensLight.accentColor,
+              main: tokensDark.accentColor[600],
+              light: tokensDark.accentColor[700],
             },
             neutral: {
               ...tokensLight.neutral,
@@ -148,6 +184,14 @@ export const themeSettings = (mode: 'light' | 'dark'): ThemeOptions => {
             background: {
               default: tokensDark.grey[0],
               paper: tokensDark.grey[50],
+            },
+            green: {
+              ...tokensLight.green,
+              main: tokensDark.green[500],
+            },
+            red: {
+              ...tokensLight.red,
+              main: tokensDark.red[500],
             },
           }),
     },

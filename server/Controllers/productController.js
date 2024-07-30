@@ -218,9 +218,12 @@ const filterProducts=asyncHandler(async(req,res)=>{
     if(!store) return res.status(400).send("Store not found");
     const databaseConnection=await getConnection(store.database);
     const ProductModel=databaseConnection.model('Product',Product.schema);
-    const {productName,categoryName,subCategoryName,carat,weight,stockQuantity,minPrice,maxPrice}=req.query;
+    const {productName,categoryName,subCategoryName,carat,weight,stockQuantity,minPrice,maxPrice,page}=req.query;
     let matchConditions={};
-
+    const PRODUCTS_PER_PAGE=8;
+    if (!productName && !categoryName && !subCategoryName && !carat && !weight && !stockQuantity && !minPrice && !maxPrice) {
+        return res.status(200).send({ products: [], count: 0 });
+      }
     if(productName){
         matchConditions.productName={$regex:productName,$options:'i'};
     }
@@ -233,7 +236,12 @@ const filterProducts=asyncHandler(async(req,res)=>{
     if(stockQuantity){
         matchConditions.stockQuantity={...matchConditions.stockQuantity,$gte:Number(stockQuantity)};
     }
-    
+    if (minPrice) {
+        matchConditions.minCalculatedPrice = { ...matchConditions.minCalculatedPrice, $gte: Number(minPrice) }
+    }
+    if (maxPrice) {
+        matchConditions.maxCalculatedPrice = { ...matchConditions.maxCalculatedPrice, $lte: Number(maxPrice) }
+    }
     let pipeline = [
         {
             $lookup: {
@@ -275,39 +283,67 @@ const filterProducts=asyncHandler(async(req,res)=>{
         },
         {
             $project: {
-                
                 'category.product': 0,
                 'subCategory.product': 0,
             }
         }
     ];
-    if(categoryName){
+
+    if (categoryName) {
         pipeline.push({
-            $match:{
-                'category.categoryName':{$regex:categoryName,$options:'i'}
+            $match: {
+                'category.categoryName': { $regex: categoryName, $options: 'i' }
             }
-        })
+        });
     }
-    if(subCategoryName){
+
+    if (subCategoryName) {
         pipeline.push({
-            $match:{
-                'subCategory.subCategoryName':{$regex:subCategoryName,$options:'i'}
+            $match: {
+                'subCategory.subCategoryName': { $regex: subCategoryName, $options: 'i' }
             }
-        })
+        });
     }
-    if(minPrice){
-        matchConditions.minCalculatedPrice={...matchConditions.minCalculatedPrice,$gte:Number(minPrice)}
-    }
-    if(maxPrice){
-        matchConditions.maxCalculatedPrice={...matchConditions.maxCalculatedPrice,$lte:Number(maxPrice)}
-    }
-    if(Object.keys(matchConditions).length>0){
+
+    if (Object.keys(matchConditions).length > 0) {
         pipeline.push({
-            $match:matchConditions
-        })
+            $match: matchConditions
+        });
     }
-    const products=await ProductModel.aggregate(pipeline);
-    return res.status(200).send(products);
+
+    pipeline.push({
+        $facet: {
+            totalCount: [
+                { $count: 'count' }
+            ],
+            products: [
+                { $sort: { createdAt: -1 } },
+                { $skip: (page - 1) * PRODUCTS_PER_PAGE },
+                { $limit: PRODUCTS_PER_PAGE }
+            ]
+        }
+    });
+
+    
+    const results = await ProductModel.aggregate(pipeline);
+
+
+    const totalCount = results[0].totalCount.length > 0 ? results[0].totalCount[0].count : 0;
+    const products = results[0].products;
+
+    products.forEach(product => {
+        if (product.productPhoto) {
+            const base64String = product.productPhoto.buffer.toString('base64');
+            //console.log("Raw productPhoto:",base64String);
+            try {
+                product.productPhoto = Buffer.from(base64String, 'base64');
+                
+            } catch (error) {
+                console.error("Error converting productPhoto:", error);
+            }
+        }
+    });
+    return res.status(200).send({products:products,count:totalCount});
 })
 
 

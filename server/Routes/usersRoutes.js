@@ -7,7 +7,7 @@ const usersRoutes=express.Router();
 
 usersRoutes.get('/admins',verifyTokenForOnlySuperAdmin,getAllAdmins);
 
-usersRoutes.get('/vendors',verifyTokenForOnlySuperAdmin,getAllvendors);
+usersRoutes.get('/vendors/:storeId',verifyTokenForOnlySuperAdminOrAdmin,validateId,getAllvendors);
 
 usersRoutes.get('/:id',verifyToken,validateId,getSingleUser);
 

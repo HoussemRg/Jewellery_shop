@@ -5,14 +5,14 @@ const { createSubCategory, getAllSubCategories, getSingleSubCategory, updateSubC
 
 const subCategoryRoute=express.Router();
 
-subCategoryRoute.post('/create/:storeId',verifyTokenForOnlySuperAdminOrAdmin,validateId,createSubCategory);
+subCategoryRoute.post('/create',verifyTokenForOnlySuperAdminOrAdmin,validateId,createSubCategory);
 
 subCategoryRoute.get('/',verifyToken,validateId,getAllSubCategories);
 
-subCategoryRoute.get('/:storeId/:subCategoryId',verifyToken,validateId,getSingleSubCategory);
+subCategoryRoute.get('/:subCategoryId',verifyToken,validateId,getSingleSubCategory);
 
-subCategoryRoute.put('/:storeId/:subCategoryId',verifyTokenForOnlySuperAdminOrAdmin,validateId,updateSubCategory);
+subCategoryRoute.put('/:subCategoryId',verifyTokenForOnlySuperAdminOrAdmin,validateId,updateSubCategory);
 
-subCategoryRoute.delete('/:storeId/:subCategoryId',verifyTokenForOnlySuperAdminOrAdmin,validateId,deleteSubCategory);
+subCategoryRoute.delete('/:subCategoryId',verifyTokenForOnlySuperAdminOrAdmin,validateId,deleteSubCategory);
 
 module.exports={subCategoryRoute}

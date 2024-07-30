@@ -7,7 +7,7 @@ const { Category } = require('../Models/Category');
 
 /**---------------------------------
  * @desc create new subSubCategory 
- * @route /api/categories/:storeId
+ * @route /api/categories
  * @request Post
  * @access for only admin or super admin
 -------------------------------------*/

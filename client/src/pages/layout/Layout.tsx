@@ -13,15 +13,15 @@ const Layout: React.FC = () => {
 
     return (
         <Box display="flex" height="100vh" width="100%">
-            {/* Sidebar */}
+            
             <Box
                 component="nav"
                 sx={{
                     transition: 'width 0.3s',
                     width: isSideBarOpened ? '250px' : '0px',
                     overflow: 'hidden',
-                    flexShrink: 0,  // Ensures the sidebar does not shrink
-                    display: isNonMobile ? 'block' : 'none', // Hide on mobile if needed
+                    flexShrink: 0, 
+                    display: isNonMobile ? 'block' : 'none', 
                 }}
             >
                 <SideBar

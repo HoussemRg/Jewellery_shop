@@ -1,8 +1,8 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, MenuItem, TextField, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, IconButton, MenuItem, TextField, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react';
 import { FilterAltOutlined } from '@mui/icons-material';
-
+import ClearIcon from '@mui/icons-material/Clear';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import * as yup from "yup";
@@ -12,9 +12,10 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { useDispatch } from '../hooks';
 import { getFilteredProducts } from '../apiCalls/productApiCalls';
+import { productActions } from '../slices/productSlice';
 
 const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    backgroundColor: theme.palette.background.paper,
     ...theme.typography.body2,
     padding: theme.spacing(2),
     textAlign: 'center',
@@ -38,19 +39,24 @@ export interface FilterProductData {
     minPrice?: number | null;
     maxPrice?: number | null;
     stockQuantity?: number | null;
-    category?: string | null;
-    subCategory?: string | null;
+    categoryName?: string | null;
+    subCategoryName?: string | null;
 }
 
-interface FilterProductsProps{
-  handleSetFiltering:()=> void,
-  handleClearFiltering:()=>void
+interface FilterProductsProps {
+  handleSetFiltering: () => void,
+  handleClearFiltering: () => void,
+  currentPage: number,
+  filtered: boolean
 }
 
-const FilterProducts: React.FC<FilterProductsProps> = ({handleSetFiltering,handleClearFiltering}) => {
+const FilterProducts: React.FC<FilterProductsProps> = ({ handleSetFiltering, handleClearFiltering, currentPage, filtered }) => {
     const { categories } = useSelector((state: RootState) => state.category);
     const { subCategories } = useSelector((state: RootState) => state.subCategory);
-    const dispatch=useDispatch();
+    const [validData, setValidData] = useState<FilterProductData>({});
+    const [expanded, setExpanded] = useState<boolean>(false); // State to manage accordion expansion
+    const dispatch = useDispatch();
+
     const formSchema = yup.object().shape({
       productName: yup.string().notRequired(),
       carat: yup
@@ -81,8 +87,9 @@ const FilterProducts: React.FC<FilterProductsProps> = ({handleSetFiltering,handl
       category: yup.string().notRequired().nullable(),
       subCategory: yup.string().notRequired().nullable()
   });
-  const {filteredProducts} =useSelector((state:RootState)=>state.product);
-    const { register, handleSubmit, formState: { errors } } = useForm<FilterProductData>({
+
+    const { filteredProducts } = useSelector((state: RootState) => state.product);
+    const { register, handleSubmit, formState: { errors }, reset } = useForm<FilterProductData>({
         resolver: yupResolver(formSchema),
         defaultValues: {
             productName: null,
@@ -91,40 +98,46 @@ const FilterProducts: React.FC<FilterProductsProps> = ({handleSetFiltering,handl
             minPrice: null,
             maxPrice: null,
             stockQuantity: null,
-            category: null,
-            subCategory: null,
+            categoryName: null,
+            subCategoryName: null,
         }
     });
 
     const submitForm = (data: FilterProductData) => {
-      
-        const validData: Partial<FilterProductData>={}
-        Object.entries(data).forEach(([key,value])=>{
-          if(value !== null && value!== ''){
-            validData[key as keyof(FilterProductData)]=value;
-          }
-        })
-        
-        console.log(validData)
-        dispatch(getFilteredProducts(validData))
-    }
-    useEffect(()=>{
-      if(filteredProducts && filteredProducts?.length>0){
+        const validDataForm: FilterProductData = {};
+        Object.entries(data).forEach(([key, value]) => {
+            if (value !== null && value !== '') {
+                validDataForm[key as keyof FilterProductData] = value;
+            }
+        });
+        dispatch(getFilteredProducts(validDataForm, currentPage));
+        setValidData(validDataForm);
         handleSetFiltering();
-      }
-    },[filteredProducts]);
+        setExpanded(false); // Collapse the accordion after submission
+        reset();
+    };
+
+    useEffect(() => {
+        if (filtered && filteredProducts.length > 0) {
+            dispatch(getFilteredProducts(validData, currentPage));
+        }
+    }, [currentPage]);
+
     return (
         <Box>
-            <Accordion>
+            <Accordion expanded={expanded}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1-content"
                     id="panel1-header"
+                    onClick={() => setExpanded(!expanded)} // Toggle expansion on click
                 >
-                    <Box display="flex" gap="10px">
+                    <Box display="flex" gap="10px" justifyContent="space-between" alignItems="center">
                         <FilterAltOutlined />
                         <Typography>Filter</Typography>
-                        <Button onClick={handleClearFiltering}>clear</Button>
+                        {filtered && <IconButton aria-label="clear" onClick={handleClearFiltering}>
+                            <ClearIcon />
+                        </IconButton>}                        
                     </Box>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -151,9 +164,9 @@ const FilterProducts: React.FC<FilterProductsProps> = ({handleSetFiltering,handl
                                     label="Select Category"
                                     sx={{ width: "100%" }}
                                     defaultValue=""
-                                    error={!!errors.category}
-                                    helperText={errors.category?.message}
-                                    {...register('category')}
+                                    error={!!errors.categoryName}
+                                    helperText={errors.categoryName?.message}
+                                    {...register('categoryName')}
                                 >
                                     {categories.map((cat) => (
                                         <MenuItem key={cat._id} value={cat.categoryName}>
@@ -171,9 +184,9 @@ const FilterProducts: React.FC<FilterProductsProps> = ({handleSetFiltering,handl
                                     select
                                     defaultValue=""
                                     label="Select Sub-Category"
-                                    error={!!errors.subCategory}
-                                    helperText={errors.subCategory?.message}
-                                    {...register('subCategory')}
+                                    error={!!errors.subCategoryName}
+                                    helperText={errors.subCategoryName?.message}
+                                    {...register('subCategoryName')}
                                 >
                                     {subCategories.map((subcat) => (
                                         <MenuItem key={subcat._id} value={subcat.subCategoryName}>

@@ -30,7 +30,7 @@ const createCategory=asyncHandler(async(req,res)=>{
 
 /**---------------------------------
  * @desc create new category 
- * @route /api/categories/:storeId
+ * @route /api/categories
  * @request Get
  * @access public
 -------------------------------------*/

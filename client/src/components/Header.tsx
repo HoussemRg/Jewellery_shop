@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from '../hooks';
 import { getAllCategories } from '../apiCalls/categoryApiCalls';
 import { getAllSubCategories } from '../apiCalls/subCategoryApiCalls';
-
+import AddIcon from '@mui/icons-material/Add';
 
 interface HeaderProps{
     title:string,
@@ -43,7 +43,12 @@ const Header:React.FC<HeaderProps> = ({title,subtitle}:HeaderProps) => {
           </Typography>
         </Box>
         <Box>
-          <Button variant="outlined" onClick={handleClickOpen} color="success"><Typography variant='h6'>Add new producut</Typography></Button>
+        <Button variant="contained" endIcon={<AddIcon />} onClick={handleClickOpen} color="secondary">
+        <Typography variant='h5' >
+            Add
+          </Typography> 
+        </Button>
+        
           <AddProductForm handleClose={handleClose} open={open} categories={categories} subCategories={subCategories} />
         </Box>
         

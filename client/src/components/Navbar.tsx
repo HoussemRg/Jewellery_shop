@@ -5,9 +5,9 @@ import { useDispatch } from 'react-redux'
 import FlexBetween from './FlexBetween';
 import { themeActions } from '../slices/themeSlice';
 import Photo from '../assets/photo.png'
-import { UserState } from '../slices/authSlice';
+import { authActions, UserLoggedInState } from '../slices/authSlice';
 interface NavbarProps {
-    user:UserState | null;
+    user:UserLoggedInState | null;
     isSideBarOpened: boolean;
     setIsSideBarOpened: React.Dispatch<React.SetStateAction<boolean>>;
     
@@ -20,6 +20,10 @@ const Navbar :React.FC<NavbarProps>= ({user,isSideBarOpened,setIsSideBarOpened})
     const isOpen = Boolean(anchorEl);
     const handleClick = (event:React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
     const handleClose = () => setAnchorEl(null);
+    const logout=()=>{
+      dispatch(authActions.logout());
+      setAnchorEl(null)
+    }
   return (
     <AppBar sx={{
         position:'static',
@@ -99,7 +103,7 @@ const Navbar :React.FC<NavbarProps>= ({user,isSideBarOpened,setIsSideBarOpened})
               anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             >
               <MenuItem onClick={handleClose}>Edit profile</MenuItem>
-              <MenuItem onClick={handleClose}>Log Out</MenuItem>
+              <MenuItem onClick={logout}>Log Out</MenuItem>
               
             </Menu>
           </FlexBetween>
