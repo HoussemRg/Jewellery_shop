@@ -1,11 +1,11 @@
 import React from 'react'
 import { Box, Button, Typography, useTheme } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import AddUserForm from './AddUserForm';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
+import AddStoreForm from './AddStore';
 
-const VendorsHeader :React.FC = () => {
+const StoresHeader :React.FC = () => {
     const theme=useTheme();
     const [open, setOpen] = React.useState<boolean>(false);
     const {user}=useSelector((state:RootState)=>state.auth)
@@ -22,10 +22,10 @@ const VendorsHeader :React.FC = () => {
     <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box>
           <Typography variant='h3' color={theme.palette.secondary[100]} fontWeight="bold" mb="5px">
-          Vendors
+          Stores
           </Typography>
           <Typography variant='h5' color={theme.palette.secondary[300]}>
-          List of Vendors
+          List of Stores
           </Typography>
         </Box>
         <Box>
@@ -35,7 +35,7 @@ const VendorsHeader :React.FC = () => {
           </Typography> 
         </Button>}
           
-          <AddUserForm handleClose={handleClose} open={open} />
+          <AddStoreForm handleClose={handleClose} open={open} />
         </Box>
         
       
@@ -43,4 +43,4 @@ const VendorsHeader :React.FC = () => {
   )
 }
 
-export default VendorsHeader
+export default StoresHeader

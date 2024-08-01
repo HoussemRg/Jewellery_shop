@@ -57,7 +57,7 @@ const FilterProducts: React.FC<FilterProductsProps> = ({ handleSetFiltering, han
     const dispatch = useDispatch();
 
     const formSchema = yup.object().shape({
-      productName: yup.string().notRequired(),
+      productName: yup.string().notRequired().min(3).max(50).trim(),
       carat: yup
           .number()
           .transform((value, originalValue) => originalValue === '' ? null : value)

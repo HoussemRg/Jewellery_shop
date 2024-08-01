@@ -48,7 +48,7 @@ const Login: React.FC = () => {
           <TextField
             id="outlined-basic"
             
-            label="Email"
+            
             type="email"
             variant="outlined"
             {...register('email')}
@@ -61,7 +61,7 @@ const Login: React.FC = () => {
           <TextField
             id="outlined-basic"
             type="password"
-            label="Password"
+            
             variant="outlined"
             {...register('password')}
           />

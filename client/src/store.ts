@@ -5,6 +5,7 @@ import { productReducers, ProductState } from './slices/productSlice';
 import { categoryReducer, CategorySliceState } from './slices/categorySlice';
 import { subCategoryReducer, SubCategorySliceState,  } from './slices/subCategorySlice';
 import { userReducer, UserState } from './slices/userSlice';
+import { storeReducer, StoreState } from './slices/storeSlice';
 
 export type RootState = {
     theme: ThemeState;
@@ -12,7 +13,8 @@ export type RootState = {
     product: ProductState; 
     category: CategorySliceState;
     subCategory: SubCategorySliceState;
-    user: UserState
+    user: UserState,
+    store:StoreState
 };
 
 const store = configureStore({
@@ -22,7 +24,8 @@ const store = configureStore({
         product: productReducers,
         category: categoryReducer,
         subCategory: subCategoryReducer,
-        user:userReducer
+        user:userReducer,
+        store:storeReducer
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

@@ -50,8 +50,8 @@ const AddProductForm: React.FC<FormProps> = ({ handleClose, open, categories, su
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const formSchema = yup.object({
-    productName: yup.string().required('Product name is required'),
-    description: yup.string().required('Product description is required'),
+    productName: yup.string().required('Product name is required').min(3).max(50).trim(),
+    description: yup.string().required('Product description is required').min(3).max(100).trim(),
     carat: yup.number().required('Product carat is required'),
     weight: yup.number().required('Product weight is required'),
     purchasePrice: yup.number().required('Product purchase price is required'),

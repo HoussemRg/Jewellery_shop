@@ -2,7 +2,12 @@ import { IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText,
 import { Box, Drawer } from '@mui/material';
 import React, { ReactElement, useState } from 'react';
 import FlexBetween from './FlexBetween';
-import { CalendarMonthOutlined, CategoryOutlined, ChevronLeft, CurrencyExchangeOutlined, DiscountOutlined, Groups2Outlined, HomeOutlined, PersonPinOutlined, PieChartOutlineOutlined, PointOfSaleOutlined, ReceiptLongOutlined, ShoppingCartOutlined, StorefrontOutlined, SupervisedUserCircleOutlined, TodayOutlined, TrendingUpOutlined } from '@mui/icons-material';
+import { 
+    CalendarMonthOutlined, CategoryOutlined, ChevronLeft, CurrencyExchangeOutlined, DiscountOutlined, 
+    Groups2Outlined, HomeOutlined, PersonPinOutlined, PieChartOutlineOutlined, PointOfSaleOutlined, 
+    ReceiptLongOutlined, ShoppingCartOutlined, StorefrontOutlined, SupervisedUserCircleOutlined, 
+    TodayOutlined, TrendingUpOutlined 
+} from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 
 interface SideBarProps {
@@ -40,7 +45,7 @@ const SideBar: React.FC<SideBarProps> = ({ isNonMobile, drawerWidth, isSideBarOp
         { text: "Investors", icon: <CurrencyExchangeOutlined />, link: "" },
         { text: "Discounts", icon: <DiscountOutlined />, link: "" },
         { text: "Management", icon: null, link: "" },
-        { text: "Store", icon: <StorefrontOutlined />, link: "" },
+        { text: "Store", icon: <StorefrontOutlined />, link: "/stores" },
         { text: "Vendors", icon: <PersonPinOutlined />, link: "/vendors" },
         { text: "Performance", icon: <TrendingUpOutlined />, link: "" },
     ];
@@ -90,12 +95,12 @@ const SideBar: React.FC<SideBarProps> = ({ isNonMobile, drawerWidth, isSideBarOp
                                     component={Link}
                                     to={link}
                                     sx={{
-                                        backgroundColor: "transparent",
+                                        backgroundColor: activeItem === text ? theme.palette.secondary[300] : "transparent",
                                         ":hover": {
                                             backgroundColor: theme.palette.secondary[300],
                                             color: theme.palette.primary[600]
                                         },
-                                        color: theme.palette.secondary[100],
+                                        color: activeItem === text ? theme.palette.primary[600] : theme.palette.secondary[100],
                                         py: 0.3
                                     }}
                                     onClick={() => setActiveItem(text)}
@@ -103,7 +108,7 @@ const SideBar: React.FC<SideBarProps> = ({ isNonMobile, drawerWidth, isSideBarOp
                                     <ListItemIcon
                                         sx={{
                                             ":hover": { color: theme.palette.primary[600] },
-                                            color: theme.palette.secondary[100],
+                                            color: activeItem === text ? theme.palette.primary[600] : theme.palette.secondary[100],
                                             ml: "1rem",
                                             minWidth: 32
                                         }}

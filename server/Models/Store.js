@@ -59,7 +59,7 @@ const validateStore=(obj)=>{
 
 const validateUpdateStore=(obj)=>{
     const schema=joi.object({
-        storeName:joi.string().min(5).max(50).trim(),
+        storeName:joi.string().min(3).max(50).trim(),
         address:joi.string().min(5).max(50).trim(),
         description:joi.string().min(5).trim(),
     });

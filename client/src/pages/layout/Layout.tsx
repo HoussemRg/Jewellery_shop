@@ -33,7 +33,7 @@ const Layout: React.FC = () => {
             </Box>
 
             {/* Main Content Area */}
-            <Box display="flex" flexDirection="column" flexGrow={1} overflow="auto">
+            <Box display="flex" flexDirection="column" flexGrow={1} >
                 {/* Navbar */}
                 <Box flexShrink={0}>
                     <Navbar

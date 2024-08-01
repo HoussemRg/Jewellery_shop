@@ -1,8 +1,9 @@
 const mongoose=require('mongoose');
 const asyncHandler=require('express-async-handler');
-const { User } = require('../Models/User');
+const { User ,validateUpdateUser} = require('../Models/User');
 const {Store} = require('../Models/Store');
 const { getConnection } = require('../Utils/dbconnection');
+const bcrypt=require('bcrypt');
 
 /**---------------------------------
  * @desc get All admins  
@@ -45,7 +46,7 @@ const users=await userModel.find({role:"vendor",store:storeId}).select("-passwor
     let store = await StoreModel.findById(storeId);
     if (!store) return res.status(400).send("Store not found");
     const userModel= storeConnection.model('User',User.schema);
-    const users=await userModel.find({role:"vendor",store:storeId}).select("-password -role");
+    const users=await userModel.find({role:"vendor",store:storeId}).select("-password");
     const count=await userModel.countDocuments({role:"vendor"});
     res.status(200).send({users:users,count:count});
  })
@@ -99,7 +100,7 @@ const getUsersForSpecificStore=asyncHandler(async(req,res)=>{
  ------------------------------------*/
 
  const updateUser=asyncHandler(async(req,res)=>{
-    const {error}=validateRegisterUser(req.body);
+    const {error}=validateUpdateUser(req.body);
     if(error) return res.status(400).send(error.details[0].message);
     const userId=req.params.id;
     const userConnection=await getConnection('Users');
@@ -108,8 +109,8 @@ const getUsersForSpecificStore=asyncHandler(async(req,res)=>{
     if(!user) return res.status(400).send("User not found");
     let newUser=req.body;
     if(newUser.password){
-        const salt=await bycrypt.genSalt(parseInt(process.env.SALTROUND));
-        const hashedPassword=await bycrypt.hash(req.body.password,salt);
+        const salt=await bcrypt.genSalt(parseInt(process.env.SALTROUND));
+        const hashedPassword=await bcrypt.hash(req.body.password,salt);
         newUser.password=hashedPassword;
     }
     newUser=await userModel.findByIdAndUpdate(userId,

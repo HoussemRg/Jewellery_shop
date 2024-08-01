@@ -5,37 +5,63 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { useDispatch } from '../../hooks';
 import { deleteUser, getVendorsPerStore } from '../../apiCalls/userApiCall';
-import { UserType } from '../../slices/userSlice';
+import {  UserType } from '../../slices/userSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VendorsHeader from '../../components/VendorsHeader';
+import EditIcon from '@mui/icons-material/Edit';
+import UpdateUserForm from '../../components/UpdateUserForm';
+import ListIcon from '@mui/icons-material/List';
+import { Link } from 'react-router-dom';
 
 const Vendors: React.FC = () => {
   const theme = useTheme();
-  const { users } = useSelector((state: RootState) => state.user);
+  const { users,isUserDeleted } = useSelector((state: RootState) => state.user);
   const { user } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
 
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
   useEffect(() => {
-    if (user) {
+    if (user && !isUserDeleted) {
       dispatch(getVendorsPerStore(user?.store));
     }
-  }, [user, dispatch]);
+  }, [user, dispatch,isUserDeleted]);
 
   const handleDelete = (id: string, event: React.MouseEvent) => {
-    event.stopPropagation(); // Prevent row selection
+    event.stopPropagation();
     dispatch(deleteUser(id));
+    
+    
   };
 
   const handleBulkDelete = () => {
     selectedRows.forEach((id: string) => dispatch(deleteUser(id)));
   };
+  const  [searchedUser,setSearchedUser]=useState<UserType>();
+  const searchUser=(id:string)=>{
+    const searchedUser=users.find((user:UserType)=> user._id === id);
+    if(searchedUser){
+      setSearchedUser(searchedUser);
+      setOpenEditForm(true);
+    }
+  }
+  const [openEditForm, setOpenEditForm] = React.useState<boolean>(false);
 
+    const handleClickOpenEditForm = (id:string,event:React.MouseEvent) => {
+      event.stopPropagation();
+      searchUser(id);
+      
+      
+      
+    };
+    const handleCloseEditForm = () => {
+      setOpenEditForm(false);
+            
+    };
   const columns: GridColDef[] = [
     { field: '_id', headerName: 'ID', flex: 1 },
     { field: 'firstName', headerName: 'First Name', flex: 1 },
-    { field: 'lastName', headerName: 'Second Name', flex: 1 },
+    { field: 'lastName', headerName: 'Last Name', flex: 1 },
     { field: 'cin', headerName: 'CIN', flex: 1 },
     { field: 'email', headerName: 'Email', flex: 1 },
     { field: 'address', headerName: 'Address', flex: 1 },
@@ -53,6 +79,19 @@ const Vendors: React.FC = () => {
             >
               <DeleteIcon />
             </IconButton>
+            <IconButton
+              onClick={(event) => handleClickOpenEditForm(params.row._id, event)}
+              color="success"
+            >
+              <EditIcon />
+            </IconButton>
+            <Link to={`/users/${params.row._id}`}
+            >
+              <IconButton color='primary'>
+                <ListIcon />
+              </IconButton>
+              
+            </Link>
           </Box>
         );
       },
@@ -62,6 +101,7 @@ const Vendors: React.FC = () => {
   return (
     <Box m="1.5rem 2.5rem">
       <VendorsHeader />
+      {searchedUser && <UpdateUserForm handleCloseEditForm={handleCloseEditForm} opendEditForm={openEditForm} userToUpdate={searchedUser}   />}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb="1rem">
         {selectedRows.length > 1 && (
           <Button

@@ -19,8 +19,6 @@ const { Product } = require('../Models/Product');
     const { error } = validateStore(req.body);
     if (error) return res.status(401).send(error.details[0].message);
     const connection = await  getConnection('Users');
-    
-    
     const StoreModel = connection.model('Store', Store.schema);
     let store=await StoreModel.findOne({storeName:req.body.storeName});
     if(store) return res.status(400).send("Store alreadt exists");
@@ -30,7 +28,6 @@ const { Product } = require('../Models/Product');
         address: req.body.address,
         description: req.body.description,
         database: `${ sanitizedStoreName}`,
-        
     });  
     
     /*const newDatabase =mongoose.createConnection(
@@ -51,7 +48,7 @@ const getAllStores=asyncHandler(async(req,res)=>{
     const connection =await  getConnection('Users');
     const StoreModel = connection.model('Store', Store.schema);
     
-    const stores = await StoreModel.find().select("-database");
+    const stores = await StoreModel.find().select("-database -user -product");
     const count=await StoreModel.countDocuments();
     res.status(200).send({stores:stores,count:count});
 

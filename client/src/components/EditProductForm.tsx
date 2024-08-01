@@ -64,8 +64,8 @@ const EditProductForm: React.FC<EditFormProps> = ({ handleCloseEditForm, open, c
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const formSchema = yup.object({
-        productName: yup.string().required('Product name is required'),
-        description: yup.string().required('Product description is required'),
+        productName: yup.string().required('Product name is required').min(3).max(50).trim(),
+        description: yup.string().required('Product description is required').min(3).max(100).trim(),
         carat: yup.number().required('Product carat is required'),
         weight: yup.number().required('Product weight is required'),
         purchasePrice: yup.number().required('Product purchase price is required'),

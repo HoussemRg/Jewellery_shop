@@ -115,13 +115,14 @@ const validateUpdateUser=(obj)=>{
         firstName:joi.string().min(3).max(50).trim(),
         lastName:joi.string().min(3).max(50).trim(),
         cin:joi.string().required().trim().pattern(/^[0-9]+$/),
-        
+
         password:joi.string().allow('', null),
         phoneNumber:joi.string(),
         address: joi.string().trim().min(10).max(50),
-        role:joi.string().valid('admin','superAdmin', 'vendor').optional(),
+        
         
     })
+    return schema.validate(obj)
 }
 
 const User=mongoose.models.User || mongoose.model("User",userSchema);

@@ -40,13 +40,18 @@ const AddUserForm: React.FC<FormProps> = ({ handleClose, open }) => {
 
 
   const formSchema = yup.object({
-    firstName: yup.string().required('First Name is required'),
-    lastName: yup.string().required('Last Name description is required'),
-    cin: yup.string().required('CIN  is required'),
+    firstName: yup.string().required('First Name is required').min(3).max(50).trim(),
+    lastName: yup.string().required('Last Name  is required').min(3).max(50).trim(),
+    cin: yup.string().required('CIN  is required').matches(/^\d+$/, 'CIN must contain only numbers').length(8, 'CIN must be exactly 8 digits long'),
     email: yup.string().required('email is required'),
-    password: yup.string().required('Password is required'),
-    address: yup.string().required('Address required'),
-    phoneNumber: yup.string().required('Phone Number is required'),
+    password: yup.string().required('Password is required').min(10, 'Password must be at least 10 characters long')
+    .max(50, 'Password cannot exceed 50 characters')
+    .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .matches(/\d/, 'Password must contain at least one number')
+    .matches(/[@$!%*?&]/, 'Password must contain at least one special character'),
+    address: yup.string().required('Address required').min(3).max(50).trim(),
+    phoneNumber: yup.string().required('Phone Number is required').matches(/^\d+$/, 'Phone number must contain only numbers').length(8, 'Phone number must be exactly 8 digits long'),
     role: yup.string().required('Role category is required'),
     store: yup.string().required('Store category is required').notOneOf([''], 'Store is required'),
   });
@@ -85,15 +90,14 @@ const roles=[
   const submitForm = (data: UserData) => {
     dispatch(registerUser(data));
     
-        handleClose();
-    reset();
-    
-    
+        
   }
 
   useEffect(() => {
     if (isUserCreated && user) {
       dispatch(getVendorsPerStore(user?.store));
+      handleClose();
+      reset();
       dispatch(userActions.setIsUserCreated(false));
     }
   }, [isUserCreated, dispatch, handleClose]);
@@ -244,8 +248,8 @@ const roles=[
             label="Select Role"
             defaultValue={ "vendor"}
             
-            error={!!errors.store}
-            helperText={errors.store?.message}
+            error={!!errors.role}
+            helperText={errors.role?.message}
             {...register('role')}
             >
             {roles.map((role) => (

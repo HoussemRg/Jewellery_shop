@@ -3,38 +3,37 @@ import {  Id, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {  Dispatch } from 'redux';
 import { AppDispatch, AppThunk, RootState } from '../store';
-
-import { userActions } from '../slices/userSlice';
-import { UserData } from '../components/AddUserForm';
 import { UserEditData } from '../components/UpdateUserForm';
+import { storeActions } from '../slices/storeSlice';
+import { StoreData } from '../components/AddStore';
 
 
-const registerUser=(user:UserData):AppThunk<Promise<void>> =>{
+const createStore=(store:StoreData):AppThunk<Promise<void>> =>{
+    let id: Id | undefined;
     return async(dispatch:Dispatch)=>{
+        id = toast.loading("Creating  store, Please wait...");
         try{
-            await axios.post(`http://localhost:3001/api/auth/register`,user);
-            dispatch(userActions.setIsUserCreated(true));
-            toast.success('user added successfully');
+            await axios.post(`http://localhost:3001/api/stores/create`,store);
+            dispatch(storeActions.setIsStoreCreated(true));
+            toast.update(id, { render: "Store updated successfully", type: "success", isLoading: false, autoClose: 1200 });
         }catch(err){
             const error = err as AxiosError;
-            if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
-            } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+            if (id) {
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
             }
         }
     }
 }
 
-const getVendorsPerStore = (storeId:string):AppThunk<Promise<void>> => {
+const getAllStores = ():AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         try {
-            const res = await axios.get(`http://localhost:3001/api/users/vendors/${storeId}`, {
+            const res = await axios.get(`http://localhost:3001/api/stores`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             });
-            dispatch(userActions.getAllVendorsPerStore(res.data.users));
+            dispatch(storeActions.getAllStores(res.data.stores));
             
         } catch (err: unknown) {
             const error = err as AxiosError;
@@ -47,14 +46,14 @@ const getVendorsPerStore = (storeId:string):AppThunk<Promise<void>> => {
     }
 }
 
-const getSingleUser=(userId:string):AppThunk=> async(dispatch:AppDispatch,getState)=>{
+const getSingleStore=(storeId:string):AppThunk=> async(dispatch:AppDispatch,getState)=>{
     try{
-        const res = await axios.get(`http://localhost:3001/api/users/${userId}`, {
+        const res = await axios.get(`http://localhost:3001/api/stores/${storeId}`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
             }
         });
-        dispatch(userActions.getSingleUser(res.data));
+        dispatch(storeActions.getSingleStore(res.data));
     }catch(err){
         const error = err as AxiosError;
             if (error.response) {
@@ -65,21 +64,21 @@ const getSingleUser=(userId:string):AppThunk=> async(dispatch:AppDispatch,getSta
     }
 }
 
-const updateUser = (newUser:Partial<UserEditData>,userId:string):AppThunk<Promise<void>> => {
+const updateStore = (newStore:Partial<UserEditData>,storeId:string):AppThunk<Promise<void>> => {
     let id: Id | undefined;
     return async (dispatch: Dispatch,getState: () => RootState) => {
-        id = toast.loading("Updating  user, Please wait...");
+        id = toast.loading("Updating  store, Please wait...");
         try {
             
-            const res = await axios.put(`http://localhost:3001/api/users/${userId}`,newUser, {
+            const res = await axios.put(`http://localhost:3001/api/stores/${storeId}`,newStore, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             });
-            dispatch(userActions.updateUser(res.data));
-            dispatch(userActions.setIsUserUpdated(true));
+            dispatch(storeActions.updateStore(res.data));
+            dispatch(storeActions.setIsStoreUpdated(true));
          
-            toast.update(id, { render: "User updated successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Store updated successfully", type: "success", isLoading: false, autoClose: 1200 });
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (id) {
@@ -89,19 +88,19 @@ const updateUser = (newUser:Partial<UserEditData>,userId:string):AppThunk<Promis
     }
 }
 
-const deleteUser= (userId:string):AppThunk<Promise<void>> => {
+const deleteStore= (storeId:string):AppThunk<Promise<void>> => {
     let id: Id | undefined;
     return async (dispatch: Dispatch,getState: () => RootState) => {
         id = toast.loading("deleting  user, Please wait...");
         try {
-            await axios.delete(`http://localhost:3001/api/users/${userId}`, {
+            await axios.delete(`http://localhost:3001/api/stores/${storeId}`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             });
-            dispatch(userActions.deleteUser(userId));
-            dispatch(userActions.setIsUserDeleted(true));
-            toast.update(id, { render: "User deleted successfully", type: "success", isLoading: false, autoClose: 1200 });
+            dispatch(storeActions.deleteStore(storeId));
+            dispatch(storeActions.setIsStoreDeleted(true));
+            toast.update(id, { render: "Store deleted successfully", type: "success", isLoading: false, autoClose: 1200 });
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (id) {
@@ -111,4 +110,4 @@ const deleteUser= (userId:string):AppThunk<Promise<void>> => {
     }
 }
 
-export {getVendorsPerStore,updateUser,deleteUser,registerUser,getSingleUser}
+export {getAllStores,updateStore,deleteStore,createStore,getSingleStore}

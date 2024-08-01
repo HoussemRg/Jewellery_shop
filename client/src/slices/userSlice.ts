@@ -8,18 +8,43 @@ export interface UserType {
   email: string;
   address: string;
   phoneNumber: string;
+  createdAt: Date |null;
+  updatedAt: Date | null;
+  role:string
+}
+export interface StoreType{
+  _id:string;
+  storeName:string;
+  description:string;
+  address:string
+}
+export interface SingleUserType{
+  _id: string;
+  firstName: string;
+  lastName: string;
+  cin: string;
+  email: string;
+  address: string;
+  phoneNumber: string;
   createdAt: Date;
   updatedAt: Date;
+  role:string;
+  store:StoreType
 }
-
 export interface UserState {
   users: UserType[];
-  isUserCreated:boolean
+  isUserCreated:boolean;
+  isUserUpdated:boolean;
+  isUserDeleted:boolean;
+  singleUser:SingleUserType |null
 }
 
 const initialState: UserState = {
   users: [],
-  isUserCreated:false
+  isUserCreated:false,
+  isUserUpdated:false,
+  isUserDeleted:false,
+  singleUser:null
 };
 
 const userSlice = createSlice({
@@ -37,11 +62,20 @@ const userSlice = createSlice({
         user._id === action.payload._id ? action.payload : user
       );
     },
+    setIsUserUpdated:(state,action:PayloadAction<boolean>)=>{
+      state.isUserUpdated=action.payload;
+    },
+    setIsUserDeleted:(state,action:PayloadAction<boolean>)=>{
+      state.isUserDeleted=action.payload;
+    },
     deleteUser:(state, action: PayloadAction<string>) => {
         state.users = state.users.filter((user) =>
           user._id !== action.payload 
         );
       },
+    getSingleUser:(state,action:PayloadAction<SingleUserType>)=>{
+      state.singleUser=action.payload;
+    }
   },
 });
 

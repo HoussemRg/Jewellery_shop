@@ -1,28 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-
-
-const storedUser = localStorage.getItem("user");
-const initialState = storedUser ? JSON.parse(storedUser) : null;
-export interface AuthState{
-        user: UserLoggedInState | null;
-    
-}
-const authSlice = createSlice({
-    name: 'auth',
-    initialState,
-    reducers: {
-        login: (state, action) => {
-            state.user = action.payload;
-        },
-        logout:(state)=>{
-            state.user=null
-        }
-    }
-});
-
-const authActions = authSlice.actions;
-const authReducers = authSlice.reducer;
 
 export interface UserLoggedInState {
     id: string;
@@ -32,5 +9,34 @@ export interface UserLoggedInState {
     role: string;
     store:string
 }
+
+export interface AuthState{
+    user: UserLoggedInState |null;
+
+}
+const storedUser = localStorage.getItem("user");
+const initialState: AuthState = {
+    user: storedUser ? JSON.parse(storedUser) : null
+};
+
+
+const authSlice = createSlice({
+    name: 'auth',
+    initialState,
+    reducers: {
+        login: (state, action: PayloadAction<UserLoggedInState>) => {
+            state.user = action.payload;
+        },
+        logout:(state)=>{
+            state.user=null;
+            localStorage.removeItem('user');
+        }
+    }
+});
+
+const authActions = authSlice.actions;
+const authReducers = authSlice.reducer;
+
+
 
 export { authActions, authReducers };

@@ -1,11 +1,12 @@
 import { useTheme,AppBar,Toolbar,IconButton, InputBase, Button, Box, Typography, Menu, MenuItem } from '@mui/material';
-import React, { useState } from 'react'
+import React, {  useState } from 'react'
 import {ArrowDropDownOutlined, DarkModeOutlined, LightModeOutlined, Menu as MenuIcon, Search, SettingsOutlined} from '@mui/icons-material'
-import { useDispatch } from 'react-redux'
 import FlexBetween from './FlexBetween';
 import { themeActions } from '../slices/themeSlice';
 import Photo from '../assets/photo.png'
 import { authActions, UserLoggedInState } from '../slices/authSlice';
+import { useDispatch } from '../hooks';
+import { useNavigate } from 'react-router-dom';
 interface NavbarProps {
     user:UserLoggedInState | null;
     isSideBarOpened: boolean;
@@ -24,6 +25,16 @@ const Navbar :React.FC<NavbarProps>= ({user,isSideBarOpened,setIsSideBarOpened})
       dispatch(authActions.logout());
       setAnchorEl(null)
     }
+    const navigate=useNavigate();
+
+    const navigateToUserProfile=()=>{
+      navigate(`/users/${user?.id}`);
+      handleClose();
+    }
+
+   
+
+    
   return (
     <AppBar sx={{
         position:'static',
@@ -102,7 +113,7 @@ const Navbar :React.FC<NavbarProps>= ({user,isSideBarOpened,setIsSideBarOpened})
               onClose={handleClose}
               anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             >
-              <MenuItem onClick={handleClose}>Edit profile</MenuItem>
+              <MenuItem onClick={navigateToUserProfile}>Profile</MenuItem>
               <MenuItem onClick={logout}>Log Out</MenuItem>
               
             </Menu>
