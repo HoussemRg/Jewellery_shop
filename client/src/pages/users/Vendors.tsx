@@ -9,7 +9,7 @@ import {  UserType } from '../../slices/userSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VendorsHeader from '../../components/VendorsHeader';
 import EditIcon from '@mui/icons-material/Edit';
-import UpdateUserForm from '../../components/UpdateUserForm';
+import UpdateUserForm from '../../components/user/UpdateUserForm';
 import ListIcon from '@mui/icons-material/List';
 import { Link } from 'react-router-dom';
 

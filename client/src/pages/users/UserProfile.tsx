@@ -9,7 +9,7 @@ import { RootState } from '../../store';
 import { useDispatch } from '../../hooks';
 import { deleteUser, getSingleUser } from '../../apiCalls/userApiCall';
 import { format } from 'date-fns';
-import UpdateUserForm from '../../components/UpdateUserForm';
+import UpdateUserForm from '../../components/user/UpdateUserForm';
 import { authActions } from '../../slices/authSlice';
 import { userActions } from '../../slices/userSlice';
 

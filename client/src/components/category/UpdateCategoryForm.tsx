@@ -4,65 +4,61 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextFie
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup'
-import { useDispatch } from '../hooks';
+import { useDispatch } from '../../hooks';
 import { useSelector } from 'react-redux';
-import { RootState } from '../store';
-import { storeActions, StoreOriginalType } from '../slices/storeSlice';
-import { updateStore } from '../apiCalls/storApiCall';
-interface UpdateStoreProps{
+import { RootState } from '../../store';
+import { categoryActions, CategoryState } from '../../slices/categorySlice';
+import { updateCategory } from '../../apiCalls/categoryApiCalls';
+interface UpdateCategoryProps{
     handleCloseEditForm: () => void,
     opendEditForm: boolean,
-    storeToUpdate:StoreOriginalType,
+    categoryToUpdate:CategoryState,
 
 }
-export interface StoreEditData{
-    storeName: string,
-    description: string,
-    address: string,
-    
-  
+export interface CategoryEditData{
+    categoryName: string,
+    categoryDescription: string,  
 }
 
-const UpdateStoreForm: React.FC<UpdateStoreProps> = ({ handleCloseEditForm, opendEditForm, storeToUpdate }) => {
+const UpdateCategoryForm: React.FC<UpdateCategoryProps> = ({ handleCloseEditForm, opendEditForm, categoryToUpdate }) => {
     const theme = useTheme();
-    const {isStoreUpdated} = useSelector((state:RootState)=> state.store)
+    const {isCategoryUpdated} = useSelector((state:RootState)=> state.category)
     const dispatch=useDispatch();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     
     
     const formSchema = yup.object({
-      storeName: yup.string().min(3).max(50).trim().required(),
-      description: yup.string().min(5).trim().required(),
-      address: yup.string().min(5).trim().required(),
+      categoryName: yup.string().min(3).max(50).trim().required(),
+      categoryDescription: yup.string().min(5).trim().required(),
      
     });
     
-    const { register, handleSubmit, formState: { errors } } = useForm<StoreEditData>({
+    const { register, handleSubmit, formState: { errors } } = useForm<CategoryEditData>({
       resolver: yupResolver(formSchema),
       defaultValues: {
-        storeName: storeToUpdate.storeName,
-        description: storeToUpdate.description,
-        address: storeToUpdate.address,
+        categoryName: categoryToUpdate.categoryName,
+        categoryDescription: categoryToUpdate.categoryDescription,
+        
       }
     });
     
-    const submitForm = (data: StoreEditData) => {
-        const validDataForm: Partial<StoreEditData> = {};
+    const submitForm = (data: CategoryEditData) => {
+        const validDataForm: Partial<CategoryEditData> = {};
         Object.entries(data).forEach(([key, value]) => {
             if (value !== null && value !== '') {
-                validDataForm[key as  keyof StoreEditData] = value;
+                validDataForm[key as  keyof CategoryEditData] = value;
             }
         });
-        dispatch(updateStore(validDataForm,storeToUpdate._id))
+        dispatch(updateCategory(validDataForm,categoryToUpdate._id))
         
     }
     useEffect(()=>{
-      if(isStoreUpdated){
+      if(isCategoryUpdated){
         handleCloseEditForm();
-        dispatch(storeActions.setIsStoreUpdated(false))
+        dispatch(categoryActions.setIsCategoryUpdated(false))
            
     }
-    },[isStoreUpdated])
+    },[isCategoryUpdated])
     return (
       <Dialog
         onClose={handleCloseEditForm}
@@ -73,7 +69,7 @@ const UpdateStoreForm: React.FC<UpdateStoreProps> = ({ handleCloseEditForm, open
         sx={{ '& .MuiDialog-paper': { overflowX: 'hidden' } }}
       >
         <DialogTitle display="flex" justifyContent="space-between" alignItems="center">
-          <Box>Update Store</Box>
+          <Box>Update Category</Box>
           <Button
             onClick={handleCloseEditForm}
             color="warning"
@@ -102,33 +98,23 @@ const UpdateStoreForm: React.FC<UpdateStoreProps> = ({ handleCloseEditForm, open
           >
             <TextField
               InputLabelProps={{ shrink: true }}
-              id="storeName"
-              label="Store Name"
-              placeholder="Store Name"
-              error={!!errors.storeName}
-              helperText={errors.storeName?.message}
-              {...register('storeName')}
+              id="categoryName"
+              label="Category Name"
+              placeholder="Category Name"
+              error={!!errors.categoryName}
+              helperText={errors.categoryName?.message}
+              {...register('categoryName')}
             />
             <TextField
               InputLabelProps={{ shrink: true }}
-              id="description"
+              id="categoryDescription"
               label="Description "
               placeholder="Description"
-              error={!!errors.description}
-              helperText={errors.description?.message}
-              {...register('description')}
+              error={!!errors.categoryDescription}
+              helperText={errors.categoryDescription?.message}
+              {...register('categoryDescription')}
             />
             
-            <TextField
-              InputLabelProps={{ shrink: true }}
-              id="address"
-              label="Address"
-              placeholder="Address"
-              error={!!errors.address}
-              helperText={errors.address?.message}
-              {...register('address')}
-            />
-           
             <DialogActions>
               <Button autoFocus onClick={handleCloseEditForm} color="warning">
                 Cancel
@@ -143,4 +129,4 @@ const UpdateStoreForm: React.FC<UpdateStoreProps> = ({ handleCloseEditForm, open
     );
   }
   
-  export default UpdateStoreForm;
+  export default UpdateCategoryForm;

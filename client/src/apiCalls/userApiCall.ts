@@ -5,8 +5,8 @@ import {  Dispatch } from 'redux';
 import { AppDispatch, AppThunk, RootState } from '../store';
 
 import { userActions } from '../slices/userSlice';
-import { UserData } from '../components/AddUserForm';
-import { UserEditData } from '../components/UpdateUserForm';
+import { UserData } from '../components/user/AddUserForm';
+import { UserEditData } from '../components/user/UpdateUserForm';
 
 
 const registerUser=(user:UserData):AppThunk<Promise<void>> =>{

@@ -3,9 +3,9 @@ import {  Id, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {  Dispatch } from 'redux';
 import { AppDispatch, AppThunk, RootState } from '../store';
-import { UserEditData } from '../components/UpdateUserForm';
 import { storeActions } from '../slices/storeSlice';
-import { StoreData } from '../components/AddStore';
+import { StoreData } from '../components/store/AddStore';
+import { StoreEditData } from '../components/store/UpdateStoreForm';
 
 
 const createStore=(store:StoreData):AppThunk<Promise<void>> =>{
@@ -64,7 +64,7 @@ const getSingleStore=(storeId:string):AppThunk=> async(dispatch:AppDispatch,getS
     }
 }
 
-const updateStore = (newStore:Partial<UserEditData>,storeId:string):AppThunk<Promise<void>> => {
+const updateStore = (newStore:Partial<StoreEditData>,storeId:string):AppThunk<Promise<void>> => {
     let id: Id | undefined;
     return async (dispatch: Dispatch,getState: () => RootState) => {
         id = toast.loading("Updating  store, Please wait...");
@@ -91,7 +91,7 @@ const updateStore = (newStore:Partial<UserEditData>,storeId:string):AppThunk<Pro
 const deleteStore= (storeId:string):AppThunk<Promise<void>> => {
     let id: Id | undefined;
     return async (dispatch: Dispatch,getState: () => RootState) => {
-        id = toast.loading("deleting  user, Please wait...");
+        id = toast.loading("deleting  store, Please wait...");
         try {
             await axios.delete(`http://localhost:3001/api/stores/${storeId}`, {
                 headers: {

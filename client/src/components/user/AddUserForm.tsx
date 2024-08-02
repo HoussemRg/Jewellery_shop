@@ -4,11 +4,11 @@ import React, { useEffect } from 'react';
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from '../hooks';
+import { useDispatch } from '../../hooks';
 import { useSelector } from 'react-redux';
-import { RootState } from '../store';
-import { getVendorsPerStore, registerUser } from '../apiCalls/userApiCall';
-import { userActions } from '../slices/userSlice';
+import { RootState } from '../../store';
+import { getVendorsPerStore, registerUser } from '../../apiCalls/userApiCall';
+import { userActions } from '../../slices/userSlice';
 
 export interface FormProps {
   handleClose: () => void,

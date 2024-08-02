@@ -1,6 +1,6 @@
 import { Box, Button, Typography, useTheme } from '@mui/material'
 import React, { useEffect } from 'react'
-import AddProductForm from './AddProductForm';
+import AddProductForm from './product/AddProductForm';
 import { RootState } from '../store';
 import { useSelector } from 'react-redux';
 import { useDispatch } from '../hooks';

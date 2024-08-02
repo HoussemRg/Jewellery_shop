@@ -43,35 +43,13 @@ const getAllCategories=asyncHandler(async(req,res)=>{
     const databaseConnection=await getConnection(store.database);
     const CategoryModel=databaseConnection.model('Category',Category.schema);
    
-    const categoryies=await CategoryModel.find().select("-product");
+    const categoryies=await CategoryModel.find();
     const count=await CategoryModel.countDocuments();
     return res.status(200).send({categoryies,count})
 })
 
 
-/**---------------------------------
- * @desc get single category 
- * @route /api/categories/:storeId/:categoryId
- * @request Get
- * @access public
- ------------------------------------*/
-const getSingleCategory=asyncHandler(async(req,res)=>{
-    const storeId=req.user.store;
-    const storeConnection=await getConnection("Users");
-    const StoreModel=storeConnection.model('Store',Store.schema);
-    let store= await StoreModel.findById(storeId);
-    if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const CategortyModel=databaseConnection.model('Category',Category.schema);
-    databaseConnection.model('Product',Product.schema);
-    const category=await CategortyModel.findById(req.params.categoryId).populate({
-        path:'product',
-        ref:'Product',
-        select:"-category -subCategory -store"
-    });
-    if(!category) return res.status(400).send("Category not found");
-    return res.status(200).send(category);
-})
+
 /**---------------------------------
  * @desc update category 
  * @route /api/categories/:storeId/:categoryId
@@ -146,4 +124,4 @@ const deleteCategory=asyncHandler(async(req,res)=>{
 
 
 
-module.exports={createCategory,getAllCategories,getSingleCategory,updateCategory,deleteCategory}
+module.exports={createCategory,getAllCategories,updateCategory,deleteCategory}

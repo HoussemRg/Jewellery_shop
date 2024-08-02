@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Button, Typography, useTheme } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useSelector } from 'react-redux';
-import { RootState } from '../store';
+import { RootState } from '../../store';
 import AddStoreForm from './AddStore';
 
 const StoresHeader :React.FC = () => {

@@ -9,6 +9,8 @@ import {
     TodayOutlined, TrendingUpOutlined 
 } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
 interface SideBarProps {
     drawerWidth: string;
@@ -26,15 +28,16 @@ interface NavItem {
 const SideBar: React.FC<SideBarProps> = ({ isNonMobile, drawerWidth, isSideBarOpened, setIsSideBarOpened }) => {
     const theme = useTheme();
     const [activeItem, setActiveItem] = useState<string>('Dashboard');
+    const {user}=useSelector((state:RootState)=> state.auth)
 
     const navItems: NavItem[] = [
         { text: "Dashboard", icon: <HomeOutlined />, link: "" },
         { text: "Client Facing", icon: null, link: "" },
-        { text: "Products", icon: <ShoppingCartOutlined />, link: "/products" },
+        { text: "Products", icon: <ShoppingCartOutlined />, link: "/dashboard/products" },
         { text: "Customers", icon: <Groups2Outlined />, link: "" },
         { text: "Transactions", icon: <ReceiptLongOutlined />, link: "" },
-        { text: "Categories", icon: <CategoryOutlined />, link: "" },
-        { text: "Sub-Categories", icon: <CategoryOutlined />, link: "" },
+        { text: "Categories", icon: <CategoryOutlined />, link: "/dashboard/categories" },
+        { text: "Sub-Categories", icon: <CategoryOutlined />, link: "/dashboard/subCategories" },
         { text: "Sales", icon: null, link: "" },
         { text: "Overview", icon: <PointOfSaleOutlined />, link: "" },
         { text: "Daily", icon: <TodayOutlined />, link: "" },
@@ -45,8 +48,8 @@ const SideBar: React.FC<SideBarProps> = ({ isNonMobile, drawerWidth, isSideBarOp
         { text: "Investors", icon: <CurrencyExchangeOutlined />, link: "" },
         { text: "Discounts", icon: <DiscountOutlined />, link: "" },
         { text: "Management", icon: null, link: "" },
-        { text: "Store", icon: <StorefrontOutlined />, link: "/stores" },
-        { text: "Vendors", icon: <PersonPinOutlined />, link: "/vendors" },
+        { text: "Store", icon: <StorefrontOutlined />, link: `/dashboard/stores/${user?.store}` },
+        { text: "Vendors", icon: <PersonPinOutlined />, link: "/dashboard/vendors" },
         { text: "Performance", icon: <TrendingUpOutlined />, link: "" },
     ];
 

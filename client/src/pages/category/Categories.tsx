@@ -4,50 +4,46 @@ import { useDispatch } from '../../hooks';
 import { RootState } from '../../store';
 import { DataGrid, GridColDef, GridRenderCellParams,GridRowSelectionModel } from '@mui/x-data-grid';
 import { Box, Button, IconButton, useTheme } from '@mui/material';
-import {  useNavigate } from 'react-router-dom';
-import StoresHeader from '../../components/store/StoresHeader';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteStore, getAllStores } from '../../apiCalls/storApiCall';
-import { StoreOriginalType } from '../../slices/storeSlice';
-import ListIcon from '@mui/icons-material/List';
-import UpdateStoreForm from '../../components/store/UpdateStoreForm';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import { regenerateTokenForSuperAdmin } from '../../apiCalls/authApiCall';
 
-const Stores:React.FC = () => {
+import { deleteCategory, getAllCategories } from '../../apiCalls/categoryApiCalls';
+import { CategoryState } from '../../slices/categorySlice';
+import CategoryHeader from '../../components/category/CategoryHeader';
+import UpdateCategoryForm from '../../components/category/UpdateCategoryForm';
+
+const Categories:React.FC = () => {
     const theme = useTheme();
-   const {user}=useSelector((state:RootState)=> state.auth)
-    const {isStoreDeleted,stores} =useSelector((state:RootState)=> state.store)
+
+    const {isCategoryDeleted,categories} =useSelector((state:RootState)=> state.category)
 
     const dispatch = useDispatch();
-   const navigate=useNavigate()
     const [selectedRows, setSelectedRows] = useState<string[]>([]);
     useEffect(()=>{
-      dispatch(getAllStores());
+      dispatch(getAllCategories());
     },[])
     useEffect(() => {
-      if(!isStoreDeleted) {
-        dispatch(getAllStores());
+      if(!isCategoryDeleted) {
+        dispatch(getAllCategories());
       }
-    }, [ dispatch,isStoreDeleted]);
+    }, [ dispatch,isCategoryDeleted]);
   
     const handleDelete = (id: string, event: React.MouseEvent) => {
       event.stopPropagation();
-      dispatch(deleteStore(id));
+      dispatch(deleteCategory(id));
       
       
     };
   
     const handleBulkDelete = () => {
-      selectedRows.forEach((id: string) => dispatch(deleteStore(id)));
+      selectedRows.forEach((id: string) => dispatch(deleteCategory(id)));
     };
-    const  [searchedStore,setSearchedStore]=useState<StoreOriginalType>();
+    const  [searchedCategory,setSearchedCategory]=useState<CategoryState>();
     
-    const searchStore=(id:string)=>{
-      const searchedStore=stores.find((store:StoreOriginalType)=> store._id === id);
-      if(searchedStore){
-        setSearchedStore(searchedStore);
+    const searchCategory=(id:string)=>{
+      const searchedCategory=categories.find((category:CategoryState)=> category._id === id);
+      if(searchedCategory){
+        setSearchedCategory(searchedCategory);
         setOpenEditForm(true);
       }
     }
@@ -55,7 +51,7 @@ const Stores:React.FC = () => {
   
       const handleClickOpenEditForm = (id:string,event:React.MouseEvent) => {
         event.stopPropagation();
-        searchStore(id);
+        searchCategory(id);
         
         
         
@@ -64,21 +60,12 @@ const Stores:React.FC = () => {
         setOpenEditForm(false);
               
       };
-      const handleNavigateToStoreDetail=(storeId:string)=>{
-        if(user?.role ==='superAdmin'){
-          dispatch(regenerateTokenForSuperAdmin(storeId));
-        }
-        navigate(`/dashboard/stores/${storeId}`)
-      }
-      const handleNavigateToMainDashboard=(storeId:string)=>{
-        dispatch(regenerateTokenForSuperAdmin(storeId));
-        navigate(`/dashboard/main`);
-      }
+      
     const columns: GridColDef[] = [
       { field: '_id', headerName: 'ID', flex: 1 },
-      { field: 'storeName', headerName: 'Store Name', flex: 1 },
-      { field: 'address', headerName: 'Address', flex: 1 },
-      
+      { field: 'categoryName', headerName: 'Category Name', flex: 1 },
+      { field: 'categoryDescription', headerName: 'Category Description', flex: 1 },
+      {field: 'productsCount' , headerName:'Products Number', flex:1},
       {
         field: 'actions',
         headerName: 'Actions',
@@ -98,29 +85,19 @@ const Stores:React.FC = () => {
               >
                 <EditIcon />
               </IconButton>
-              
-              
-                <IconButton color='primary' onClick={()=>handleNavigateToStoreDetail(params.row._id)}>
-                  <ListIcon />
-                </IconButton>
-                
-      
-              
-                <IconButton onClick={()=> handleNavigateToMainDashboard(params.row._id)} color='primary'>
-                  <DashboardIcon />
-                </IconButton>
-                
-            
             </Box>
           );
         },
       },
     ];
-  
+    const categoriesWithProductCount = categories.map(category => ({
+        ...category,
+        productsCount: category.product.length,
+      }));
     return (
       <Box m="1.5rem 2.5rem">
-        <StoresHeader />
-        {searchedStore && <UpdateStoreForm handleCloseEditForm={handleCloseEditForm} opendEditForm={openEditForm} storeToUpdate={searchedStore}   />}
+        <CategoryHeader />
+        {searchedCategory && <UpdateCategoryForm handleCloseEditForm={handleCloseEditForm} opendEditForm={openEditForm} categoryToUpdate={searchedCategory}   />}
         <Box display="flex" justifyContent="space-between" alignItems="center" mb="1rem">
           {selectedRows.length > 1 && (
             <Button
@@ -183,9 +160,9 @@ const Stores:React.FC = () => {
           }}
         >
           <DataGrid
-            rows={stores}
+            rows={categoriesWithProductCount}
             columns={columns}
-            getRowId={(row: StoreOriginalType) => row._id}
+            getRowId={(row: CategoryState) => row._id}
             initialState={{
               pagination: {
                 paginationModel: {
@@ -204,4 +181,4 @@ const Stores:React.FC = () => {
     );
 }
 
-export default Stores
+export default Categories

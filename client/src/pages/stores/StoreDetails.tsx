@@ -7,12 +7,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { useDispatch } from '../../hooks';
-import { deleteUser, getSingleUser } from '../../apiCalls/userApiCall';
 import { format } from 'date-fns';
 
 import { userActions, UserType } from '../../slices/userSlice';
-import { getSingleStore } from '../../apiCalls/storApiCall';
-import UpdateStoreForm from '../../components/UpdateStoreForm';
+import { deleteStore, getSingleStore } from '../../apiCalls/storApiCall';
+import UpdateStoreForm from '../../components/store/UpdateStoreForm';
 
 const StoreDetails: React.FC = () => {
     const dispatch = useDispatch();
@@ -33,17 +32,17 @@ const StoreDetails: React.FC = () => {
       };
     useEffect(() => {
         if (id) {
-            dispatch(getSingleUser(id));
+            dispatch(getSingleStore(id));
         }
     }, [id, dispatch]);
     const handleDelete = (id: string) => {
-        dispatch(deleteUser(id));
+        dispatch(deleteStore(id));
         
       };
       useEffect(()=>{
         if(isStoreDeleted){
             dispatch(userActions.setIsUserDeleted(false));
-            navigate('/vendors');
+            navigate('/stores');
         }
         
       })
@@ -156,7 +155,7 @@ const StoreDetails: React.FC = () => {
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
                                 <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Owner</Typography>
-                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleStore?.user.find((user:UserType)=> user.role==='admin')?.firstName+ " " + singleStore?.user.find((user:UserType)=> user.role==='admin')?.lastName}</Typography>
+                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleStore?.user.find((user:UserType)=> user.role==='admin') ? singleStore?.user.find((user:UserType)=> user.role==='admin')?.firstName+ " " + singleStore?.user.find((user:UserType)=> user.role==='admin')?.lastName : "Owner is not affected yet"}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
                                 <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Registred At</Typography>

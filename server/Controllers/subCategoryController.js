@@ -43,7 +43,7 @@ const getAllSubCategories=asyncHandler(async(req,res)=>{
     const databaseConnection=await getConnection(store.database);
     const SubCategoryModel=databaseConnection.model('SubCategory',SubCategory.schema);
    
-    const subCategories=await SubCategoryModel.find().select("-product");
+    const subCategories=await SubCategoryModel.find();
     const count=await SubCategoryModel.countDocuments();
     return res.status(200).send({subCategories,count})
 })

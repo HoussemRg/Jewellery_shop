@@ -5,13 +5,13 @@ import { useForm } from 'react-hook-form';
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { HighlightOffOutlined } from '@mui/icons-material';
-import { RootState } from '../store';
-import { CategoryType, productActions, SubCategoryType } from '../slices/productSlice';
-import { CategoryState } from '../slices/categorySlice';
-import { SubCategoryState } from '../slices/subCategorySlice';
-import { getAllProducts, updateProduct } from '../apiCalls/productApiCalls';
+import { RootState } from '../../store';
+import { CategoryType, productActions, SubCategoryType } from '../../slices/productSlice';
+import { CategoryState } from '../../slices/categorySlice';
+import { SubCategoryState } from '../../slices/subCategorySlice';
+import { getAllProducts, updateProduct } from '../../apiCalls/productApiCalls';
 import { ProductData } from './AddProductForm';
-import { useDispatch } from '../hooks';
+import { useDispatch } from '../../hooks';
 
 interface EditProductState {
     _id: string;

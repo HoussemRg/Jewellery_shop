@@ -13,13 +13,16 @@ import Vendors from './pages/users/Vendors';
 import UserProfile from './pages/users/UserProfile';
 import Stores from './pages/stores/Stores';
 import StoreDetails from './pages/stores/StoreDetails';
+import SuperAdminDashboard from './pages/dashboard/SuperAdminDashboard';
+import Categories from './pages/category/Categories';
+import SubCategories from './pages/subCategories/SubCategories';
 
 function App() {
   const mode=useSelector((state:RootState)=> state.theme.mode);
   const {user}=useSelector((state:RootState)=>state.auth);
  
   const theme=useMemo(()=> createTheme(themeSettings(mode as 'light' | 'dark')),[mode]);
-  console.log(mode)
+  
   return (
     <ThemeProvider theme={theme}>
       <ToastContainer theme="colored" position="top-center" />
@@ -27,14 +30,17 @@ function App() {
       <Routes>
         
         <Route path='/' element={<Home />} />
+        <Route path='/admin-dashboard' element={user && user.role==='superAdmin' ? <SuperAdminDashboard /> : <Navigate to="/"  />} />
         <Route   element={<Layout />}>
-          <Route  path='/dashboard' element={ user  ? <Dashboard /> : <Navigate to="/"  />} />
-          <Route  path='/products' element={ user  ? <Products /> : <Navigate to="/"  />} />
-          <Route  path='/vendors' element={ user  ? <Vendors /> : <Navigate to="/"  />} />
-          <Route  path='/users/:id' element={<UserProfile />} />
-          <Route path='/stores' element={ user && user?.role==='superAdmin' ? <Stores /> : <Navigate to="/"  />} />
-          <Route  path='/stores/:id' element={<StoreDetails />} />
-
+          <Route  path='/dashboard/main' element={ user  ? <Dashboard /> : <Navigate to="/"  />} />
+          <Route  path='/dashboard/products' element={ user  ? <Products /> : <Navigate to="/"  />} />
+          <Route  path='/dashboard/categories' element={ user  ? <Categories /> : <Navigate to="/"  />} />
+          <Route  path='/dashboard/subCategories' element={ user  ? <SubCategories /> : <Navigate to="/"  />} />
+          <Route  path='/dashboard/vendors' element={ user  ? <Vendors /> : <Navigate to="/"  />} />
+          <Route  path='/dashboard/users/:id' element={<UserProfile />} />
+          <Route path='/dashboard/stores' element={ user && user?.role==='superAdmin' ? <Stores /> : <Navigate to="/"  />} />
+          <Route  path='/dashboard/stores/:id' element={<StoreDetails />} />
+    
         </Route>
 
       </Routes>

@@ -4,50 +4,46 @@ import { useDispatch } from '../../hooks';
 import { RootState } from '../../store';
 import { DataGrid, GridColDef, GridRenderCellParams,GridRowSelectionModel } from '@mui/x-data-grid';
 import { Box, Button, IconButton, useTheme } from '@mui/material';
-import {  useNavigate } from 'react-router-dom';
-import StoresHeader from '../../components/store/StoresHeader';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteStore, getAllStores } from '../../apiCalls/storApiCall';
-import { StoreOriginalType } from '../../slices/storeSlice';
-import ListIcon from '@mui/icons-material/List';
-import UpdateStoreForm from '../../components/store/UpdateStoreForm';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import { regenerateTokenForSuperAdmin } from '../../apiCalls/authApiCall';
 
-const Stores:React.FC = () => {
+import CategoryHeader from '../../components/category/CategoryHeader';
+import { deleteSubCategory, getAllSubCategories } from '../../apiCalls/subCategoryApiCalls';
+import { SubCategoryState } from '../../slices/subCategorySlice';
+import UpdateSubCategoryForm from '../../components/subCategories/SubCategoryUpdateForm';
+
+const SubCategories:React.FC = () => {
     const theme = useTheme();
-   const {user}=useSelector((state:RootState)=> state.auth)
-    const {isStoreDeleted,stores} =useSelector((state:RootState)=> state.store)
+
+    const {isSubCategoryDeleted,subCategories} =useSelector((state:RootState)=> state.subCategory)
 
     const dispatch = useDispatch();
-   const navigate=useNavigate()
     const [selectedRows, setSelectedRows] = useState<string[]>([]);
     useEffect(()=>{
-      dispatch(getAllStores());
+      dispatch(getAllSubCategories());
     },[])
     useEffect(() => {
-      if(!isStoreDeleted) {
-        dispatch(getAllStores());
+      if(!isSubCategoryDeleted) {
+        dispatch(getAllSubCategories());
       }
-    }, [ dispatch,isStoreDeleted]);
+    }, [ dispatch,isSubCategoryDeleted]);
   
     const handleDelete = (id: string, event: React.MouseEvent) => {
       event.stopPropagation();
-      dispatch(deleteStore(id));
+      dispatch(deleteSubCategory(id));
       
       
     };
   
     const handleBulkDelete = () => {
-      selectedRows.forEach((id: string) => dispatch(deleteStore(id)));
+      selectedRows.forEach((id: string) => dispatch(deleteSubCategory(id)));
     };
-    const  [searchedStore,setSearchedStore]=useState<StoreOriginalType>();
+    const  [searchedSubCategory,setSearchedSubCategory]=useState<SubCategoryState>();
     
-    const searchStore=(id:string)=>{
-      const searchedStore=stores.find((store:StoreOriginalType)=> store._id === id);
-      if(searchedStore){
-        setSearchedStore(searchedStore);
+    const searchSubCategory=(id:string)=>{
+      const searchedSubCategory=subCategories.find((subCategory:SubCategoryState)=> subCategory._id === id);
+      if(searchedSubCategory){
+        setSearchedSubCategory(searchedSubCategory);
         setOpenEditForm(true);
       }
     }
@@ -55,7 +51,7 @@ const Stores:React.FC = () => {
   
       const handleClickOpenEditForm = (id:string,event:React.MouseEvent) => {
         event.stopPropagation();
-        searchStore(id);
+        searchSubCategory(id);
         
         
         
@@ -64,21 +60,12 @@ const Stores:React.FC = () => {
         setOpenEditForm(false);
               
       };
-      const handleNavigateToStoreDetail=(storeId:string)=>{
-        if(user?.role ==='superAdmin'){
-          dispatch(regenerateTokenForSuperAdmin(storeId));
-        }
-        navigate(`/dashboard/stores/${storeId}`)
-      }
-      const handleNavigateToMainDashboard=(storeId:string)=>{
-        dispatch(regenerateTokenForSuperAdmin(storeId));
-        navigate(`/dashboard/main`);
-      }
+      
     const columns: GridColDef[] = [
       { field: '_id', headerName: 'ID', flex: 1 },
-      { field: 'storeName', headerName: 'Store Name', flex: 1 },
-      { field: 'address', headerName: 'Address', flex: 1 },
-      
+      { field: 'subCategoryName', headerName: 'Sub-Category Name', flex: 1 },
+      { field: 'subCategoryDescription', headerName: 'Sub-Category Description', flex: 1 },
+      {field: 'productsCount' , headerName:'Products Number', flex:1},
       {
         field: 'actions',
         headerName: 'Actions',
@@ -98,29 +85,19 @@ const Stores:React.FC = () => {
               >
                 <EditIcon />
               </IconButton>
-              
-              
-                <IconButton color='primary' onClick={()=>handleNavigateToStoreDetail(params.row._id)}>
-                  <ListIcon />
-                </IconButton>
-                
-      
-              
-                <IconButton onClick={()=> handleNavigateToMainDashboard(params.row._id)} color='primary'>
-                  <DashboardIcon />
-                </IconButton>
-                
-            
             </Box>
           );
         },
       },
     ];
-  
+    const subCategoriesWithProductCount = subCategories.map(subCategory => ({
+        ...subCategory,
+        productsCount: subCategory.product.length,
+      }));
     return (
       <Box m="1.5rem 2.5rem">
-        <StoresHeader />
-        {searchedStore && <UpdateStoreForm handleCloseEditForm={handleCloseEditForm} opendEditForm={openEditForm} storeToUpdate={searchedStore}   />}
+        <CategoryHeader />
+        {searchedSubCategory && <UpdateSubCategoryForm handleCloseEditForm={handleCloseEditForm} opendEditForm={openEditForm} subCategoryToUpdate={searchedSubCategory}   />}
         <Box display="flex" justifyContent="space-between" alignItems="center" mb="1rem">
           {selectedRows.length > 1 && (
             <Button
@@ -183,9 +160,9 @@ const Stores:React.FC = () => {
           }}
         >
           <DataGrid
-            rows={stores}
+            rows={subCategoriesWithProductCount}
             columns={columns}
-            getRowId={(row: StoreOriginalType) => row._id}
+            getRowId={(row: SubCategoryState) => row._id}
             initialState={{
               pagination: {
                 paginationModel: {
@@ -204,4 +181,4 @@ const Stores:React.FC = () => {
     );
 }
 
-export default Stores
+export default SubCategories

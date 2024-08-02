@@ -1,11 +1,11 @@
 import React from 'react'
 import { Box, Button, Typography, useTheme } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import AddUserForm from './user/AddUserForm';
 import { useSelector } from 'react-redux';
-import { RootState } from '../store';
+import { RootState } from '../../store';
+import AddSubCategoryForm from './SubCategoryAddForm';
 
-const VendorsHeader :React.FC = () => {
+const SubCategoryHeader :React.FC = () => {
     const theme=useTheme();
     const [open, setOpen] = React.useState<boolean>(false);
     const {user}=useSelector((state:RootState)=>state.auth)
@@ -22,10 +22,10 @@ const VendorsHeader :React.FC = () => {
     <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box>
           <Typography variant='h3' color={theme.palette.secondary[100]} fontWeight="bold" mb="5px">
-          Vendors
+          Sub-Categories
           </Typography>
           <Typography variant='h5' color={theme.palette.secondary[300]}>
-          List of Vendors
+          List of Sub-Categories
           </Typography>
         </Box>
         <Box>
@@ -35,7 +35,7 @@ const VendorsHeader :React.FC = () => {
           </Typography> 
         </Button>}
           
-          <AddUserForm handleClose={handleClose} open={open} />
+          <AddSubCategoryForm handleClose={handleClose} open={open} />
         </Box>
         
       
@@ -43,4 +43,4 @@ const VendorsHeader :React.FC = () => {
   )
 }
 
-export default VendorsHeader
+export default SubCategoryHeader

@@ -74,4 +74,23 @@ const { Store } = require('../Models/Store');
     })
  })
 
-module.exports={registerUser,loginUser};
+const regenrateTokenForSuperAdmin=asyncHandler(async(req,res)=>{
+    const userId=req.user.id;
+    const {storeId}=req.body;
+    const userConnection=await getConnection('Users');
+    const userModel= userConnection.model('User',User.schema);
+    let user=await userModel.findById(userId);
+    if(!user) return res.status(400).send('Server error,please login again');
+    user.store=storeId;
+    const newToken=user.generateAuthToken();
+    return res.status(200).send({
+        id:user._id,
+        token:newToken,
+        firstName:user.firstName,
+        lastName:user.lastName,
+        role:user.role,
+        store:user.store
+    })
+})
+
+module.exports={registerUser,loginUser,regenrateTokenForSuperAdmin};

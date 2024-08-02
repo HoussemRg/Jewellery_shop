@@ -27,6 +27,11 @@ const authSlice = createSlice({
         login: (state, action: PayloadAction<UserLoggedInState>) => {
             state.user = action.payload;
         },
+        setStoreIdForSuperAdmin:(state,action: PayloadAction<string>)=>{
+            if (state.user) {
+                state.user.store = action.payload;
+            }
+        },
         logout:(state)=>{
             state.user=null;
             localStorage.removeItem('user');

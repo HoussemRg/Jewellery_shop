@@ -1,7 +1,7 @@
 import { Box, Pagination, useMediaQuery } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
-import FilterProducts from "../../components/FilterProducts";
+import FilterProducts from "../../components/product/FilterProducts";
 import {  useSelector } from "react-redux";
 import { RootState } from "../../store";
 import {

@@ -24,11 +24,12 @@ const Navbar :React.FC<NavbarProps>= ({user,isSideBarOpened,setIsSideBarOpened})
     const logout=()=>{
       dispatch(authActions.logout());
       setAnchorEl(null)
+      navigate('/')
     }
     const navigate=useNavigate();
 
     const navigateToUserProfile=()=>{
-      navigate(`/users/${user?.id}`);
+      navigate(`/dashboard/users/${user?.id}`);
       handleClose();
     }
 

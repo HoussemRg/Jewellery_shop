@@ -1,13 +1,13 @@
 import axios, { AxiosError } from 'axios';
-import {  toast } from 'react-toastify';
+import {  Id, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Dispatch, Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import { RootState } from '../store';
+import { AppDispatch, AppThunk, RootState } from '../store';
 import { subCategoryActions } from '../slices/subCategorySlice';
 type ThunkResult<R> = ThunkAction<R, RootState, unknown, Action>;
 const getAllSubCategories=():ThunkResult<Promise<void>> =>{
-    return async(dispatch:Dispatch,getState)=>{
+    return async(dispatch:AppDispatch,getState)=>{
         try{
             const res= await axios.get('http://localhost:3001/api/subcategories',{
                 headers:{
@@ -27,4 +27,71 @@ const getAllSubCategories=():ThunkResult<Promise<void>> =>{
     }
 }
 
-export {getAllSubCategories}
+
+const createSubCategory=(subCategory:SubCategoryData):AppThunk<Promise<void>> =>{
+    let id: Id | undefined;
+    return async(dispatch:AppDispatch,getState:()=>RootState)=>{
+        id = toast.loading("Creating  Sub-Category, Please wait...");
+        try{
+            await axios.post(`http://localhost:3001/api/subCategories/create`,subCategory,{
+                headers:{
+                    Authorization: "Bearer " + getState().auth.user?.token
+                }
+            });
+            dispatch(subCategoryActions.setIsSubCategoryCreated(true));
+            toast.update(id, { render: "SubC-ategory updated successfully", type: "success", isLoading: false, autoClose: 1200 });
+        }catch(err){
+            const error = err as AxiosError;
+            if (id) {
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+            }
+        }
+    }
+}
+const updateSubCategory = (newSubCategory:Partial<SubCategoryEditData>,subCategoryId:string):AppThunk<Promise<void>> => {
+    let id: Id | undefined;
+    return async (dispatch: AppDispatch,getState: () => RootState) => {
+        id = toast.loading("Updating  Sub-Category, Please wait...");
+        try {
+            
+            const res = await axios.put(`http://localhost:3001/api/subCategories/${subCategoryId}`,newSubCategory, {
+                headers: {
+                    Authorization: "Bearer " + getState().auth.user?.token
+                }
+            });
+            dispatch(subCategoryActions.updateSubCategory(res.data));
+            dispatch(subCategoryActions.setIsSubCategoryUpdated(true));
+         
+            toast.update(id, { render: "Sub-Category updated successfully", type: "success", isLoading: false, autoClose: 1200 });
+        } catch (err: unknown) {
+            const error = err as AxiosError;
+            if (id) {
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+            }
+        }
+    }
+}
+const deleteSubCategory= (subCategoryId:string):AppThunk<Promise<void>> => {
+    let id: Id | undefined;
+    return async (dispatch: Dispatch,getState: () => RootState) => {
+        id = toast.loading("deleting  category, Please wait...");
+        try {
+            await axios.delete(`http://localhost:3001/api/subCategories/${subCategoryId}`, {
+                headers: {
+                    Authorization: "Bearer " + getState().auth.user?.token
+                }
+            });
+            dispatch(subCategoryActions.deleteSubCategory(subCategoryId));
+            dispatch(subCategoryActions.setIsSubCategoryDeleted(true));
+            toast.update(id, { render: "Sub-Category deleted successfully", type: "success", isLoading: false, autoClose: 1200 });
+        } catch (err: unknown) {
+            const error = err as AxiosError;
+            if (id) {
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+            }
+        }
+    }
+}
+
+
+export {getAllSubCategories,createSubCategory,updateSubCategory,deleteSubCategory}

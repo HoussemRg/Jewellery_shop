@@ -4,11 +4,11 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextFie
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup'
-import { userActions, UserType } from '../slices/userSlice';
-import { useDispatch } from '../hooks';
-import { updateUser } from '../apiCalls/userApiCall';
+import { userActions, UserType } from '../../slices/userSlice';
+import { useDispatch } from '../../hooks';
+import { updateUser } from '../../apiCalls/userApiCall';
 import { useSelector } from 'react-redux';
-import { RootState } from '../store';
+import { RootState } from '../../store';
 interface UpdateUserProps{
     handleCloseEditForm: () => void,
     opendEditForm: boolean,

@@ -24,7 +24,7 @@ const Login: React.FC = () => {
 
  useEffect(()=>{
   if(user){
-    navigate('/dashboard');
+    user.role!=='superAdmin' ? navigate('/dashboard/main'): navigate('/admin-dashboard');
   }
  },[user,navigate]);
 

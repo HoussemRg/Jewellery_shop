@@ -4,12 +4,11 @@ import React, { useEffect } from 'react';
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from '../hooks';
+import { useDispatch } from '../../hooks';
 import { useSelector } from 'react-redux';
-import { RootState } from '../store';
-
-import { createStore, getAllStores } from '../apiCalls/storApiCall';
-import { storeActions } from '../slices/storeSlice';
+import { RootState } from '../../store';
+import { createCategory, getAllCategories } from '../../apiCalls/categoryApiCalls';
+import { categoryActions } from '../../slices/categorySlice';
 
 export interface FormProps {
   handleClose: () => void,
@@ -19,28 +18,27 @@ export interface FormProps {
 
 
 
-export interface StoreData {
-  storeName: string,
-  description: string,
-  address: string,
+export interface CategoryData {
+  categoryName: string,
+  categoryDescription: string,
   
 }
 
-const AddStoreForm: React.FC<FormProps> = ({ handleClose, open }) => {
+const AddCategoryForm: React.FC<FormProps> = ({ handleClose, open }) => {
   const dispatch = useDispatch();
-  const {isStoreCreated} =useSelector((state:RootState)=> state.store)
+  const {isCategoryCreated} =useSelector((state:RootState)=> state.category)
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
 
   const formSchema = yup.object({
-    storeName: yup.string().required('Store Name is required').min(3).max(50).trim(),
-    description: yup.string().required('Description  is required').min(3).trim(),    
-    address: yup.string().required('Address required').min(5).max(50).trim(),
+    categoryName: yup.string().required('Category Name is required').min(3).max(50).trim(),
+    categoryDescription: yup.string().required('Description  is required').min(5).trim(),    
+
    
   });
 
-  const { register, handleSubmit, formState: { errors },reset } = useForm<StoreData>({
+  const { register, handleSubmit, formState: { errors },reset } = useForm<CategoryData>({
     resolver: yupResolver(formSchema),
 
   });
@@ -48,18 +46,18 @@ const AddStoreForm: React.FC<FormProps> = ({ handleClose, open }) => {
  
 
 
-  const submitForm = (data: StoreData) => {
-    dispatch(createStore(data));        
+  const submitForm = (data: CategoryData) => {
+    dispatch(createCategory(data));        
   }
 
   useEffect(() => {
-    if (isStoreCreated) {
-      dispatch(getAllStores());
+    if (isCategoryCreated) {
+      dispatch(getAllCategories());
       handleClose();
       reset();
-      dispatch(storeActions.setIsStoreCreated(false));
+      dispatch(categoryActions.setIsCategoryCreated(false));
     }
-  }, [isStoreCreated, dispatch, handleClose]);
+  }, [isCategoryCreated, dispatch, handleClose]);
  
   return (
     <Dialog
@@ -71,7 +69,7 @@ const AddStoreForm: React.FC<FormProps> = ({ handleClose, open }) => {
       sx={{ '& .MuiDialog-paper': { overflowX: 'hidden' } }}
     >
       <DialogTitle display="flex" justifyContent="space-between" alignItems="center">
-        <Box>Add New User</Box>
+        <Box>Add New Category</Box>
         <Button
           onClick={handleClose}
           color="warning"
@@ -101,37 +99,23 @@ const AddStoreForm: React.FC<FormProps> = ({ handleClose, open }) => {
           <TextField
             required
             InputLabelProps={{ shrink: true }}
-            id="storeName"
-            label="Store Name"
-            placeholder="Store Name"
-            error={!!errors.storeName}
-            helperText={errors.storeName?.message}
-            {...register('storeName')}
+            id="categoryName"
+            label="Category Name"
+            placeholder="Category Name"
+            error={!!errors.categoryName}
+            helperText={errors.categoryName?.message}
+            {...register('categoryName')}
           />
           <TextField
             required
             InputLabelProps={{ shrink: true }}
-            id="description"
+            id="categoryDescription"
             label="Description"
             placeholder="Description"
-            error={!!errors.description}
-            helperText={errors.description?.message}
-            {...register('description')}
+            error={!!errors.categoryDescription}
+            helperText={errors.categoryDescription?.message}
+            {...register('categoryDescription')}
           />
-          <TextField
-            required
-            InputLabelProps={{ shrink: true }}
-            id="address"
-            label="Address"
-            placeholder="Address"
-            error={!!errors.address}
-            helperText={errors.address?.message}
-            {...register('address')}
-          />
-         
-          
-          
-          
           <DialogActions>
             <Button autoFocus onClick={handleClose} color="warning">
               Cancel
@@ -146,4 +130,4 @@ const AddStoreForm: React.FC<FormProps> = ({ handleClose, open }) => {
   );
 }
 
-export default AddStoreForm;
+export default AddCategoryForm;

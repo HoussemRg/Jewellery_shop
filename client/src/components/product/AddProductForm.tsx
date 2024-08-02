@@ -4,13 +4,13 @@ import React, { useEffect, useState } from 'react';
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from '../hooks';
-import { createProduct, getAllProducts, getProductsNumber } from '../apiCalls/productApiCalls';
+import { useDispatch } from '../../hooks';
+import { createProduct, getAllProducts, getProductsNumber } from '../../apiCalls/productApiCalls';
 import { useSelector } from 'react-redux';
-import { RootState } from '../store';
-import { productActions } from '../slices/productSlice';
-import { CategoryState } from '../slices/categorySlice';
-import { SubCategoryState } from '../slices/subCategorySlice';
+import { RootState } from '../../store';
+import { productActions } from '../../slices/productSlice';
+import { CategoryState } from '../../slices/categorySlice';
+import { SubCategoryState } from '../../slices/subCategorySlice';
 
 export interface FormProps {
   handleClose: () => void,

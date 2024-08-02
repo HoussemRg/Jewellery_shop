@@ -5,7 +5,7 @@ import getImageType from '../../utils/getImageType';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import FlexBetween from '../../components/FlexBetween';
-import EditProductForm from '../../components/EditProductForm';
+import EditProductForm from '../../components/product/EditProductForm';
 import { RootState } from '../../store';
 import { useSelector } from 'react-redux';
 
