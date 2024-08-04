@@ -12,6 +12,8 @@ require('dotenv').config();
 
 
 const { getConnection, initializeConnections, redisClient } = require('./Utils/dbconnection');
+const { clientRoutes } = require("./Routes/clientRoutes");
+const { orderRoutes } = require("./Routes/orderRoutes");
 
 const app=express();
 app.use(express.json());
@@ -35,6 +37,8 @@ redisClient.on('ready', async () => {
   app.use('/api/products', productRoutes);
   app.use('/api/categories', categoryRoute);
   app.use('/api/subcategories', subCategoryRoute);
+  app.use('/api/clients', clientRoutes);
+  app.use('/api/orders', orderRoutes);
 
   app.listen(port, () => console.log(`http://localhost:${port}`));
 });

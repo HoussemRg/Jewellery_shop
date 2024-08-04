@@ -34,7 +34,7 @@ const SideBar: React.FC<SideBarProps> = ({ isNonMobile, drawerWidth, isSideBarOp
         { text: "Dashboard", icon: <HomeOutlined />, link: "" },
         { text: "Client Facing", icon: null, link: "" },
         { text: "Products", icon: <ShoppingCartOutlined />, link: "/dashboard/products" },
-        { text: "Customers", icon: <Groups2Outlined />, link: "" },
+        { text: "Customers", icon: <Groups2Outlined />, link: "/dashboard/clients" },
         { text: "Transactions", icon: <ReceiptLongOutlined />, link: "" },
         { text: "Categories", icon: <CategoryOutlined />, link: "/dashboard/categories" },
         { text: "Sub-Categories", icon: <CategoryOutlined />, link: "/dashboard/subCategories" },

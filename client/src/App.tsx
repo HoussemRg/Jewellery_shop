@@ -16,6 +16,8 @@ import StoreDetails from './pages/stores/StoreDetails';
 import SuperAdminDashboard from './pages/dashboard/SuperAdminDashboard';
 import Categories from './pages/category/Categories';
 import SubCategories from './pages/subCategories/SubCategories';
+import Clients from './pages/clients/Clients';
+import ClientProfile from './pages/clients/ClientsProfile';
 
 function App() {
   const mode=useSelector((state:RootState)=> state.theme.mode);
@@ -37,7 +39,9 @@ function App() {
           <Route  path='/dashboard/categories' element={ user  ? <Categories /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/subCategories' element={ user  ? <SubCategories /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/vendors' element={ user  ? <Vendors /> : <Navigate to="/"  />} />
-          <Route  path='/dashboard/users/:id' element={<UserProfile />} />
+          <Route  path='/dashboard/users/:id' element={ user  ?<UserProfile /> :<Navigate to="/"  /> } />
+          <Route  path='/dashboard/clients' element={ user  ? <Clients /> : <Navigate to="/"  />} />
+          <Route  path='/dashboard/clients/:id' element={ user  ?<ClientProfile />:<Navigate to="/"  />} />
           <Route path='/dashboard/stores' element={ user && user?.role==='superAdmin' ? <Stores /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/stores/:id' element={<StoreDetails />} />
     

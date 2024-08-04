@@ -7,19 +7,18 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { useDispatch } from '../../hooks';
-import { deleteUser, getSingleUser } from '../../apiCalls/userApiCall';
 import { format } from 'date-fns';
-import UpdateUserForm from '../../components/user/UpdateUserForm';
-import { authActions } from '../../slices/authSlice';
-import { userActions } from '../../slices/userSlice';
 
-const UserProfile: React.FC = () => {
+import { userActions } from '../../slices/userSlice';
+import { deleteClient, getSingleClient } from '../../apiCalls/clientApiCall';
+import UpdateClientForm from '../../components/client/UpdateClientForm';
+
+const ClientProfile: React.FC = () => {
     const dispatch = useDispatch();
     const theme = useTheme();
     const navigate=useNavigate();
     const { id } = useParams();
-    const { user } = useSelector((state: RootState) => state.auth);
-    const { singleUser,isUserDeleted } = useSelector((state: RootState) => state.user);
+    const { singleClient,isClientDeleted } = useSelector((state: RootState) => state.client);
     const [openEditForm, setOpenEditForm] = React.useState<boolean>(false);
     const handleClickOpenEditForm = () => {
         setOpenEditForm(true);
@@ -27,29 +26,23 @@ const UserProfile: React.FC = () => {
       const handleCloseEditForm = () => {
         setOpenEditForm(false);
         if (id) {
-            dispatch(getSingleUser(id));
+            dispatch(getSingleClient(id));
         }
               
       };
     useEffect(() => {
         if (id) {
-            dispatch(getSingleUser(id));
+            dispatch(getSingleClient(id));
         }
     }, [id, dispatch]);
     const handleDelete = (id: string) => {
-        dispatch(deleteUser(id));
+        dispatch(deleteClient(id));
         
       };
       useEffect(()=>{
-        if(isUserDeleted){
-            if(id===user?.id){
-                dispatch(authActions.logout());             
-                navigate('/');
-                dispatch(userActions.setIsUserDeleted(false));
-            }else{
-                dispatch(userActions.setIsUserDeleted(false));
-                navigate('/dashboard/vendors');
-            }
+        if(isClientDeleted){
+            dispatch(userActions.setIsUserDeleted(false));
+                navigate('/dashboard/clients');
         }
         
       })
@@ -63,7 +56,7 @@ const UserProfile: React.FC = () => {
             height="100%" 
             p={2}
         >
-            {singleUser && <UpdateUserForm handleCloseEditForm={handleCloseEditForm} opendEditForm={openEditForm} userToUpdate={singleUser}   />}
+            {singleClient && <UpdateClientForm handleCloseEditForm={handleCloseEditForm} opendEditForm={openEditForm} clientToUpdate={singleClient}   />}
             <Grid container height="100%" columnSpacing={1}>
                 <Grid item xs={12} md={5} bgcolor={theme.palette.background.paper} height="100%" width="100%">
                     <Box
@@ -98,23 +91,18 @@ const UserProfile: React.FC = () => {
                         </Box>
                         <Box 
                             display="flex"
-                            flexDirection="column"
+                            
                             justifyContent="center"
                             alignItems="center"
                             gap="10px"
                         >
                             <Typography 
-                                variant='h4' 
+                                variant='h5' 
                                 sx={{ color: theme.palette.primary.main }}
                             >
-                                {singleUser?.firstName + " " + singleUser?.lastName}
+                                {singleClient?.firstName + " " + singleClient?.lastName}
                             </Typography>
-                            <Typography 
-                                variant='h6' 
-                                sx={{ color: theme.palette.grey[300] }}
-                            >
-                                {singleUser?.role}
-                            </Typography>
+                            
                         </Box>
                         <Box 
                             display="flex" 
@@ -123,10 +111,10 @@ const UserProfile: React.FC = () => {
                             gap={2}
                             width="100%"
                         >
-                            {singleUser && <IconButton
+                            {singleClient && <IconButton
                                 color="error"
                                 sx={{ '&:hover': { color: theme.palette.error.dark } }}
-                                onClick={()=>handleDelete(singleUser?._id)}
+                                onClick={()=>handleDelete(singleClient?._id)}
                             >
                                 <DeleteIcon />
                             </IconButton>}
@@ -164,36 +152,32 @@ const UserProfile: React.FC = () => {
                         <Grid container rowSpacing={4} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
                                 <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Cin</Typography>
-                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleUser?.cin}</Typography>
+                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleClient?.cin}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
                                 <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Email</Typography>
-                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleUser?.email}</Typography>
+                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleClient?.email}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
                                 <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Address</Typography>
-                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleUser?.address}</Typography>
+                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleClient?.address}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
                                 <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Phone Number</Typography>
-                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleUser?.phoneNumber}</Typography>
+                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleClient?.phoneNumber}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
                                 <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Registred At</Typography>
-                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{formatDateString(singleUser?.createdAt)}</Typography>
+                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{formatDateString(singleClient?.createdAt)}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
                                 <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Last Update</Typography>
-                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{formatDateString(singleUser?.updatedAt)}</Typography>
+                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{formatDateString(singleClient?.updatedAt)}</Typography>
                             </Grid>
-                            {singleUser && singleUser.role !== 'superAdmin' && <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Store</Typography>
-                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleUser?.store?.storeName}</Typography>
-                            </Grid>}
-                            {singleUser && singleUser.role !== 'superAdmin' &&<Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Store Address</Typography>
-                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleUser?.store?.address}</Typography>
-                            </Grid>}
+                            <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
+                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Orders Number</Typography>
+                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleClient?.order.length}</Typography>
+                            </Grid>
                         </Grid>
                     </Box>
                 </Grid>
@@ -202,4 +186,4 @@ const UserProfile: React.FC = () => {
     );
 };
 
-export default UserProfile;
+export default ClientProfile;

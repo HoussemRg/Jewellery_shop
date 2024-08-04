@@ -6,6 +6,8 @@ import { categoryReducer, CategorySliceState } from './slices/categorySlice';
 import { subCategoryReducer, SubCategorySliceState,  } from './slices/subCategorySlice';
 import { userReducer, UserState } from './slices/userSlice';
 import { storeReducer, StoreState } from './slices/storeSlice';
+import { clientReducer, ClientState } from './slices/clientSlice';
+import { orderReducer, OrderState } from './slices/orderSlice';
 
 export type RootState = {
     theme: ThemeState;
@@ -14,7 +16,9 @@ export type RootState = {
     category: CategorySliceState;
     subCategory: SubCategorySliceState;
     user: UserState,
-    store:StoreState
+    store:StoreState,
+    client:ClientState,
+    order:OrderState
 };
 
 const store = configureStore({
@@ -25,12 +29,14 @@ const store = configureStore({
         category: categoryReducer,
         subCategory: subCategoryReducer,
         user:userReducer,
-        store:storeReducer
+        store:storeReducer,
+        client:clientReducer,
+        order:orderReducer
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             thunk: {
-                extraArgument: undefined as unknown // Ensure extraArgument is compatible
+                extraArgument: undefined as unknown 
             },
             serializableCheck: false,
         }),
@@ -46,9 +52,3 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 >;
 export default store;
 
-/*
- middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-            serializableCheck: false, // Disable serializable checks if needed
-        }),
-*/

@@ -4,17 +4,21 @@ import 'react-toastify/dist/ReactToastify.css';
 import {  Dispatch } from 'redux';
 import {  AppThunk, RootState } from '../store';
 
-import { userActions } from '../slices/userSlice';
-import { UserData } from '../components/user/AddUserForm';
-import { UserEditData } from '../components/user/UpdateUserForm';
 
+import { clientActions } from '../slices/clientSlice';
+import { ClientData } from '../components/client/AddClientForm';
+import { ClientEditData } from '../components/client/UpdateClientForm';
 
-const registerUser=(user:UserData):AppThunk<Promise<void>> =>{
-    return async(dispatch:Dispatch)=>{
+const createClient=(client:ClientData):AppThunk<Promise<void>> =>{
+    return async(dispatch:Dispatch,getState)=>{
         try{
-            await axios.post(`http://localhost:3001/api/auth/register`,user);
-            dispatch(userActions.setIsUserCreated(true));
-            toast.success('user added successfully');
+            await axios.post(`http://localhost:3001/api/clients/create`,client,{
+                headers:{
+                    Authorization:"Bearer " + getState().auth.user?.token
+                }
+            });
+            dispatch(clientActions.setIsClientCreated(true));
+            toast.success('client added successfully');
         }catch(err){
             const error = err as AxiosError;
             if (error.response) {
@@ -26,15 +30,15 @@ const registerUser=(user:UserData):AppThunk<Promise<void>> =>{
     }
 }
 
-const getVendorsPerStore = (storeId:string):AppThunk<Promise<void>> => {
+const getAllClients = ():AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         try {
-            const res = await axios.get(`http://localhost:3001/api/users/vendors/${storeId}`, {
+            const res = await axios.get(`http://localhost:3001/api/clients`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             });
-            dispatch(userActions.getAllVendorsPerStore(res.data.users));
+            dispatch(clientActions.getAllClients(res.data.clients));
             
         } catch (err: unknown) {
             const error = err as AxiosError;
@@ -47,14 +51,14 @@ const getVendorsPerStore = (storeId:string):AppThunk<Promise<void>> => {
     }
 }
 
-const getSingleUser=(userId:string):AppThunk<Promise<void>>=> async(dispatch:Dispatch,getState:()=>RootState)=>{
+const getSingleClient=(clientId:string):AppThunk=> async(dispatch:Dispatch,getState)=>{
     try{
-        const res = await axios.get(`http://localhost:3001/api/users/${userId}`, {
+        const res = await axios.get(`http://localhost:3001/api/clients/${clientId}`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
             }
         });
-        dispatch(userActions.getSingleUser(res.data));
+        dispatch(clientActions.getSingleClient(res.data));
     }catch(err){
         const error = err as AxiosError;
             if (error.response) {
@@ -65,21 +69,21 @@ const getSingleUser=(userId:string):AppThunk<Promise<void>>=> async(dispatch:Dis
     }
 }
 
-const updateUser = (newUser:Partial<UserEditData>,userId:string):AppThunk<Promise<void>> => {
+const updateClient = (newClient:Partial<ClientEditData>,userId:string):AppThunk<Promise<void>> => {
     let id: Id | undefined;
     return async (dispatch: Dispatch,getState: () => RootState) => {
         id = toast.loading("Updating  user, Please wait...");
         try {
             
-            const res = await axios.put(`http://localhost:3001/api/users/${userId}`,newUser, {
+            const res = await axios.put(`http://localhost:3001/api/clients/${userId}`,newClient, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             });
-            dispatch(userActions.updateUser(res.data));
-            dispatch(userActions.setIsUserUpdated(true));
+            dispatch(clientActions.updateClient(res.data));
+            dispatch(clientActions.setIsClientUpdated(true));
          
-            toast.update(id, { render: "User updated successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Client updated successfully", type: "success", isLoading: false, autoClose: 1200 });
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (id) {
@@ -89,19 +93,19 @@ const updateUser = (newUser:Partial<UserEditData>,userId:string):AppThunk<Promis
     }
 }
 
-const deleteUser= (userId:string):AppThunk<Promise<void>> => {
+const deleteClient= (clientId:string):AppThunk<Promise<void>> => {
     let id: Id | undefined;
     return async (dispatch: Dispatch,getState: () => RootState) => {
-        id = toast.loading("deleting  user, Please wait...");
+        id = toast.loading("deleting  client, Please wait...");
         try {
-            await axios.delete(`http://localhost:3001/api/users/${userId}`, {
+            await axios.delete(`http://localhost:3001/api/clients/${clientId}`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             });
-            dispatch(userActions.deleteUser(userId));
-            dispatch(userActions.setIsUserDeleted(true));
-            toast.update(id, { render: "User deleted successfully", type: "success", isLoading: false, autoClose: 1200 });
+            dispatch(clientActions.deleteClient(clientId));
+            dispatch(clientActions.setIsClientDeleted(true));
+            toast.update(id, { render: "Client deleted successfully", type: "success", isLoading: false, autoClose: 1200 });
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (id) {
@@ -111,4 +115,4 @@ const deleteUser= (userId:string):AppThunk<Promise<void>> => {
     }
 }
 
-export {getVendorsPerStore,updateUser,deleteUser,registerUser,getSingleUser}
+export {getAllClients,updateClient,deleteClient,getSingleClient,createClient}

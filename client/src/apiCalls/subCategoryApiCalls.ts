@@ -3,11 +3,13 @@ import {  Id, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Dispatch, Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import { AppDispatch, AppThunk, RootState } from '../store';
+import {  AppThunk, RootState } from '../store';
 import { subCategoryActions } from '../slices/subCategorySlice';
+import { SubCategoryData } from '../components/subCategories/SubCategoryAddForm';
+import { SubCategoryEditData } from '../components/subCategories/SubCategoryUpdateForm';
 type ThunkResult<R> = ThunkAction<R, RootState, unknown, Action>;
 const getAllSubCategories=():ThunkResult<Promise<void>> =>{
-    return async(dispatch:AppDispatch,getState)=>{
+    return async(dispatch:Dispatch,getState)=>{
         try{
             const res= await axios.get('http://localhost:3001/api/subcategories',{
                 headers:{
@@ -30,7 +32,7 @@ const getAllSubCategories=():ThunkResult<Promise<void>> =>{
 
 const createSubCategory=(subCategory:SubCategoryData):AppThunk<Promise<void>> =>{
     let id: Id | undefined;
-    return async(dispatch:AppDispatch,getState:()=>RootState)=>{
+    return async(dispatch:Dispatch,getState:()=>RootState)=>{
         id = toast.loading("Creating  Sub-Category, Please wait...");
         try{
             await axios.post(`http://localhost:3001/api/subCategories/create`,subCategory,{
@@ -50,7 +52,7 @@ const createSubCategory=(subCategory:SubCategoryData):AppThunk<Promise<void>> =>
 }
 const updateSubCategory = (newSubCategory:Partial<SubCategoryEditData>,subCategoryId:string):AppThunk<Promise<void>> => {
     let id: Id | undefined;
-    return async (dispatch: AppDispatch,getState: () => RootState) => {
+    return async (dispatch: Dispatch,getState: () => RootState) => {
         id = toast.loading("Updating  Sub-Category, Please wait...");
         try {
             

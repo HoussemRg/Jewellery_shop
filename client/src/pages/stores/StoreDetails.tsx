@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import image from '../../assets/photo.png';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { useDispatch } from '../../hooks';
@@ -155,7 +155,7 @@ const StoreDetails: React.FC = () => {
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
                                 <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Owner</Typography>
-                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleStore?.user.find((user:UserType)=> user.role==='admin') ? singleStore?.user.find((user:UserType)=> user.role==='admin')?.firstName+ " " + singleStore?.user.find((user:UserType)=> user.role==='admin')?.lastName : "Owner is not affected yet"}</Typography>
+                                <Link to={`/dashboard/users/${singleStore?.user.find((user:UserType)=> user.role==='admin')?._id}`}><Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleStore?.user.find((user:UserType)=> user.role==='admin') ? singleStore?.user.find((user:UserType)=> user.role==='admin')?.firstName+ " " + singleStore?.user.find((user:UserType)=> user.role==='admin')?.lastName : "Owner is not affected yet"}</Typography></Link>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
                                 <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Registred At</Typography>

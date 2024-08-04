@@ -334,7 +334,6 @@ const filterProducts=asyncHandler(async(req,res)=>{
     products.forEach(product => {
         if (product.productPhoto) {
             const base64String = product.productPhoto.buffer.toString('base64');
-            //console.log("Raw productPhoto:",base64String);
             try {
                 product.productPhoto = Buffer.from(base64String, 'base64');
                 
