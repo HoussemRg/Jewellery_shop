@@ -5,12 +5,20 @@ import Navbar from '../../components/Navbar';
 import SideBar from '../../components/SideBar';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import TopRightCard from '../../components/Card/TopRightCard';
+import { useDispatch } from '../../hooks';
+import { cardActions } from '../../slices/cardSlice';
 
 const Layout: React.FC = () => {
     const [isSideBarOpened, setIsSideBarOpened] = useState<boolean>(true);
     const isNonMobile = useMediaQuery("(min-width:600px)");
+    const dispatch=useDispatch()
     const user = useSelector((state: RootState) => state?.auth.user);
-
+    const {isCardOpened,productsList} = useSelector((state:RootState)=>state.card);
+    const handleCloseCard=()=>{
+        dispatch(cardActions.setIsCardToggled(false));
+    }
+    
     return (
         <Box display="flex" height="100vh" width="100%">
             
@@ -46,6 +54,7 @@ const Layout: React.FC = () => {
                 {/* Outlet for Page Content */}
                 <Box flexGrow={1} p={isNonMobile ? '20px' : '10px'}>
                     <Outlet />
+                    {isCardOpened && productsList.length>0 &&   <TopRightCard handleClose={handleCloseCard} />}
                 </Box>
             </Box>
         </Box>

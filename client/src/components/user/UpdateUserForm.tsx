@@ -88,7 +88,7 @@ const UpdateUserForm: React.FC<UpdateUserProps> = ({ handleCloseEditForm, opendE
         sx={{ '& .MuiDialog-paper': { overflowX: 'hidden' } }}
       >
         <DialogTitle display="flex" justifyContent="space-between" alignItems="center">
-          <Box>Add New User</Box>
+          <Box>Edit user</Box>
           <Button
             onClick={handleCloseEditForm}
             color="warning"

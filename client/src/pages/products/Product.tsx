@@ -8,6 +8,9 @@ import FlexBetween from '../../components/FlexBetween';
 import EditProductForm from '../../components/product/EditProductForm';
 import { RootState } from '../../store';
 import { useSelector } from 'react-redux';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import { useDispatch } from '../../hooks';
+import { cardActions, ProductToBuyType } from '../../slices/cardSlice';
 
 interface ProductProps{
   product:ProductType,
@@ -30,10 +33,12 @@ const Product:React.FC<ProductProps> = ({ product, delete:deleteProduct }) => {
     } = product;
   const theme = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
+  const dispatch=useDispatch();
 
   const [openEditForm, setOpenEditForm] = useState<boolean>(false);
   const {categories}=useSelector((state:RootState)=> state.category);
     const {subCategories}=useSelector((state:RootState)=> state.subCategory);
+    const {productsList,isCardOpened,clientId}=useSelector((state:RootState)=> state.card);
     const handleOpenForm = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       event.stopPropagation();
       setOpenEditForm(true);
@@ -49,7 +54,23 @@ const Product:React.FC<ProductProps> = ({ product, delete:deleteProduct }) => {
     console.log(openEditForm)
   }*/
  
-  
+  const handleAddProduct=()=>{
+    const productToBuy:ProductToBuyType={
+      _id,
+      productName,
+      description,
+      carat,
+      weight,
+      productPhoto,
+      stockQuantity,
+      category,
+      subCategory
+    }
+    dispatch(cardActions.addProduct(productToBuy));
+    if(!isCardOpened){
+      dispatch(cardActions.setIsCardToggled(true))
+    }
+  }
   return (
     <Card
       sx={{
@@ -59,10 +80,19 @@ const Product:React.FC<ProductProps> = ({ product, delete:deleteProduct }) => {
       }}
     >
       <CardContent>
-        
+        <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant="h5" component="div">
           {productName}
         </Typography>
+        {!productsList.find((product:ProductToBuyType)=> product._id===_id) &&  clientId && <IconButton
+              onClick={handleAddProduct}
+              color="primary"
+            >
+              <AddCircleOutlineOutlinedIcon />
+            </IconButton>}
+
+        </Box>
+        
         <Typography sx={{ mb: "1.5rem" }} color={theme.palette.secondary[200]}>
         {`$${(unitPrice * weight).toFixed(2)}`}
         </Typography>
@@ -89,8 +119,16 @@ const Product:React.FC<ProductProps> = ({ product, delete:deleteProduct }) => {
             >
             {subCategory.subCategoryName}
             </Typography>
+            
         </Box>
-        
+        <Box display="flex" gap="10px">
+        <Typography color={theme.palette.secondary[400]}>Stock :</Typography>
+        <Typography sx={{ fontSize: 14 }}
+            color={theme.palette.secondary[700]}
+            gutterBottom>
+            {stockQuantity}
+          </Typography>
+        </Box>
         <Typography variant="body2">{description}</Typography>
       </CardContent>
       <CardActions>
@@ -137,9 +175,7 @@ const Product:React.FC<ProductProps> = ({ product, delete:deleteProduct }) => {
           <Typography>
             Weight: {weight}
           </Typography>
-          <Typography>
-            Stock: {stockQuantity}
-          </Typography>
+          
           <Typography>
            Purchase Price: {purchasePrice}
           </Typography>

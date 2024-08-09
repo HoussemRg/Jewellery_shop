@@ -7,10 +7,10 @@ import { Box, Button, IconButton, useTheme } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import CategoryHeader from '../../components/category/CategoryHeader';
 import { deleteSubCategory, getAllSubCategories } from '../../apiCalls/subCategoryApiCalls';
 import { SubCategoryState } from '../../slices/subCategorySlice';
 import UpdateSubCategoryForm from '../../components/subCategories/SubCategoryUpdateForm';
+import SubCategoryHeader from '../../components/subCategories/SubCategoryHeader';
 
 const SubCategories:React.FC = () => {
     const theme = useTheme();
@@ -96,7 +96,7 @@ const SubCategories:React.FC = () => {
       }));
     return (
       <Box m="1.5rem 2.5rem">
-        <CategoryHeader />
+        <SubCategoryHeader />
         {searchedSubCategory && <UpdateSubCategoryForm handleCloseEditForm={handleCloseEditForm} opendEditForm={openEditForm} subCategoryToUpdate={searchedSubCategory}   />}
         <Box display="flex" justifyContent="space-between" alignItems="center" mb="1rem">
           {selectedRows.length > 1 && (

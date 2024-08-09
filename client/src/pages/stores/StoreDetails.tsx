@@ -42,7 +42,7 @@ const StoreDetails: React.FC = () => {
       useEffect(()=>{
         if(isStoreDeleted){
             dispatch(userActions.setIsUserDeleted(false));
-            navigate('/stores');
+            navigate('/dashboard/stores');
         }
         
       })
@@ -155,7 +155,7 @@ const StoreDetails: React.FC = () => {
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
                                 <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Owner</Typography>
-                                <Link to={`/dashboard/users/${singleStore?.user.find((user:UserType)=> user.role==='admin')?._id}`}><Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleStore?.user.find((user:UserType)=> user.role==='admin') ? singleStore?.user.find((user:UserType)=> user.role==='admin')?.firstName+ " " + singleStore?.user.find((user:UserType)=> user.role==='admin')?.lastName : "Owner is not affected yet"}</Typography></Link>
+                                {singleStore?.user && singleStore?.user.find((user:UserType)=> user.role==='admin')?._id ? <Link to={`/dashboard/users/${singleStore?.user.find((user:UserType)=> user.role==='admin')?._id}`}><Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleStore?.user.find((user:UserType)=> user.role==='admin') ? singleStore?.user.find((user:UserType)=> user.role==='admin')?.firstName+ " " + singleStore?.user.find((user:UserType)=> user.role==='admin')?.lastName : "Owner is not affected yet"}</Typography></Link> : <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>Owner is not affected yet</Typography>}
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
                                 <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Registred At</Typography>

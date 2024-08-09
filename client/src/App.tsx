@@ -18,6 +18,8 @@ import Categories from './pages/category/Categories';
 import SubCategories from './pages/subCategories/SubCategories';
 import Clients from './pages/clients/Clients';
 import ClientProfile from './pages/clients/ClientsProfile';
+import Orders from './pages/order/Orders';
+import OrderDetails from './pages/order/OrderDetails';
 
 function App() {
   const mode=useSelector((state:RootState)=> state.theme.mode);
@@ -44,6 +46,8 @@ function App() {
           <Route  path='/dashboard/clients/:id' element={ user  ?<ClientProfile />:<Navigate to="/"  />} />
           <Route path='/dashboard/stores' element={ user && user?.role==='superAdmin' ? <Stores /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/stores/:id' element={<StoreDetails />} />
+          <Route path='/dashboard/orders' element={ user && user?.role!=='vendor' ? <Orders /> : <Navigate to="/"  />} />
+          <Route path='/dashboard/orders/:id' element={ user && user?.role!=='vendor' ? <OrderDetails /> : <Navigate to="/"  />} />
     
         </Route>
 

@@ -8,6 +8,7 @@ import { userReducer, UserState } from './slices/userSlice';
 import { storeReducer, StoreState } from './slices/storeSlice';
 import { clientReducer, ClientState } from './slices/clientSlice';
 import { orderReducer, OrderState } from './slices/orderSlice';
+import { cardReducer, CardState } from './slices/cardSlice';
 
 export type RootState = {
     theme: ThemeState;
@@ -18,7 +19,8 @@ export type RootState = {
     user: UserState,
     store:StoreState,
     client:ClientState,
-    order:OrderState
+    order:OrderState,
+    card:CardState
 };
 
 const store = configureStore({
@@ -31,7 +33,8 @@ const store = configureStore({
         user:userReducer,
         store:storeReducer,
         client:clientReducer,
-        order:orderReducer
+        order:orderReducer,
+        card:cardReducer
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

@@ -1,21 +1,21 @@
-import { Box, Pagination, useMediaQuery } from "@mui/material";
+import { Box, Pagination, Typography, useMediaQuery } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import FilterProducts from "../../components/product/FilterProducts";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import {
   deleteProduct,
-  getAllProducts, 
+  getAllProducts,
   getProductsNumber,
 } from "../../apiCalls/productApiCalls";
 import { productActions } from "../../slices/productSlice";
 import ProductsGrid from "./ProductsGrid";
 import ProductsFiltred from "./ProductsFiltred";
 import { useDispatch } from "../../hooks";
- 
+
 const Products: React.FC = () => {
-  const dispatch =useDispatch() ;
+  const dispatch = useDispatch();
   const { products, productsCount } = useSelector(
     (state: RootState) => state.product
   );
@@ -27,16 +27,18 @@ const Products: React.FC = () => {
   const isNonMobile = useMediaQuery("(min-width: 1000px)");
   const PRODUCT_PER_PAGE: number = 8;
   const pages: number = Math.ceil(productsCount / PRODUCT_PER_PAGE);
-  const filterdPages: number = Math.ceil(
+  const filteredPages: number = Math.ceil(
     filteredProductsCount / PRODUCT_PER_PAGE
   );
   const [filtered, setFiltered] = useState<boolean>(false);
+
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
     page: number
   ) => {
     setCurrentPage(page);
   };
+
   const handleFilteredPageChange = (
     event: React.ChangeEvent<unknown>,
     page: number
@@ -59,6 +61,7 @@ const Products: React.FC = () => {
   const handleSetFiltering = () => {
     setFiltered(true);
   };
+
   const handleClearFiltering = (
     event?: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
@@ -67,12 +70,12 @@ const Products: React.FC = () => {
     dispatch(productActions.resetFiltredProducts());
     dispatch(productActions.resetFiltredProductsCount());
     dispatch(productActions.setIsProductsFiltered(false));
-    //dispatch(getAllProducts(currentPage));
   };
+
   return (
     <Box m="1.5rem 2.5rem">
-      <Box>
-        <Header title="PRODUCTS" subtitle="See list of products" />
+      <Header title="PRODUCTS" subtitle="See list of products" />
+      {productsCount > 0 ? (
         <Box my="1.5rem">
           <FilterProducts
             handleSetFiltering={handleSetFiltering}
@@ -81,21 +84,25 @@ const Products: React.FC = () => {
             currentPage={currentPageFilter}
           />
         </Box>
-        {!filtered ? (
-          <ProductsGrid
-            isNonMobile={isNonMobile}
-            products={products}
-            deleteProductFunction={deleteProductFunction}
-          />
-        ) : (
-          <ProductsFiltred
-            isNonMobile={isNonMobile}
-            filteredProducts={filteredProducts}
-            deleteProductFunction={deleteProductFunction}
-          />
-        )}
-      </Box>
-      {productsCount > 0 && !filtered && (
+      ) : (
+        <Box width="100%" display="flex" justifyContent="center" alignItems="center" mt="100px">
+          <Typography>No Products yet</Typography>
+        </Box>
+      )}
+      {!filtered ? (
+        <ProductsGrid
+          isNonMobile={isNonMobile}
+          products={products}
+          deleteProductFunction={deleteProductFunction}
+        />
+      ) : (
+        <ProductsFiltred
+          isNonMobile={isNonMobile}
+          filteredProducts={filteredProducts}
+          deleteProductFunction={deleteProductFunction}
+        />
+      )}
+      {productsCount > 8 && !filtered && (
         <Box
           width="100%"
           display="flex"
@@ -111,7 +118,7 @@ const Products: React.FC = () => {
           />
         </Box>
       )}
-      {filteredProductsCount > 0 && filtered && (
+      {filteredProductsCount > 8 && filtered && (
         <Box
           width="100%"
           display="flex"
@@ -120,7 +127,7 @@ const Products: React.FC = () => {
           py="30px"
         >
           <Pagination
-            count={filterdPages}
+            count={filteredPages}
             page={currentPageFilter}
             onChange={handleFilteredPageChange}
             size="large"

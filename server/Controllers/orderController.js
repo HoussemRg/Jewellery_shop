@@ -6,6 +6,9 @@ const { OrderDetails } = require('../Models/OrderDetails');
 const { Client } = require('../Models/client');
 const { Product } = require('../Models/Product');
 const { Store } = require('../Models/Store');
+const { Category } = require('../Models/Category');
+const { SubCategory } = require('../Models/SubCategory');
+const { populate } = require('dotenv');
 
 /**---------------------------------
  * @desc create new Order 
@@ -24,7 +27,6 @@ const { Store } = require('../Models/Store');
     const OrderModel = databaseConnection.models.Order || databaseConnection.model('Order', Order.schema);
     const ProductModel = databaseConnection.models.Product || databaseConnection.model('Product', Product.schema);
     const OrderDetailsModel = databaseConnection.models.OrderDetails || databaseConnection.model('OrderDetails', OrderDetails.schema);
-
         const client = await ClientModel.findById(req.body.clientId);
         if (!client)  return res.status(400).send("Client not found");
 
@@ -40,12 +42,12 @@ const { Store } = require('../Models/Store');
             product.stockQuantity -= quantity;
             await product.save();
 
-            totalAmount += product.unitPrice * quantity;
+            totalAmount += product.unitPrice * quantity*product.weight;
 
             const orderDetail = new OrderDetailsModel({
                 
                 product: product._id,
-                price: (product.unitPrice*quantity),
+                price: (product.unitPrice*quantity*product.weight),
                 quantity: quantity
             });
             await orderDetail.save();
@@ -90,7 +92,12 @@ const { Store } = require('../Models/Store');
     if (!store)  return res.status(400).send("Store not found");
     const databaseConnection = await getConnection(store.database);
     const OrderModel = databaseConnection.models.Order || databaseConnection.model('Order', Order.schema);
-    let order=await OrderModel.findById(orderId);
+    databaseConnection.models.Client || databaseConnection.model('Client', Client.schema);
+    let order=await OrderModel.findById(orderId).select('-orderDetails').populate({
+        path:'client',
+        model:'Client',
+        select:'firstName lastName'
+    });
     if(!order) return res.status(400).send("Order not found");
     if(req.body.payedAmount > order.totalAmount-order.payedAmount){
         return res.status(400).send("Your payment amount is higher than the total amount");
@@ -100,7 +107,7 @@ const { Store } = require('../Models/Store');
         order.paymentStatus=true;
     }
     await order.save();
-    return res.status(200).send("payment is done successfully");
+    return res.status(200).send(order);
  })
 
 /**---------------------------------
@@ -142,11 +149,13 @@ const { Store } = require('../Models/Store');
     const OrderModel = databaseConnection.models.Order || databaseConnection.model('Order', Order.schema);
     databaseConnection.models.Client || databaseConnection.model('Client', Client.schema);
     databaseConnection.models.Product || databaseConnection.model('Product', Product.schema);
+    databaseConnection.models.Category || databaseConnection.model('Category', Category.schema);
+    databaseConnection.models.SubCategory || databaseConnection.model('SubCategory', SubCategory.schema);
     databaseConnection.models.OrderDetails || databaseConnection.model('OrderDetails', OrderDetails.schema);
     const order=await OrderModel.findById(orderId).select('-orderDetails').populate({
         path:'client',
         model:'Client',
-        select:'firstName lastName cin email '
+        select:'firstName lastName cin email address phoneNumber '
     }).populate({
         path:'orderDetails',
         model:'OrderDetails',
@@ -154,7 +163,17 @@ const { Store } = require('../Models/Store');
         populate: {
             path: 'product',
             model: 'Product',
-            select: '-productPhoto -createdAt -updatedAt -purchasePrice -store'
+            select: '-productPhoto -createdAt -updatedAt -purchasePrice -store',
+            populate:[{
+                path: 'category',
+                model: 'Category',
+                select: '-product -categoryDescription'
+            },
+            {
+                path: 'subCategory',
+                model: 'SubCategory',
+                select: '-product -subCategoryDescription'
+            }]
         }
     });
 

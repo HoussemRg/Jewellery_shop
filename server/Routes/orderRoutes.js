@@ -13,6 +13,6 @@ orderRoutes.get('/:orderId',verifyTokenForOnlySuperAdminOrAdmin,validateId,getSi
 
 orderRoutes.delete('/:orderId',verifyTokenForOnlySuperAdminOrAdmin,validateId,deleteOrder);
 
-orderRoutes.post('/:orderId',verifyTokenForOnlySuperAdminOrAdmin,validateId,payForOrder);
+orderRoutes.put('/:orderId',verifyTokenForOnlySuperAdminOrAdmin,validateId,payForOrder);
 
 module.exports={orderRoutes};

@@ -15,7 +15,12 @@ const Login: React.FC = () => {
     const user = useSelector((state: RootState) => state.auth.user);
   const formSchema = yup.object({
     email: yup.string().email('Email format is not valid').required('Email is required'),
-    password: yup.string().required('Password is required').min(10, 'Password length should be at least 10 characters'),
+    password: yup.string().required('Password is required').min(10, 'Password must be at least 10 characters long')
+    .max(50, 'Password cannot exceed 50 characters')
+    .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .matches(/\d/, 'Password must contain at least one number')
+    .matches(/[@$!%*?&]/, 'Password must contain at least one special character'),
   });
 
   const { register, handleSubmit, formState: { errors } } = useForm({

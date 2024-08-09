@@ -5,9 +5,9 @@ import { ProductType } from "./productSlice";
 export interface OrderType {
   _id: string;
   client:  Pick<ClientType, '_id' | 'firstName' | 'lastName'>;
-  totalAmount: string;
-  paymentStatus: string;
-  payedAmount: string;
+  totalAmount: number;
+  paymentStatus: boolean;
+  payedAmount: number;
   createdAt:Date | null;
   updatedAt:Date | null;
 }
@@ -22,15 +22,16 @@ export interface OrderDetailsType{
 export interface SingleOrderType{
     _id: string;
     orderDetails:  OrderDetailsType[];
-    client: Pick<ClientType, '_id' | 'firstName' | 'lastName' | 'cin' | 'email'>;
-    totalAmount: string;
-    paymentStatus: string;
-    payedAmount: string;
+    client: Pick<ClientType, '_id' | 'firstName' | 'lastName' | 'cin' | 'email' | 'address' | 'phoneNumber'>;
+    totalAmount: number;
+    paymentStatus: boolean;
+    payedAmount: number;
     createdAt:Date | null;
     updatedAt:Date | null;
 }
 export interface OrderState {
   orders: OrderType[];
+  isOrderPaid:boolean;
   isOrderCreated:boolean;
   isOrderUpdated:boolean;
   isOrderDeleted:boolean;
@@ -39,6 +40,7 @@ export interface OrderState {
 
 const initialState: OrderState = {
   orders: [],
+  isOrderPaid:false,
   isOrderCreated:false,
   isOrderUpdated:false,
   isOrderDeleted:false,
@@ -52,8 +54,11 @@ const orderSlice = createSlice({
     getAllOrders: (state, action: PayloadAction<OrderType[]>) => {
       state.orders = action.payload;
     },
+    setIsOrderPaid:(state, action: PayloadAction<boolean>)=>{
+        state.isOrderPaid=action.payload;
+    },
     setIsOrderCreated:(state, action: PayloadAction<boolean>)=>{
-        state.isOrderCreated=action.payload;
+      state.isOrderCreated=action.payload;
     },
     updateOrder: (state, action: PayloadAction<OrderType>) => {
       state.orders = state.orders.map((order) =>

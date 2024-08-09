@@ -130,11 +130,7 @@ const getAllSubCategories=asyncHandler(async(req,res)=>{
                 await store.save();
                 await category.save();
                 await ProductModel.findByIdAndDelete(productId);
-            }else{
-                return res.status(400).send("you are trying to delete a product with a subcategory not found ");
             }
-        }else{
-            return res.status(400).send("you are trying to delete a product not found ");
         }
     }
     

@@ -7,6 +7,10 @@ import Photo from '../assets/photo.png'
 import { authActions, UserLoggedInState } from '../slices/authSlice';
 import { useDispatch } from '../hooks';
 import { useNavigate } from 'react-router-dom';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import { cardActions } from '../slices/cardSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 interface NavbarProps {
     user:UserLoggedInState | null;
     isSideBarOpened: boolean;
@@ -17,6 +21,7 @@ interface NavbarProps {
 const Navbar :React.FC<NavbarProps>= ({user,isSideBarOpened,setIsSideBarOpened}) => {
     const dispatch =useDispatch();
     const theme=useTheme();
+    const  {isCardOpened,productsList}= useSelector((state:RootState)=>state.card);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const isOpen = Boolean(anchorEl);
     const handleClick = (event:React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
@@ -32,7 +37,10 @@ const Navbar :React.FC<NavbarProps>= ({user,isSideBarOpened,setIsSideBarOpened})
       navigate(`/dashboard/users/${user?.id}`);
       handleClose();
     }
-
+     
+    const handleToggleCard=()=>{
+      dispatch(cardActions.setIsCardToggled(!isCardOpened))
+    }
    
 
     
@@ -59,6 +67,12 @@ const Navbar :React.FC<NavbarProps>= ({user,isSideBarOpened,setIsSideBarOpened})
                 </FlexBetween>
             </FlexBetween>
             <FlexBetween gap="1.5rem">
+            {productsList.length>0 && <IconButton
+              onClick={handleToggleCard}
+              
+            >
+              <ShoppingCartOutlinedIcon />
+            </IconButton>}
                 <IconButton onClick={()=> dispatch(themeActions.setMode())} >
                     {
                         theme.palette.mode === 'dark' ?

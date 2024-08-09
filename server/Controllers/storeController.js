@@ -31,7 +31,7 @@ const { Product } = require('../Models/Product');
     });  
     const newConnection=await getConnection(sanitizedStoreName);
     const ProductModel=newConnection.models.Product || newConnection.model('Product', Product.schema);
-    console.log(ProductModel);
+    //console.log(ProductModel);
     /*const newDatabase =mongoose.createConnection(
         `${process.env.DB_URI_P1}${sanitizedStoreName}${process.env.DB_URI_P2}`,      
     );

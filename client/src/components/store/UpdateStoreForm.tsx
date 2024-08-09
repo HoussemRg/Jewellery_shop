@@ -87,12 +87,13 @@ const UpdateStoreForm: React.FC<UpdateStoreProps> = ({ handleCloseEditForm, open
             component="form"
             sx={{
               display: 'flex',
+              flexDirection: 'column',
               flexWrap: 'wrap',
               justifyContent: 'center',
               alignItems: 'center',
               '& .MuiTextField-root': {
                 m: 1,
-                width: fullScreen ? '100%' : 'calc(50% - 16px)',
+                width:'100%',
                 boxSizing: 'border-box',
               },
             }}

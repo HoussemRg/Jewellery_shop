@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from '../../hooks';
 import { RootState } from '../../store';
 import { DataGrid, GridColDef, GridRenderCellParams,GridRowSelectionModel } from '@mui/x-data-grid';
-import { Box, Button, IconButton, useTheme } from '@mui/material';
+import { Box, Button, IconButton, Typography, useTheme } from '@mui/material';
 import {  useNavigate } from 'react-router-dom';
 import StoresHeader from '../../components/store/StoresHeader';
 import EditIcon from '@mui/icons-material/Edit';
@@ -182,7 +182,7 @@ const Stores:React.FC = () => {
             },
           }}
         >
-          <DataGrid
+          {stores.length> 0 ? <DataGrid
             rows={stores}
             columns={columns}
             getRowId={(row: StoreOriginalType) => row._id}
@@ -198,7 +198,10 @@ const Stores:React.FC = () => {
             onRowSelectionModelChange={(newSelection: GridRowSelectionModel) => {
               setSelectedRows(newSelection as string[]);
             }}
-          />
+          /> :
+           <Box width="100%" display="flex" justifyContent="center" alignItems="center" mt="100px">
+            <Typography>No Stores yet </Typography>
+            </Box>}
         </Box>
       </Box>
     );

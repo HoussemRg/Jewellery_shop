@@ -7,49 +7,57 @@ import { useForm } from 'react-hook-form';
 import { useDispatch } from '../../hooks';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { createStore, getAllStores } from '../../apiCalls/storApiCall';
-import { storeActions } from '../../slices/storeSlice';
+
+import { getAllOrders, payForOrder } from '../../apiCalls/orderApiCall';
+import { orderActions } from '../../slices/orderSlice';
 
 export interface FormProps {
   handleClose: () => void,
   open: boolean,
+  orderId: string;
+  
 }
 
-export interface StoreData {
-  storeName: string,
-  description: string,
-  address: string,
+
+
+export interface PaymentData { 
+    payedAmount: number,  
 }
 
-const AddStoreForm: React.FC<FormProps> = ({ handleClose, open }) => {
+const PaymentForm: React.FC<FormProps> = ({ handleClose, open,orderId }) => {
   const dispatch = useDispatch();
-  const { isStoreCreated } = useSelector((state: RootState) => state.store);
+  const {isOrderPaid} =useSelector((state:RootState)=> state.order)
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
+
   const formSchema = yup.object({
-    storeName: yup.string().required('Store Name is required').min(3).max(50).trim(),
-    description: yup.string().required('Description is required').min(3).trim(),
-    address: yup.string().required('Address required').min(5).max(50).trim(),
+    payedAmount: yup.number().required('Payment Amount is required'),
+    
   });
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<StoreData>({
+  const { register, handleSubmit, formState: { errors },reset } = useForm<PaymentData>({
     resolver: yupResolver(formSchema),
+
   });
+ 
+  
 
-  const submitForm = (data: StoreData) => {
-    dispatch(createStore(data));
+  const submitForm = (data: PaymentData) => {
+    dispatch(payForOrder(data,orderId));    
   }
-
+ 
   useEffect(() => {
-    if (isStoreCreated) {
-      dispatch(getAllStores());
-      handleClose();
+    if (isOrderPaid) {
+      dispatch(getAllOrders());
       reset();
-      dispatch(storeActions.setIsStoreCreated(false));
+      dispatch(orderActions.setIsOrderPaid(false));
+      handleClose();
+      
+      
     }
-  }, [isStoreCreated, dispatch, handleClose]);
-
+  }, [isOrderPaid, dispatch, handleClose]);
+ 
   return (
     <Dialog
       onClose={handleClose}
@@ -60,7 +68,7 @@ const AddStoreForm: React.FC<FormProps> = ({ handleClose, open }) => {
       sx={{ '& .MuiDialog-paper': { overflowX: 'hidden' } }}
     >
       <DialogTitle display="flex" justifyContent="space-between" alignItems="center">
-        <Box>Add New Store</Box>
+        <Box>Pay for order</Box>
         <Button
           onClick={handleClose}
           color="warning"
@@ -74,12 +82,12 @@ const AddStoreForm: React.FC<FormProps> = ({ handleClose, open }) => {
           component="form"
           sx={{
             display: 'flex',
-            flexDirection: 'column',
+            flexWrap: 'wrap',
             justifyContent: 'center',
             alignItems: 'center',
             '& .MuiTextField-root': {
               m: 1,
-              width: '100%',
+              width: fullScreen ? '100%' : 'calc(50% - 16px)',
               boxSizing: 'border-box',
             },
           }}
@@ -90,33 +98,15 @@ const AddStoreForm: React.FC<FormProps> = ({ handleClose, open }) => {
           <TextField
             required
             InputLabelProps={{ shrink: true }}
-            id="storeName"
-            label="Store Name"
-            placeholder="Store Name"
-            error={!!errors.storeName}
-            helperText={errors.storeName?.message}
-            {...register('storeName')}
+            id="payedAmount"
+            label="Amount to pay"
+            placeholder="Amount to pay"
+            error={!!errors.payedAmount}
+            helperText={errors.payedAmount?.message}
+            {...register('payedAmount')}
           />
-          <TextField
-            required
-            InputLabelProps={{ shrink: true }}
-            id="description"
-            label="Description"
-            placeholder="Description"
-            error={!!errors.description}
-            helperText={errors.description?.message}
-            {...register('description')}
-          />
-          <TextField
-            required
-            InputLabelProps={{ shrink: true }}
-            id="address"
-            label="Address"
-            placeholder="Address"
-            error={!!errors.address}
-            helperText={errors.address?.message}
-            {...register('address')}
-          />
+         
+          
           <DialogActions>
             <Button autoFocus onClick={handleClose} color="warning">
               Cancel
@@ -131,4 +121,4 @@ const AddStoreForm: React.FC<FormProps> = ({ handleClose, open }) => {
   );
 }
 
-export default AddStoreForm;
+export default PaymentForm;

@@ -4,6 +4,7 @@ const { getConnection, connections } = require('../Utils/dbconnection');
 const { Store } = require('../Models/Store');
 const { Client,validateCreateClient, validateUpdateClient } = require('../Models/client');
 const { Order } = require('../Models/Order');
+const { OrderDetails } = require('../Models/OrderDetails');
 
 /**---------------------------------
  * @desc create new client 
@@ -121,8 +122,21 @@ const getAllClients=asyncHandler(async(req,res)=>{
     if (!store) return res.status(400).send("Store not found");
     const databaseConnection=await getConnection(store.database);
     const ClientModel=databaseConnection.models.Client || databaseConnection.model('Client', Client.schema);
-    await ClientModel.findByIdAndDelete(clientId);
-    res.status(200).send("Client deleted successfully");
+    const OrderModel=databaseConnection.models.Order || databaseConnection.model('Order', Order.schema);
+    const OrderDetailsModel=databaseConnection.models.OrderDetails || databaseConnection.model('OrderDetails', OrderDetails.schema);
+    const client=await ClientModel.findById(clientId);
+    if (!client) return res.status(400).send("Client not found");
+    const orders = await OrderModel.find({ client: client._id });
+
+  for (let order of orders) {
+    await OrderDetailsModel.deleteMany({ order: order._id });
+  }
+
+  await OrderModel.deleteMany({ client: client._id });
+
+  await ClientModel.findByIdAndDelete(clientId);
+
+  res.status(200).send("Client deleted successfully");
     
  })
 module.exports={createClient,getAllClients,getSingleClient,updateClient,deleteClient};
