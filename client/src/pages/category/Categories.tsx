@@ -6,17 +6,21 @@ import { DataGrid, GridColDef, GridRenderCellParams,GridRowSelectionModel } from
 import { Box, Button, IconButton, useTheme } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DiscountIcon from '@mui/icons-material/Discount';
 
 import { deleteCategory, getAllCategories } from '../../apiCalls/categoryApiCalls';
 import { CategoryState } from '../../slices/categorySlice';
 import CategoryHeader from '../../components/category/CategoryHeader';
 import UpdateCategoryForm from '../../components/category/UpdateCategoryForm';
+import { getCouponPerType } from '../../apiCalls/couponApiCall';
+import ApplyCouonForm from '../../components/product/ApplyCouonForm';
+import { couponActions } from '../../slices/couponSlice';
 
 const Categories:React.FC = () => {
     const theme = useTheme();
 
     const {isCategoryDeleted,categories} =useSelector((state:RootState)=> state.category)
-
+    const {filteredCoupons}=useSelector((state:RootState)=> state.coupon);
     const dispatch = useDispatch();
     const [selectedRows, setSelectedRows] = useState<string[]>([]);
     useEffect(()=>{
@@ -44,15 +48,15 @@ const Categories:React.FC = () => {
       const searchedCategory=categories.find((category:CategoryState)=> category._id === id);
       if(searchedCategory){
         setSearchedCategory(searchedCategory);
-        setOpenEditForm(true);
+        
       }
     }
     const [openEditForm, setOpenEditForm] = React.useState<boolean>(false);
-  
+    const [openCouponForm, setOpenCouponForm] = useState<boolean>(false);
       const handleClickOpenEditForm = (id:string,event:React.MouseEvent) => {
         event.stopPropagation();
         searchCategory(id);
-        
+        setOpenEditForm(true);
         
         
       };
@@ -60,6 +64,19 @@ const Categories:React.FC = () => {
         setOpenEditForm(false);
               
       };
+      const handleOpenCouponForm=(id:string,event: React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
+        event.stopPropagation();
+        searchCategory(id);
+        setOpenCouponForm(true);
+      }
+      const handleCloseCouponForm=(event?: React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
+        if (event) event.stopPropagation();
+        setOpenCouponForm(false);
+      }
+      useEffect(()=>{
+        dispatch(couponActions.getFilteredCoupons([]));
+        dispatch(getCouponPerType('category'));
+      },[]);
       
     const columns: GridColDef[] = [
       { field: '_id', headerName: 'ID', flex: 1 },
@@ -85,6 +102,12 @@ const Categories:React.FC = () => {
               >
                 <EditIcon />
               </IconButton>
+              {filteredCoupons.length>0 && <IconButton
+                onClick={(event) => handleOpenCouponForm(params.row._id, event)}
+                color="success"
+              >
+                <DiscountIcon />
+              </IconButton>}
             </Box>
           );
         },
@@ -97,6 +120,12 @@ const Categories:React.FC = () => {
     return (
       <Box m="1.5rem 2.5rem">
         <CategoryHeader />
+        {searchedCategory&& <ApplyCouonForm
+          handleCloseCouponForm={handleCloseCouponForm}
+          open={openCouponForm}
+          FilteredCoupon={filteredCoupons}
+          itemId={searchedCategory._id}
+        />}
         {searchedCategory && <UpdateCategoryForm handleCloseEditForm={handleCloseEditForm} opendEditForm={openEditForm} categoryToUpdate={searchedCategory}   />}
         <Box display="flex" justifyContent="space-between" alignItems="center" mb="1rem">
           {selectedRows.length > 1 && (

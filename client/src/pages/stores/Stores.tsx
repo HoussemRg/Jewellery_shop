@@ -14,6 +14,7 @@ import ListIcon from '@mui/icons-material/List';
 import UpdateStoreForm from '../../components/store/UpdateStoreForm';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { regenerateTokenForSuperAdmin } from '../../apiCalls/authApiCall';
+import PersonIcon from '@mui/icons-material/Person';
 
 const Stores:React.FC = () => {
     const theme = useTheme();
@@ -68,7 +69,15 @@ const Stores:React.FC = () => {
         if(user?.role ==='superAdmin'){
           dispatch(regenerateTokenForSuperAdmin(storeId));
         }
+        
         navigate(`/dashboard/stores/${storeId}`)
+      }
+      const handleNavigateToStoreUsers=(storeId:string)=>{
+        if(user?.role ==='superAdmin'){
+          dispatch(regenerateTokenForSuperAdmin(storeId));
+        }
+        
+        navigate(`/dashboard/vendors`)
       }
       const handleNavigateToMainDashboard=(storeId:string)=>{
         dispatch(regenerateTokenForSuperAdmin(storeId));
@@ -104,7 +113,9 @@ const Stores:React.FC = () => {
                   <ListIcon />
                 </IconButton>
                 
-      
+                <IconButton onClick={()=> handleNavigateToStoreUsers(params.row._id)} color='primary'>
+                  <PersonIcon />
+                </IconButton>
               
                 <IconButton onClick={()=> handleNavigateToMainDashboard(params.row._id)} color='primary'>
                   <DashboardIcon />

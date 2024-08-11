@@ -6,6 +6,8 @@ const { Store } = require('../Models/Store');
 const path = require('path');
 const { Category } = require('../Models/Category');
 const { SubCategory } = require('../Models/SubCategory');
+const { Coupon } = require('../Models/Coupon');
+const { populate } = require('dotenv');
 
 
 /**---------------------------------
@@ -17,14 +19,9 @@ const { SubCategory } = require('../Models/SubCategory');
  const createProduct=asyncHandler(async(req,res)=>{
     const {error}=validateCreateProduct(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-    const storeConnection=await getConnection("Users");
-    const StoreModel=storeConnection.model('Store',Store.schema);
-    let store= await StoreModel.findById(req.user.store);
-    if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const ProductModel=databaseConnection.model('Product',Product.schema);
-    const CategoryModel=databaseConnection.model('Category',Category.schema);
-    const SubCategoryModel=databaseConnection.model('SubCategory',SubCategory.schema);
+    const ProductModel=req.storeDb.model('Product',Product.schema);
+    const CategoryModel=req.storeDb.model('Category',Category.schema);
+    const SubCategoryModel=req.storeDb.model('SubCategory',SubCategory.schema);
     let category=await CategoryModel.findById(req.body.category);
     if(!category) return res.status(400).send("Category not found");
     let subCategory=await SubCategoryModel.findById(req.body.subCategory);
@@ -38,17 +35,17 @@ const { SubCategory } = require('../Models/SubCategory');
         purchasePrice:req.body.purchasePrice,
         unitPrice:req.body.unitPrice,
         stockQuantity:req.body.stockQuantity,
-        store:store._id,
+        store:req.store._id,
         category:req.body.category,
         subCategory:req.body.subCategory
     });
     
-    store.product.push(product._id);
+    req.store.product.push(product._id);
     category.product.push(product._id);
     subCategory.product.push(product._id);
     await category.save();
     await subCategory.save();
-    await store.save();
+    await req.store.save();
     return res.status(201).send(product);
  })
 
@@ -60,29 +57,44 @@ const { SubCategory } = require('../Models/SubCategory');
  ------------------------------------*/
 
 const getAllProducts=asyncHandler(async(req,res)=>{
-    const storeId=req.user.store;
     const PRODUCTS_PER_PAGE=8;
     const {page}=req.query;
     
-    const storeConnection=await getConnection("Users");
-    const StoreModel=storeConnection.models.Store || storeConnection.model('Store', Store.schema);
-    let store= await StoreModel.findById(storeId);
-    if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const ProductModel=databaseConnection.models.Product || databaseConnection.model('Product', Product.schema);
-    databaseConnection.models.Category || databaseConnection.model('Category', Category.schema);
-    databaseConnection.models.SubCategory || databaseConnection.model('SubCategory', SubCategory.schema);
+   
+    const ProductModel=req.storeDb.models.Product || req.storeDb.model('Product', Product.schema);
+    req.storeDb.models.Category || req.storeDb.model('Category', Category.schema);
+    req.storeDb.models.SubCategory || req.storeDb.model('SubCategory', SubCategory.schema);
+    req.storeDb.models.Coupon || req.storeDb.model('Coupon', Coupon.schema);
     const products=await ProductModel.find().sort({createdAt:-1}).skip((page-1)*PRODUCTS_PER_PAGE).limit(PRODUCTS_PER_PAGE).populate({
         path:'category',
         model:'Category',
-        select:"-product"
+        select:"-product",
+        populate:{
+            path:'coupon',
+            model:'Coupon',
+            select:"-product -category",
+        }
     }).populate({
         path:'subCategory',
         model:'SubCategory',
+        select:"-product",
+        populate:{
+            path:'coupon',
+            model:'Coupon',
+            select:"-product -category",
+        }
+    }).populate({
+        path:'coupon',
+        model:'Coupon',
         select:"-product"
     });
+
+   
+
     return res.status(200).send(products)
 })
+
+
 
 /**---------------------------------
  * @desc get number of products 
@@ -91,15 +103,8 @@ const getAllProducts=asyncHandler(async(req,res)=>{
  * @access for only admin or super admin
  ------------------------------------*/
 
- const getNumberOfProducts=asyncHandler(async(req,res)=>{
-    const storeId=req.user.store;
-    
-    const storeConnection=await getConnection("Users");
-    const StoreModel=storeConnection.model('Store',Store.schema);
-    let store= await StoreModel.findById(storeId);
-    if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const ProductModel=databaseConnection.model('Product',Product.schema);
+ const getNumberOfProducts=asyncHandler(async(req,res)=>{    
+    const ProductModel=req.storeDb.model('Product',Product.schema);
     const count=await ProductModel.countDocuments();
     return res.status(200).send({count:count})
 })
@@ -112,13 +117,7 @@ const getAllProducts=asyncHandler(async(req,res)=>{
  * @access public
  ------------------------------------*/
 const getSingleProduct=asyncHandler(async(req,res)=>{
-    const storeId=req.user.store;
-    const storeConnection=await getConnection("Users");
-    const StoreModel=storeConnection.model('Store',Store.schema);
-    let store= await StoreModel.findById(storeId);
-    if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const ProductModel=databaseConnection.model('Product',Product.schema);
+    const ProductModel=req.storeDb.model('Product',Product.schema);
     const product=await ProductModel.findById(req.params.productId);
     if(!product) return res.status(400).send("Product not found");
     return res.status(200).send(product);
@@ -134,15 +133,7 @@ const getSingleProduct=asyncHandler(async(req,res)=>{
  const updateProduct = asyncHandler(async (req, res) => {
     const { error } = validateUpdateProduct(req.body);
     if (error) return res.status(400).send(error.details[0].message);
-
-    const storeId = req.user.store;
-    const storeConnection = await getConnection("Users");
-    const StoreModel = storeConnection.model('Store', Store.schema);
-    let store = await StoreModel.findById(storeId);
-    if (!store) return res.status(400).send("Store not found");
-
-    const databaseConnection = await getConnection(store.database);
-    const ProductModel = databaseConnection.model('Product', Product.schema);
+    const ProductModel = req.storeDb.model('Product', Product.schema);
     let product = await ProductModel.findById(req.params.productId);
     if (!product) return res.status(400).send("Product not found");
 
@@ -169,17 +160,17 @@ const getSingleProduct=asyncHandler(async(req,res)=>{
  * @access only admin and super admin
  ------------------------------------*/
  const deleteProduct=asyncHandler(async(req,res)=>{
-    const storeId=req.user.store;
-    const storeConnection=await getConnection("Users");
-    const StoreModel=storeConnection.model('Store',Store.schema);
-    let store= await StoreModel.findById(storeId);
-    if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const ProductModel=databaseConnection.model('Product',Product.schema);
+  
+    const ProductModel=req.storeDb.model('Product',Product.schema);
+    const CouponModel=req.storeDb.model('Coupon',Coupon.schema);
     let product=await ProductModel.findById(req.params.productId);
     if(!product) return res.status(400).send("Product not found");
-    store.product=store.product.filter(productId=> productId.toString() !== product._id.toString());  
-    await store.save();
+    req.store.product=req.store.product.filter(productId=> productId.toString() !== product._id.toString());
+    await req.store.save();
+    await CouponModel.updateMany(
+        { product: product._id },
+        { $pull: { product: product._id } }
+    ); 
     await ProductModel.findByIdAndDelete(product._id);
     return res.status(200).send("Product deleted successfully");
 })
@@ -188,13 +179,8 @@ const updateProductPhoto=asyncHandler(async(req,res)=>{
     if(!req.file){
         return res.status(400).send("No image provided");
     }
-    const storeId=req.user.store;
-    const storeConnection=await getConnection("Users");
-    const StoreModel=storeConnection.model('Store',Store.schema);
-    let store= await StoreModel.findById(storeId);
-    if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const ProductModel=databaseConnection.model('Product',Product.schema);
+    
+    const ProductModel=req.storeDb.model('Product',Product.schema);
     let product=await ProductModel.findById(req.params.productId);
     if(!product) return res.status(400).send("Product not found");
     product.productPhoto=req.file.buffer;
@@ -211,13 +197,8 @@ const updateProductPhoto=asyncHandler(async(req,res)=>{
  ------------------------------------*/
 
 const filterProducts=asyncHandler(async(req,res)=>{
-    const storeId=req.user.store;
-    const storeConnection=await getConnection("Users");
-    const StoreModel=storeConnection.model('Store',Store.schema);
-    let store= await StoreModel.findById(storeId);
-    if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const ProductModel=databaseConnection.model('Product',Product.schema);
+    
+    const ProductModel=req.storeDb.model('Product',Product.schema);
     const {productName,categoryName,subCategoryName,carat,weight,stockQuantity,minPrice,maxPrice,page}=req.query;
     let matchConditions={};
     const PRODUCTS_PER_PAGE=8;

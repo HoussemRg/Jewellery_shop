@@ -54,9 +54,9 @@ const TopRightCard: React.FC<CardParams> = ({handleClose}) => {
                     quantity: quantities[product._id],
                 })),
             };
-            //console.log(items);
+            console.log(items);
             dispatch(createOrder(items));
-            // Submit the items here
+            
             
         }
     };

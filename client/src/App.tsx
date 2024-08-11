@@ -20,6 +20,7 @@ import Clients from './pages/clients/Clients';
 import ClientProfile from './pages/clients/ClientsProfile';
 import Orders from './pages/order/Orders';
 import OrderDetails from './pages/order/OrderDetails';
+import Coupons from './pages/coupons/Coupons';
 
 function App() {
   const mode=useSelector((state:RootState)=> state.theme.mode);
@@ -43,6 +44,7 @@ function App() {
           <Route  path='/dashboard/vendors' element={ user  ? <Vendors /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/users/:id' element={ user  ?<UserProfile /> :<Navigate to="/"  /> } />
           <Route  path='/dashboard/clients' element={ user  ? <Clients /> : <Navigate to="/"  />} />
+          <Route  path='/dashboard/coupons' element={ user  ? <Coupons /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/clients/:id' element={ user  ?<ClientProfile />:<Navigate to="/"  />} />
           <Route path='/dashboard/stores' element={ user && user?.role==='superAdmin' ? <Stores /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/stores/:id' element={<StoreDetails />} />

@@ -4,6 +4,7 @@ const { Store } = require('../Models/Store');
 const { getConnection } = require('../Utils/dbconnection');
 const { Product } = require('../Models/Product');
 const { Category } = require('../Models/Category');
+const { Coupon } = require('../Models/Coupon');
 
 /**---------------------------------
  * @desc create new subSubCategory 
@@ -14,12 +15,8 @@ const { Category } = require('../Models/Category');
 const createSubCategory=asyncHandler(async(req,res)=>{
     const {error}=validateCreateSubCategory(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-    const storeConnection=await getConnection("Users");
-    const StoreModel=storeConnection.model('Store',Store.schema);
-    let store= await StoreModel.findById(req.user.store);
-    if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const SubCategoryModel=databaseConnection.model('SubCategory',SubCategory.schema);
+   
+    const SubCategoryModel=req.storeDb.model('SubCategory',SubCategory.schema);
     const subSubCategory=await SubCategoryModel.create({
         subCategoryName:req.body.subCategoryName,
         subCategoryDescription:req.body.subCategoryDescription
@@ -35,13 +32,8 @@ const createSubCategory=asyncHandler(async(req,res)=>{
  * @access public
 -------------------------------------*/
 const getAllSubCategories=asyncHandler(async(req,res)=>{
-    const storeId=req.user.store;
-    const storeConnection=await getConnection("Users");
-    const StoreModel=storeConnection.model('Store',Store.schema);
-    let store= await StoreModel.findById(storeId);
-    if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const SubCategoryModel=databaseConnection.model('SubCategory',SubCategory.schema);
+    
+    const SubCategoryModel=req.storeDb.model('SubCategory',SubCategory.schema);
    
     const subCategories=await SubCategoryModel.find();
     const count=await SubCategoryModel.countDocuments();
@@ -55,14 +47,9 @@ const getAllSubCategories=asyncHandler(async(req,res)=>{
  * @access public
  ------------------------------------*/
  const getSingleSubCategory=asyncHandler(async(req,res)=>{
-    const storeId=req.user.store;
-    const storeConnection=await getConnection("Users");
-    const StoreModel=storeConnection.model('Store',Store.schema);
-    let store= await StoreModel.findById(storeId);
-    if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const SubCategortyModel=databaseConnection.model('SubCategory',SubCategory.schema);
-    databaseConnection.model('Product',Product.schema);
+    
+    const SubCategortyModel=req.storeDb.model('SubCategory',SubCategory.schema);
+    req.storeDb.model('Product',Product.schema);
     const subCategory=await SubCategortyModel.findById(req.params.subCategoryId).populate({
         path:'product',
         ref:'Product',
@@ -82,13 +69,8 @@ const getAllSubCategories=asyncHandler(async(req,res)=>{
  const updateSubCategory=asyncHandler(async(req,res)=>{
     const {error}=validateUpdateSubCategory(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-    const storeId=req.user.store;
-    const storeConnection=await getConnection("Users");
-    const StoreModel=storeConnection.model('Store',Store.schema);
-    let store= await StoreModel.findById(storeId);
-    if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const SubCategoryModel=databaseConnection.model('SubCategory',SubCategory.schema);
+    
+    const SubCategoryModel=req.storeDb.model('SubCategory',SubCategory.schema);
     let subCategory=await SubCategoryModel.findById(req.params.subCategoryId);
     if(!subCategory) return res.status(400).send("SubCategory not found");
     const newSubCategory=req.body;
@@ -109,31 +91,30 @@ const getAllSubCategories=asyncHandler(async(req,res)=>{
  ------------------------------------*/
 
  const deleteSubCategory=asyncHandler(async(req,res)=>{
-    const storeId=req.user.store;
-    const storeConnection=await getConnection("Users");
-    const StoreModel=storeConnection.model('Store',Store.schema);
-    let store= await StoreModel.findById(storeId);
-    if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const SubCategoryModel=databaseConnection.model('SubCategory',SubCategory.schema);
+   
+    const SubCategoryModel=req.storeDb.model('SubCategory',SubCategory.schema);
     let subcategory=await SubCategoryModel.findById(req.params.subCategoryId);
     if(!subcategory) return res.status(400).send("SubCategory not found");
-    const ProductModel=databaseConnection.model('Product',Product.schema);
-    const CategoryModel=databaseConnection.model('Category',Category.schema);
+    const ProductModel=req.storeDb.model('Product',Product.schema);
+    const CouponModel=req.storeDb.model('Coupon',Coupon.schema);
+    const CategoryModel=req.storeDb.model('Category',Category.schema);
     for(const productId of subcategory.product ){
         const product=await ProductModel.findById(productId);
         if(product){
             const category=await CategoryModel.findById(product.category);
             if(category){
                 category.product=category.product.filter(p => p.toString() !==productId.toString());
-                store.product=store.product.filter(p => p.toString()!==productId.toString());
-                await store.save();
+                req.store.product=req.store.product.filter(p => p.toString()!==productId.toString());
+                await req.store.save();
                 await category.save();
                 await ProductModel.findByIdAndDelete(productId);
             }
         }
     }
-    
+    await CouponModel.updateMany(
+        {subcategory:subcategory._id},
+        {$pull:{subcategory:subcategory._id}}
+    )
     
     await SubCategoryModel.findByIdAndDelete(subcategory._id);
     return res.status(200).send("SubCategory deleted successfully");

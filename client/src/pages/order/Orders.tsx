@@ -42,7 +42,8 @@ const Orders: React.FC = () => {
     selectedRows.forEach((id: string) => dispatch(deleteOrder(id)));
   };
 
-  const handleOpenPaymentForm = (orderId: string | null) => {
+  const handleOpenPaymentForm = (orderId: string | null, event: React.MouseEvent) => {
+    event.stopPropagation(); 
     if (orderId) {
       setOpenPaymentForm(true);
       setSearchedOrderId(orderId);
@@ -106,7 +107,7 @@ const Orders: React.FC = () => {
         </Link>
         {payedAmount !== totalAmount && (
           <IconButton
-            onClick={() => handleOpenPaymentForm(_id)}
+            onClick={(event) => handleOpenPaymentForm(_id, event)}
             color="success"
           >
             <PaymentIcon />

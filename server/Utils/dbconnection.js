@@ -20,34 +20,24 @@ const mongoose = require('mongoose');
 const redis = require('redis');
 
 const redisClient = redis.createClient();
-
-redisClient.on('error', (err) => {
-  console.error('Redis error:', err);
-});
-
-redisClient.on('ready', () => {
-  console.log('Redis is ready');
-});
+redisClient.on('error', (err) => console.error('Redis error:', err));
+redisClient.on('ready', () => console.log('Redis is ready'));
 
 const connections = {};
 
 const getConnection = async (dbName) => {
-  if (connections[dbName]) {
-    return connections[dbName];
-  }
+  if (connections[dbName]) return connections[dbName];
 
   const existingConnectionURI = await redisClient.get(dbName);
   if (existingConnectionURI) {
     connections[dbName] = mongoose.createConnection(existingConnectionURI);
-    return connections[dbName];
+  } else {
+    const connectionURI = `${process.env.DB_URI_P1}${dbName}${process.env.DB_URI_P2}`;
+    connections[dbName] = mongoose.createConnection(connectionURI);
+    await redisClient.set(dbName, connectionURI);
   }
 
-  const connectionURI = `${process.env.DB_URI_P1}${dbName}${process.env.DB_URI_P2}`;
-  const connection = mongoose.createConnection(connectionURI);
-  connections[dbName] = connection;
-  await redisClient.set(dbName, connectionURI);
-
-  return connection;
+  return connections[dbName];
 };
 
 const initializeConnections = async () => {
@@ -58,6 +48,7 @@ const initializeConnections = async () => {
 };
 
 module.exports = { getConnection, connections, initializeConnections, redisClient };
+
 /*
 const mongoose = require('mongoose');
 const redis = require('redis');

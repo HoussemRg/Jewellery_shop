@@ -4,6 +4,13 @@ import {toast} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
 import { AppDispatch, RootState } from '../store';
+import { productActions } from '../slices/productSlice';
+import { subCategoryActions } from '../slices/subCategorySlice';
+import { categoryActions } from '../slices/categorySlice';
+import { clientActions } from '../slices/clientSlice';
+import { orderActions } from '../slices/orderSlice';
+import { cardActions } from '../slices/cardSlice';
+import { userActions } from '../slices/userSlice';
 
 export interface AuthData {
     email: string;
@@ -35,7 +42,18 @@ const regenerateTokenForSuperAdmin=(storeId:string)=>async(dispatch:AppDispatch,
         }
     });
       dispatch(authActions.login(res.data));
-      localStorage.setItem("user",JSON.stringify(res.data))
+      localStorage.setItem("user",JSON.stringify(res.data));
+      dispatch(productActions.getProducts([]));
+        dispatch(productActions.getProductsNumber(0));
+        dispatch(productActions.resetFiltredProducts());
+        dispatch(categoryActions.getAllCategories([]));
+        dispatch(subCategoryActions.getAllSubCategories([]));
+        dispatch(clientActions.getAllClients([]));
+        dispatch(orderActions.getAllOrders([]));
+        dispatch(cardActions.clearProductsList());
+        dispatch(userActions.getAllVendorsPerStore([]));
+        
+        dispatch(productActions.resetFiltredProductsCount());
   }catch (err:unknown) {
       const error = err as AxiosError;
       if (error.response) {

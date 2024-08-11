@@ -21,7 +21,12 @@ const subCategorySchema=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'Product',
         default:[]
-    }]
+    }],
+    coupon:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Coupon',
+        default:[]
+    }],
 });
 
 const validateCreateSubCategory=(obj)=>{

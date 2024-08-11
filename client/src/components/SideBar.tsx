@@ -46,7 +46,7 @@ const SideBar: React.FC<SideBarProps> = ({ isNonMobile, drawerWidth, isSideBarOp
         { text: "Business", icon: null, link: "" },
         { text: "Suppliers", icon: <SupervisedUserCircleOutlined />, link: "" },
         { text: "Investors", icon: <CurrencyExchangeOutlined />, link: "" },
-        { text: "Discounts", icon: <DiscountOutlined />, link: "" },
+        { text: "Discounts", icon: <DiscountOutlined />, link: "/dashboard/coupons" },
         { text: "Management", icon: null, link: "" },
         { text: "Store", icon: <StorefrontOutlined />, link: `/dashboard/stores/${user?.store}` },
         { text: "Vendors", icon: <PersonPinOutlined />, link: "/dashboard/vendors" },

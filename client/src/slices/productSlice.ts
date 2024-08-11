@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { CouponType } from "./couponSlice";
 
 export interface ImageType {
     type: string;
@@ -9,12 +10,14 @@ export interface CategoryType {
     _id: string;
     categoryName: string;
     categoryDescription: string;
+    coupon:CouponType[]
 }
 
 export interface SubCategoryType {
     _id: string;
     subCategoryName: string;
     subCategoryDescription: string;
+    coupon:CouponType[]
 }
 
 export interface ProductType { 
@@ -29,6 +32,7 @@ export interface ProductType {
     stockQuantity: number;
     category: CategoryType;
     subCategory: SubCategoryType;
+    coupon:CouponType[]
 }
 
 export interface ProductState {

@@ -15,13 +15,8 @@ const { OrderDetails } = require('../Models/OrderDetails');
 const createClient=asyncHandler(async(req,res)=>{
     const {error}=validateCreateClient(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-    const storeId=req.user.store;
-    const storeConnection=await getConnection("Users");
-    const StoreModel=storeConnection.models.Store || storeConnection.model('Store', Store.schema);
-    let store= await StoreModel.findById(storeId);
-    if(!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const ClientModel=databaseConnection.models.Client || databaseConnection.model('Client', Client.schema);
+    
+    const ClientModel=req.storeDb.models.Client || req.storeDb.model('Client', Client.schema);
     let client=await ClientModel.findOne({email:req.body.email});
     if(client) return res.status(400).send('Client already exists');
     client=await ClientModel.create({
@@ -41,14 +36,8 @@ const createClient=asyncHandler(async(req,res)=>{
  * @acess only admin or superAdmin
  ------------------------------------*/
 const getAllClients=asyncHandler(async(req,res)=>{
-    const storeId = req.user.store;
-    
-    const storeConnection = await getConnection("Users");
-    const StoreModel = storeConnection.model('Store', Store.schema);
-    let store = await StoreModel.findById(storeId);
-    if (!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const ClientModel=databaseConnection.models.Client || databaseConnection.model('Client', Client.schema);
+ 
+    const ClientModel=req.storeDb.models.Client || req.storeDb.model('Client', Client.schema);
     const clients=await ClientModel.find().select('-order');
     const count=await ClientModel.countDocuments();
     res.status(200).send({clients:clients,count:count});
@@ -60,15 +49,10 @@ const getAllClients=asyncHandler(async(req,res)=>{
  * @acess only admin or superAdmin
  ------------------------------------*/
  const getSingleClient=(asyncHandler(async(req,res)=>{
-    const storeId=req.user.store;
     const clientId=req.params.clientId;
-    const storeConnection = await getConnection("Users");
-    const StoreModel = storeConnection.model('Store', Store.schema);
-    let store = await StoreModel.findById(storeId);
-    if (!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const ClientModel=databaseConnection.models.Client || databaseConnection.model('Client', Client.schema);
-    databaseConnection.models.Order || databaseConnection.model('Order', Order.schema);
+    
+    const ClientModel=req.storeDb.models.Client || req.storeDb.model('Client', Client.schema);
+    req.storeDb.models.Order || req.storeDb.model('Order', Order.schema);
     const client=await ClientModel.findById(clientId).populate({
         path:'order',
         model:'Order',
@@ -90,13 +74,8 @@ const getAllClients=asyncHandler(async(req,res)=>{
     const {error}=validateUpdateClient(req.body);
     if(error) return res.status(400).send(error.details[0].message);
     const clientId=req.params.clientId;
-    const storeId=req.user.store;
-    const storeConnection = await getConnection("Users");
-    const StoreModel = storeConnection.model('Store', Store.schema);
-    let store = await StoreModel.findById(storeId);
-    if (!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const ClientModel=databaseConnection.models.Client || databaseConnection.model('Client', Client.schema);
+    
+    const ClientModel=req.storeDb.models.Client || req.storeDb.model('Client', Client.schema);
     let client=await ClientModel.findById(clientId);
     if(!client) return res.status(400).send("Client not found");
     let newClient=req.body;
@@ -115,15 +94,10 @@ const getAllClients=asyncHandler(async(req,res)=>{
  ------------------------------------*/
  const deleteClient=asyncHandler(async(req,res)=>{
     const clientId=req.params.clientId;
-    const storeId=req.user.store;
-    const storeConnection = await getConnection("Users");
-    const StoreModel = storeConnection.model('Store', Store.schema);
-    let store = await StoreModel.findById(storeId);
-    if (!store) return res.status(400).send("Store not found");
-    const databaseConnection=await getConnection(store.database);
-    const ClientModel=databaseConnection.models.Client || databaseConnection.model('Client', Client.schema);
-    const OrderModel=databaseConnection.models.Order || databaseConnection.model('Order', Order.schema);
-    const OrderDetailsModel=databaseConnection.models.OrderDetails || databaseConnection.model('OrderDetails', OrderDetails.schema);
+    
+    const ClientModel=req.storeDb.models.Client || req.storeDb.model('Client', Client.schema);
+    const OrderModel=req.storeDb.models.Order || req.storeDb.model('Order', Order.schema);
+    const OrderDetailsModel=req.storeDb.models.OrderDetails || req.storeDb.model('OrderDetails', OrderDetails.schema);
     const client=await ClientModel.findById(clientId);
     if (!client) return res.status(400).send("Client not found");
     const orders = await OrderModel.find({ client: client._id });

@@ -2,17 +2,18 @@ const express=require('express');
 const { verifyTokenForOnlySuperAdmin, verifyToken, verifyTokenForOnlySuperAdminOrAdmin } = require('../Middlewares/verifyToken');
 const { validateId } = require('../Middlewares/verifyId');
 const { createClient, getAllClients, getSingleClient, updateClient, deleteClient } = require('../Controllers/clientController');
+const { connectStoreDb } = require('../Middlewares/connectStoreDb');
 
 const clientRoutes=express.Router();
 
-clientRoutes.post('/create',verifyTokenForOnlySuperAdminOrAdmin,createClient);
+clientRoutes.post('/create',verifyTokenForOnlySuperAdminOrAdmin,connectStoreDb,createClient);
 
-clientRoutes.get('/',verifyTokenForOnlySuperAdminOrAdmin,getAllClients);
+clientRoutes.get('/',verifyTokenForOnlySuperAdminOrAdmin,connectStoreDb,getAllClients);
 
-clientRoutes.get('/:clientId',verifyTokenForOnlySuperAdminOrAdmin,validateId,getSingleClient);
+clientRoutes.get('/:clientId',verifyTokenForOnlySuperAdminOrAdmin,validateId,connectStoreDb,getSingleClient);
 
-clientRoutes.put('/:clientId',verifyTokenForOnlySuperAdminOrAdmin,validateId,updateClient);
+clientRoutes.put('/:clientId',verifyTokenForOnlySuperAdminOrAdmin,validateId,connectStoreDb,updateClient);
 
-clientRoutes.delete('/:clientId',verifyTokenForOnlySuperAdminOrAdmin,validateId,deleteClient);
+clientRoutes.delete('/:clientId',verifyTokenForOnlySuperAdminOrAdmin,validateId,connectStoreDb,deleteClient);
 
 module.exports={clientRoutes};

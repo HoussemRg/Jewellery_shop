@@ -174,7 +174,7 @@ const Vendors: React.FC = () => {
         }}
       >
         {users.length>0  ? <DataGrid
-          rows={users}
+          rows={users.filter((user)=>user.role !== 'admin' && user.role !== 'superAdmin')}
           columns={columns}
           getRowId={(row: UserType) => row._id}
           initialState={{

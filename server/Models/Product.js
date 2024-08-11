@@ -54,6 +54,11 @@ const productSchema=new mongoose.Schema({
         ref:'SubCategory',
         required:true
     },
+    coupon:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Coupon',
+        default:[]
+    }],
 },{timestamps:true});
 
 const validateCreateProduct=(obj)=>{

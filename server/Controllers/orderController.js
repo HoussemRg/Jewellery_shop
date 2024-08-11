@@ -16,34 +16,59 @@ const { populate } = require('dotenv');
  * @request POST
  * @access only admin or superAdmin
  ------------------------------------*/
- const createOrder = asyncHandler(async (req, res) => {
-    const storeId = req.user.store;
-    const storeConnection = await getConnection("Users");
-    const StoreModel = storeConnection.models.Store || storeConnection.model('Store', Store.schema);
-    let store = await StoreModel.findById(storeId);
-    if (!store)  return res.status(400).send("Store not found");
-    const databaseConnection = await getConnection(store.database);
-    const ClientModel = databaseConnection.models.Client || databaseConnection.model('Client', Client.schema);
-    const OrderModel = databaseConnection.models.Order || databaseConnection.model('Order', Order.schema);
-    const ProductModel = databaseConnection.models.Product || databaseConnection.model('Product', Product.schema);
-    const OrderDetailsModel = databaseConnection.models.OrderDetails || databaseConnection.model('OrderDetails', OrderDetails.schema);
+ const createOrder = asyncHandler(async (req, res) => {    
+    const ClientModel = req.storeDb.models.Client || req.storeDb.model('Client', Client.schema);
+    const OrderModel = req.storeDb.models.Order || req.storeDb.model('Order', Order.schema);
+    const ProductModel = req.storeDb.models.Product || req.storeDb.model('Product', Product.schema);
+    const OrderDetailsModel = req.storeDb.models.OrderDetails || req.storeDb.model('OrderDetails', OrderDetails.schema);
+    const CategoryModel = req.storeDb.models.Category || req.storeDb.model('Category', Category.schema);
+    const SubCategoryModel = req.storeDb.models.SubCategory || req.storeDb.model('SubCategory', SubCategory.schema);
         const client = await ClientModel.findById(req.body.clientId);
         if (!client)  return res.status(400).send("Client not found");
-
+        const now=Date.now();
         let totalAmount = 0;
         let orderDetails = [];
 
         for (const { productId, quantity } of req.body.productsList) {
-            const product = await ProductModel.findById(productId);
+            const product = await ProductModel.findById(productId).populate({
+                path:'coupon',
+                model:'Coupon',
+                select: '-product ',
+            });
             if (!product) return res.status(400).send(`Product with id: ${productId} not found`);
             if (product.stockQuantity < quantity) return res.status(400).send(`Stock quantity of ${product.productName} is insufficient`);
 
             
             product.stockQuantity -= quantity;
             await product.save();
-
+            
             totalAmount += product.unitPrice * quantity*product.weight;
-
+            for(const coupon of product.coupon ){
+                
+                if(now>=coupon.startDate && now<=coupon.expirationDate){
+                    totalAmount-=((product.unitPrice*coupon.discountRate)/100)*quantity*product.weight;
+                }
+            }
+            const category=await CategoryModel.findById(product.category).populate({
+                path:'coupon',
+                model:'Coupon',
+                select: '-product -category -subCategory ',
+            }); 
+            for(const coupon of category.coupon){
+                if(now>=coupon.startDate && now<=coupon.expirationDate){
+                    totalAmount-=((product.unitPrice*coupon.discountRate)/100)*quantity*product.weight;
+                }
+            }
+            const subCategory=await SubCategoryModel.findById(product.subCategory).populate({
+                path:'coupon',
+                model:'Coupon',
+                select: '-product -category -subCategory ',
+            }); 
+            for(const coupon of subCategory.coupon){
+                if(now>=coupon.startDate && now<=coupon.expirationDate){
+                    totalAmount-=((product.unitPrice*coupon.discountRate)/100)*quantity*product.weight;
+                }
+            }
             const orderDetail = new OrderDetailsModel({
                 
                 product: product._id,
@@ -84,15 +109,9 @@ const { populate } = require('dotenv');
  ------------------------------------*/
 
  const payForOrder=asyncHandler(async(req,res)=>{
-    const storeId = req.user.store;
     const orderId=req.params.orderId
-    const storeConnection = await getConnection("Users");
-    const StoreModel = storeConnection.models.Store || storeConnection.model('Store', Store.schema);
-    let store = await StoreModel.findById(storeId);
-    if (!store)  return res.status(400).send("Store not found");
-    const databaseConnection = await getConnection(store.database);
-    const OrderModel = databaseConnection.models.Order || databaseConnection.model('Order', Order.schema);
-    databaseConnection.models.Client || databaseConnection.model('Client', Client.schema);
+    const OrderModel = req.storeDb.models.Order || req.storeDb.model('Order', Order.schema);
+    req.storeDb.models.Client || req.storeDb.model('Client', Client.schema);
     let order=await OrderModel.findById(orderId).select('-orderDetails').populate({
         path:'client',
         model:'Client',
@@ -117,14 +136,8 @@ const { populate } = require('dotenv');
  * @access only admin or superAdmin
  ------------------------------------*/
  const getAllOrders=asyncHandler(async(req,res)=>{
-    const storeId = req.user.store;
-    const storeConnection = await getConnection("Users");
-    const StoreModel = storeConnection.models.Store || storeConnection.model('Store', Store.schema);
-    let store = await StoreModel.findById(storeId);
-    if (!store)  return res.status(400).send("Store not found");
-    const databaseConnection = await getConnection(store.database);
-    const OrderModel = databaseConnection.models.Order || databaseConnection.model('Order', Order.schema);
-    databaseConnection.models.Client || databaseConnection.model('Client', Client.schema);
+    const OrderModel = req.storeDb.models.Order || req.storeDb.model('Order', Order.schema);
+    req.storeDb.models.Client || req.storeDb.model('Client', Client.schema);
     const orders=await OrderModel.find().select('-orderDetails').populate({
         path:'client',
         model:'Client',
@@ -139,19 +152,13 @@ const { populate } = require('dotenv');
  * @access only admin or superAdmin
  ------------------------------------*/
  const getSingleOrder=asyncHandler(async(req,res)=>{
-    const storeId = req.user.store;
     const orderId=req.params.orderId;
-    const storeConnection = await getConnection("Users");
-    const StoreModel = storeConnection.models.Store || storeConnection.model('Store', Store.schema);
-    let store = await StoreModel.findById(storeId);
-    if (!store)  return res.status(400).send("Store not found");
-    const databaseConnection = await getConnection(store.database);
-    const OrderModel = databaseConnection.models.Order || databaseConnection.model('Order', Order.schema);
-    databaseConnection.models.Client || databaseConnection.model('Client', Client.schema);
-    databaseConnection.models.Product || databaseConnection.model('Product', Product.schema);
-    databaseConnection.models.Category || databaseConnection.model('Category', Category.schema);
-    databaseConnection.models.SubCategory || databaseConnection.model('SubCategory', SubCategory.schema);
-    databaseConnection.models.OrderDetails || databaseConnection.model('OrderDetails', OrderDetails.schema);
+    const OrderModel = req.storeDb.models.Order || req.storeDb.model('Order', Order.schema);
+    req.storeDb.models.Client || req.storeDb.model('Client', Client.schema);
+    req.storeDb.models.Product || req.storeDb.model('Product', Product.schema);
+    req.storeDb.models.Category || req.storeDb.model('Category', Category.schema);
+    req.storeDb.models.SubCategory || req.storeDb.model('SubCategory', SubCategory.schema);
+    req.storeDb.models.OrderDetails || req.storeDb.model('OrderDetails', OrderDetails.schema);
     const order=await OrderModel.findById(orderId).select('-orderDetails').populate({
         path:'client',
         model:'Client',
@@ -190,15 +197,9 @@ const { populate } = require('dotenv');
  ------------------------------------*/
 
 const deleteOrder=asyncHandler(async(req,res)=>{
-    const storeId = req.user.store;
     const orderId=req.params.orderId
-    const storeConnection = await getConnection("Users");
-    const StoreModel = storeConnection.models.Store || storeConnection.model('Store', Store.schema);
-    let store = await StoreModel.findById(storeId);
-    if (!store)  return res.status(400).send("Store not found");
-    const databaseConnection = await getConnection(store.database);
-    const OrderDetailsModel = databaseConnection.models.OrderDetails || databaseConnection.model('OrderDetails', OrderDetails.schema);
-    const OrderModel = databaseConnection.models.Order || databaseConnection.model('Order', Order.schema);
+    const OrderDetailsModel = req.storeDb.models.OrderDetails || req.storeDb.model('OrderDetails', OrderDetails.schema);
+    const OrderModel = req.storeDb.models.Order || req.storeDb.model('Order', Order.schema);
     const order=await OrderModel.findById(orderId);
     if(!order) return res.status(400).send("Order not found");
     await OrderDetailsModel.deleteMany({order:orderId});
