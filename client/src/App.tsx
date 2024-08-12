@@ -21,6 +21,8 @@ import ClientProfile from './pages/clients/ClientsProfile';
 import Orders from './pages/order/Orders';
 import OrderDetails from './pages/order/OrderDetails';
 import Coupons from './pages/coupons/Coupons';
+import Users from './pages/users/Users';
+import EmailVerification from './pages/global/EmailVerification';
 
 function App() {
   const mode=useSelector((state:RootState)=> state.theme.mode);
@@ -35,13 +37,18 @@ function App() {
       <Routes>
         
         <Route path='/' element={<Home />} />
-        <Route path='/admin-dashboard' element={user && user.role==='superAdmin' ? <SuperAdminDashboard /> : <Navigate to="/"  />} />
+        <Route
+          path="/users/:userId/verify/:token"
+          element={<EmailVerification /> }
+        />
+        <Route path='/admin-dashboard' element={user && user.role==='superAdmin' && <SuperAdminDashboard />} />
+        <Route  path='/admin-dashboard/users' element={ user  && user.role==='superAdmin' && <Users />} />
         <Route   element={<Layout />}>
           <Route  path='/dashboard/main' element={ user  ? <Dashboard /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/products' element={ user  ? <Products /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/categories' element={ user  ? <Categories /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/subCategories' element={ user  ? <SubCategories /> : <Navigate to="/"  />} />
-          <Route  path='/dashboard/vendors' element={ user  ? <Vendors /> : <Navigate to="/"  />} />
+          <Route  path='/dashboard/vendors' element={ user  ? <Vendors /> : <Navigate to="/"  />} />      
           <Route  path='/dashboard/users/:id' element={ user  ?<UserProfile /> :<Navigate to="/"  /> } />
           <Route  path='/dashboard/clients' element={ user  ? <Clients /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/coupons' element={ user  ? <Coupons /> : <Navigate to="/"  />} />

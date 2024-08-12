@@ -12,11 +12,13 @@ export interface UserLoggedInState {
 
 export interface AuthState{
     user: UserLoggedInState |null;
+    isEmailVerified:boolean
 
 }
 const storedUser = localStorage.getItem("user");
 const initialState: AuthState = {
-    user: storedUser ? JSON.parse(storedUser) : null
+    user: storedUser ? JSON.parse(storedUser) : null,
+    isEmailVerified:false,
 };
 
 
@@ -35,6 +37,9 @@ const authSlice = createSlice({
         logout:(state)=>{
             state.user=null;
             localStorage.removeItem('user');
+        },
+        verifyEmail:(state)=>{
+            state.isEmailVerified=true;
         }
     }
 });

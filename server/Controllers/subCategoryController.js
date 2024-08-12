@@ -107,8 +107,9 @@ const getAllSubCategories=asyncHandler(async(req,res)=>{
                 req.store.product=req.store.product.filter(p => p.toString()!==productId.toString());
                 await req.store.save();
                 await category.save();
-                await ProductModel.findByIdAndDelete(productId);
+                
             }
+            await ProductModel.findByIdAndDelete(productId);
         }
     }
     await CouponModel.updateMany(

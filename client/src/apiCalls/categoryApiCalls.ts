@@ -11,7 +11,7 @@ type ThunkResult<R> = ThunkAction<R, RootState, unknown, Action>;
 const getAllCategories=():ThunkResult<Promise<void>> =>{
     return async(dispatch:Dispatch,getState)=>{
         try{
-            const res= await axios.get('http://localhost:3001/api/categories',{
+            const res= await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/categories`,{
                 headers:{
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -34,7 +34,7 @@ const createCategory=(category:CategoryData):AppThunk<Promise<void>> =>{
     return async(dispatch:AppDispatch,getState:()=>RootState)=>{
         id = toast.loading("Creating  store, Please wait...");
         try{
-            await axios.post(`http://localhost:3001/api/categories/create`,category,{
+            await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/categories/create`,category,{
                 headers:{
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -57,7 +57,7 @@ const updateCategory = (newCategory:Partial<CategoryEditData>,categoryId:string)
         id = toast.loading("Updating  store, Please wait...");
         try {
             
-            const res = await axios.put(`http://localhost:3001/api/categories/${categoryId}`,newCategory, {
+            const res = await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/categories/${categoryId}`,newCategory, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -80,7 +80,7 @@ const deleteCategory= (categoryId:string):AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         id = toast.loading("deleting  category, Please wait...");
         try {
-            await axios.delete(`http://localhost:3001/api/categories/${categoryId}`, {
+            await axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/categories/${categoryId}`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }

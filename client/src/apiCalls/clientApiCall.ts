@@ -12,7 +12,7 @@ import { ClientEditData } from '../components/client/UpdateClientForm';
 const createClient=(client:ClientData):AppThunk<Promise<void>> =>{
     return async(dispatch:Dispatch,getState)=>{
         try{
-            await axios.post(`http://localhost:3001/api/clients/create`,client,{
+            await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/clients/create`,client,{
                 headers:{
                     Authorization:"Bearer " + getState().auth.user?.token
                 }
@@ -33,7 +33,7 @@ const createClient=(client:ClientData):AppThunk<Promise<void>> =>{
 const getAllClients = ():AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         try {
-            const res = await axios.get(`http://localhost:3001/api/clients`, {
+            const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/clients`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -53,7 +53,7 @@ const getAllClients = ():AppThunk<Promise<void>> => {
 
 const getSingleClient=(clientId:string):AppThunk=> async(dispatch:Dispatch,getState)=>{
     try{
-        const res = await axios.get(`http://localhost:3001/api/clients/${clientId}`, {
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/clients/${clientId}`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
             }
@@ -75,7 +75,7 @@ const updateClient = (newClient:Partial<ClientEditData>,userId:string):AppThunk<
         id = toast.loading("Updating  user, Please wait...");
         try {
             
-            const res = await axios.put(`http://localhost:3001/api/clients/${userId}`,newClient, {
+            const res = await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/clients/${userId}`,newClient, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -98,7 +98,7 @@ const deleteClient= (clientId:string):AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         id = toast.loading("deleting  client, Please wait...");
         try {
-            await axios.delete(`http://localhost:3001/api/clients/${clientId}`, {
+            await axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/clients/${clientId}`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }

@@ -13,7 +13,7 @@ const createStore=(store:StoreData):AppThunk<Promise<void>> =>{
     return async(dispatch:Dispatch)=>{
         id = toast.loading("Creating  store, Please wait...");
         try{
-            await axios.post(`http://localhost:3001/api/stores/create`,store);
+            await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/stores/create`,store);
             dispatch(storeActions.setIsStoreCreated(true));
             toast.update(id, { render: "Store updated successfully", type: "success", isLoading: false, autoClose: 1200 });
         }catch(err){
@@ -28,7 +28,7 @@ const createStore=(store:StoreData):AppThunk<Promise<void>> =>{
 const getAllStores = ():AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         try {
-            const res = await axios.get(`http://localhost:3001/api/stores`, {
+            const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/stores`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -48,7 +48,7 @@ const getAllStores = ():AppThunk<Promise<void>> => {
 
 const getSingleStore=(storeId:string):AppThunk=> async(dispatch:AppDispatch,getState)=>{
     try{
-        const res = await axios.get(`http://localhost:3001/api/stores/${storeId}`, {
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/stores/${storeId}`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
             }
@@ -70,7 +70,7 @@ const updateStore = (newStore:Partial<StoreEditData>,storeId:string):AppThunk<Pr
         id = toast.loading("Updating  store, Please wait...");
         try {
             
-            const res = await axios.put(`http://localhost:3001/api/stores/${storeId}`,newStore, {
+            const res = await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/stores/${storeId}`,newStore, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -93,7 +93,7 @@ const deleteStore= (storeId:string):AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         id = toast.loading("deleting  store, Please wait...");
         try {
-            await axios.delete(`http://localhost:3001/api/stores/${storeId}`, {
+            await axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/stores/${storeId}`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }

@@ -15,6 +15,13 @@ import UpdateStoreForm from '../../components/store/UpdateStoreForm';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { regenerateTokenForSuperAdmin } from '../../apiCalls/authApiCall';
 import PersonIcon from '@mui/icons-material/Person';
+import { productActions } from '../../slices/productSlice';
+import { categoryActions } from '../../slices/categorySlice';
+import { subCategoryActions } from '../../slices/subCategorySlice';
+import { clientActions } from '../../slices/clientSlice';
+import { orderActions } from '../../slices/orderSlice';
+import { cardActions } from '../../slices/cardSlice';
+import { userActions } from '../../slices/userSlice';
 
 const Stores:React.FC = () => {
     const theme = useTheme();
@@ -24,6 +31,18 @@ const Stores:React.FC = () => {
     const dispatch = useDispatch();
    const navigate=useNavigate()
     const [selectedRows, setSelectedRows] = useState<string[]>([]);
+    useEffect(()=>{
+        dispatch(userActions.getAllVendorsPerStore([]));
+        dispatch(productActions.getProducts([]));
+        dispatch(productActions.getProductsNumber(0));
+        dispatch(productActions.resetFiltredProducts());
+        dispatch(categoryActions.getAllCategories([]));
+        dispatch(subCategoryActions.getAllSubCategories([]));
+        dispatch(clientActions.getAllClients([]));
+        dispatch(orderActions.getAllOrders([]));
+        dispatch(cardActions.clearProductsList());
+        dispatch(productActions.resetFiltredProductsCount());
+    })
     useEffect(()=>{
       dispatch(getAllStores());
     },[])
@@ -76,8 +95,8 @@ const Stores:React.FC = () => {
         if(user?.role ==='superAdmin'){
           dispatch(regenerateTokenForSuperAdmin(storeId));
         }
-        
-        navigate(`/dashboard/vendors`)
+        dispatch(userActions.getAllVendorsPerStore([]));
+        navigate(`/admin-dashboard/users`);
       }
       const handleNavigateToMainDashboard=(storeId:string)=>{
         dispatch(regenerateTokenForSuperAdmin(storeId));

@@ -7,13 +7,13 @@ import { useDispatch } from '../../hooks';
 import { deleteUser, getVendorsPerStore } from '../../apiCalls/userApiCall';
 import {  UserType } from '../../slices/userSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
-import VendorsHeader from '../../components/VendorsHeader';
 import EditIcon from '@mui/icons-material/Edit';
 import UpdateUserForm from '../../components/user/UpdateUserForm';
 import ListIcon from '@mui/icons-material/List';
 import { Link } from 'react-router-dom';
+import UsersHeader from '../../components/user/UsersHeader';
 
-const Vendors: React.FC = () => {
+const Users: React.FC = () => {
   const theme = useTheme();
   const { users,isUserDeleted } = useSelector((state: RootState) => state.user);
   const { user } = useSelector((state: RootState) => state.auth);
@@ -110,7 +110,7 @@ const Vendors: React.FC = () => {
 
   return (
     <Box m="1.5rem 2.5rem">
-      <VendorsHeader />
+      <UsersHeader />
       {searchedUser && <UpdateUserForm handleCloseEditForm={handleCloseEditForm} opendEditForm={openEditForm} userToUpdate={searchedUser}   />}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb="1rem">
         {selectedRows.length > 1 && (
@@ -174,7 +174,7 @@ const Vendors: React.FC = () => {
         }}
       >
         {users.length>0 ?  <DataGrid
-          rows={users.filter((user)=>user.role !== 'admin' && user.role !== 'superAdmin')}
+          rows={users}
           columns={columns}
           getRowId={(row: UserType) => row._id}
           initialState={{
@@ -197,4 +197,4 @@ const Vendors: React.FC = () => {
   );
 };
 
-export default Vendors;
+export default Users;

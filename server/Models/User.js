@@ -33,7 +33,7 @@ const userSchema=new mongoose.Schema({
         required:true,
         minlength:10,
         maxlength:100,
-        unique:true,
+       
         match:/^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
     },
     password:{
@@ -67,6 +67,10 @@ const userSchema=new mongoose.Schema({
         type:String,
         enum:['admin','superAdmin','vendor'],
         required:true
+    },
+    isAccountVerified:{
+        type : Boolean,
+        default : false
     }
 
 },{timestamps:true});
@@ -82,7 +86,7 @@ const complexityOptions = {
     symbol: 1,    
 };
 
-
+userSchema.index({ email: 1, store: 1 }, { unique: true });
 userSchema.methods.generateAuthToken=function(){
     return jwt.sign({id:this._id,role:this.role,store:this.store},process.env.JWT_SECRET);
 }

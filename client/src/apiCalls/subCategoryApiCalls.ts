@@ -11,7 +11,7 @@ type ThunkResult<R> = ThunkAction<R, RootState, unknown, Action>;
 const getAllSubCategories=():ThunkResult<Promise<void>> =>{
     return async(dispatch:Dispatch,getState)=>{
         try{
-            const res= await axios.get('http://localhost:3001/api/subcategories',{
+            const res= await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/subcategories`,{
                 headers:{
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -35,7 +35,7 @@ const createSubCategory=(subCategory:SubCategoryData):AppThunk<Promise<void>> =>
     return async(dispatch:Dispatch,getState:()=>RootState)=>{
         id = toast.loading("Creating  Sub-Category, Please wait...");
         try{
-            await axios.post(`http://localhost:3001/api/subCategories/create`,subCategory,{
+            await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/subCategories/create`,subCategory,{
                 headers:{
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -56,7 +56,7 @@ const updateSubCategory = (newSubCategory:Partial<SubCategoryEditData>,subCatego
         id = toast.loading("Updating  Sub-Category, Please wait...");
         try {
             
-            const res = await axios.put(`http://localhost:3001/api/subCategories/${subCategoryId}`,newSubCategory, {
+            const res = await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/subCategories/${subCategoryId}`,newSubCategory, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -78,7 +78,7 @@ const deleteSubCategory= (subCategoryId:string):AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         id = toast.loading("deleting  category, Please wait...");
         try {
-            await axios.delete(`http://localhost:3001/api/subCategories/${subCategoryId}`, {
+            await axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/subCategories/${subCategoryId}`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }

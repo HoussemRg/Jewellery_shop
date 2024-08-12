@@ -10,7 +10,7 @@ type ThunkResult<R> = ThunkAction<R, RootState, unknown, Action<string>>;
 
 const getAllProducts = (page: number): AppThunk => async (dispatch: AppDispatch, getState) => {
     try {
-        const res = await axios.get(`http://localhost:3001/api/products?page=${page}`, {
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/products?page=${page}`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
             }
@@ -28,7 +28,7 @@ const getAllProducts = (page: number): AppThunk => async (dispatch: AppDispatch,
 
 const getProductsNumber = (): AppThunk => async (dispatch:AppDispatch,getState) => {
         try {
-            const res = await axios.get(`http://localhost:3001/api/products/count`, {
+            const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/products/count`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -49,7 +49,7 @@ const createProduct = (product: FormData)=> async (dispatch: AppDispatch, getSta
         let id: Id | undefined;
         try {
             id = toast.loading("Creating product, Please wait...");
-            await axios.post(`http://localhost:3001/api/products/create`, product, {
+            await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/products/create`, product, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token,
                     'Content-Type': "multipart/form-data"
@@ -71,7 +71,7 @@ const updateProduct = (product: FormData,productId:string):AppThunk  =>  async (
         let id: Id | undefined;
         try {
             id = toast.loading("Updating product, Please wait...");
-            const res=await axios.put(`http://localhost:3001/api/products/${productId}`, product, {
+            const res=await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/products/${productId}`, product, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token,
                     'Content-Type': "multipart/form-data"
@@ -93,7 +93,7 @@ const updateProduct = (product: FormData,productId:string):AppThunk  =>  async (
 const deleteProduct=(id:string):AppThunk=> async(dispatch:AppDispatch,getState)=>{
         try{
             
-            await axios.delete(`http://localhost:3001/api/products/${id}`,{
+            await axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/products/${id}`,{
                 headers:{
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -117,7 +117,7 @@ const getFilteredProducts=(params:Partial<FilterProductData>,page:number): Thunk
     return async(dispatch:Dispatch,getState)=>{
         //id = toast.loading("Searching products, Please wait...");
         try{
-            const res=await axios.get(`http://localhost:3001/api/products/filter?page=${page}`,{params:params,headers:{
+            const res=await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/products/filter?page=${page}`,{params:params,headers:{
                 Authorization: "Bearer " + getState().auth.user?.token
             }}
             )

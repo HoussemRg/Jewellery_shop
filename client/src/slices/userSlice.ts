@@ -10,7 +10,8 @@ export interface UserType {
   phoneNumber: string;
   createdAt: Date |null;
   updatedAt: Date | null;
-  role:string
+  role:string;
+  isAccountVerified:boolean
 }
 export interface StoreType{
   _id:string;
@@ -29,7 +30,8 @@ export interface SingleUserType{
   createdAt: Date;
   updatedAt: Date;
   role:string;
-  store:StoreType
+  store:StoreType;
+  isAccountVerified:boolean;
 }
 export interface UserState {
   users: UserType[];

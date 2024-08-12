@@ -108,23 +108,25 @@ const getSingleStore=asyncHandler(async(req,res)=>{
  * @access private for only for superAdmin
  ------------------------------------*/
  const deleteStore=asyncHandler(async (req,res)=>{
-    const storeId=req.params.id;
-    const connection =await  getConnection('Users');
+    const storeId = req.params.id;
+    const connection = await getConnection('Users');
     const StoreModel = connection.model('Store', Store.schema);
-    const UserModel=connection.model('User',User.schema);
-    const store=await StoreModel.findById(storeId);
-    if(!store) return res.status(400).send("Store not found");
-    store.user.forEach(async(userId) => {
+    const UserModel = connection.model('User', User.schema);
+
+    const store = await StoreModel.findById(storeId);
+    if (!store) return res.status(400).send("Store not found");
+
+    for (const userId of store.user) {
         await UserModel.findByIdAndDelete(userId);
-    });
-    const storeConnection=await getConnection(store.database);
-    const productModel=storeConnection.model('Product',Product.schema);
-    store.product.forEach(async(productId) => {
-        await productModel.findByIdAndDelete(productId);
-    });
-    
+    }
+
+    const storeConnection = await getConnection(store.database);
+
+    //await storeConnection.dropDatabase();
+
     await StoreModel.findByIdAndDelete(storeId);
-    return res.status(200).send("Store deleted successfully");
+
+    return res.status(200).send("Store and its database deleted successfully");
  })
  
 module.exports = { createStore,getAllStores,getSingleStore,updateStore,deleteStore };

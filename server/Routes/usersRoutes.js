@@ -6,7 +6,7 @@ const { validateId } = require('../Middlewares/verifyId');
 const usersRoutes=express.Router();
 
 
-usersRoutes.get('/vendors/:storeId',verifyTokenForOnlySuperAdminOrAdmin,validateId,getAllvendors);
+usersRoutes.get('/vendors',verifyTokenForOnlySuperAdminOrAdmin,getAllvendors);
 
 usersRoutes.get('/:id',verifyToken,validateId,getSingleUser);
 

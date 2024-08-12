@@ -12,7 +12,7 @@ import { UserEditData } from '../components/user/UpdateUserForm';
 const registerUser=(user:UserData):AppThunk<Promise<void>> =>{
     return async(dispatch:Dispatch)=>{
         try{
-            await axios.post(`http://localhost:3001/api/auth/register`,user);
+            await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/register`,user);
             dispatch(userActions.setIsUserCreated(true));
             toast.success('user added successfully');
         }catch(err){
@@ -26,10 +26,10 @@ const registerUser=(user:UserData):AppThunk<Promise<void>> =>{
     }
 }
 
-const getVendorsPerStore = (storeId:string):AppThunk<Promise<void>> => {
+const getVendorsPerStore = ():AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         try {
-            const res = await axios.get(`http://localhost:3001/api/users/vendors/${storeId}`, {
+            const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/users/vendors`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -49,7 +49,7 @@ const getVendorsPerStore = (storeId:string):AppThunk<Promise<void>> => {
 
 const getSingleUser=(userId:string):AppThunk<Promise<void>>=> async(dispatch:Dispatch,getState:()=>RootState)=>{
     try{
-        const res = await axios.get(`http://localhost:3001/api/users/${userId}`, {
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/users/${userId}`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
             }
@@ -71,7 +71,7 @@ const updateUser = (newUser:Partial<UserEditData>,userId:string):AppThunk<Promis
         id = toast.loading("Updating  user, Please wait...");
         try {
             
-            const res = await axios.put(`http://localhost:3001/api/users/${userId}`,newUser, {
+            const res = await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/users/${userId}`,newUser, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -94,7 +94,7 @@ const deleteUser= (userId:string):AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         id = toast.loading("deleting  user, Please wait...");
         try {
-            await axios.delete(`http://localhost:3001/api/users/${userId}`, {
+            await axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/users/${userId}`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }

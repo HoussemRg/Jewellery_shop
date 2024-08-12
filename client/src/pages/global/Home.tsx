@@ -6,7 +6,7 @@ import image from '../../assets/bg.jpg';
 const Home: React.FC = () => {
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
-
+  
   return (
     <Box width="100vw" height="100vh">
       <Grid container height="100%">

@@ -12,7 +12,7 @@ const createCoupon=(coupon:CouponData):AppThunk<Promise<void>> =>{
     return async(dispatch:Dispatch,getState)=>{
         id = toast.loading("Creeating  coupon, Please wait...");
         try{
-            await axios.post(`http://localhost:3001/api/coupons/create`,coupon,{
+            await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/coupons/create`,coupon,{
                 headers:{
                     Authorization:"Bearer " + getState().auth.user?.token
                 }
@@ -31,7 +31,7 @@ const createCoupon=(coupon:CouponData):AppThunk<Promise<void>> =>{
 const getAllCoupons = ():AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         try {
-            const res = await axios.get(`http://localhost:3001/api/coupons`, {
+            const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/coupons`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -52,7 +52,7 @@ const getAllCoupons = ():AppThunk<Promise<void>> => {
 const getCouponPerType=(couponType:string):AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         try {
-            const res = await axios.get(`http://localhost:3001/api/coupons/filter/${couponType}`, {
+            const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/coupons/filter/${couponType}`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -73,7 +73,7 @@ const getCouponPerType=(couponType:string):AppThunk<Promise<void>> => {
 
 const getSingleCoupon=(couponId:string):AppThunk=> async(dispatch:Dispatch,getState)=>{
     try{
-        const res = await axios.get(`http://localhost:3001/api/coupons/${couponId}`, {
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/coupons/${couponId}`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
             }
@@ -95,7 +95,7 @@ const updateCoupon = (newCoupon:Partial<CouponEditData>,couponId:string):AppThun
         id = toast.loading("Updating  user, Please wait...");
         try {
             
-            const res = await axios.put(`http://localhost:3001/api/coupons/${couponId}`,newCoupon, {
+            const res = await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/coupons/${couponId}`,newCoupon, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -118,7 +118,7 @@ const applyCoupon = (couponId:string,itemId:string):AppThunk<Promise<void>> => {
         id = toast.loading("applying  coupon, Please wait...");
         try {
             
-            await axios.post(`http://localhost:3001/api/coupons/apply/${couponId}/${itemId}`,{}, {
+            await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/coupons/apply/${couponId}/${itemId}`,{}, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -141,7 +141,7 @@ const deleteCoupon= (couponId:string):AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         id = toast.loading("deleting  coupon, Please wait...");
         try {
-            await axios.delete(`http://localhost:3001/api/coupons/${couponId}`, {
+            await axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/coupons/${couponId}`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }

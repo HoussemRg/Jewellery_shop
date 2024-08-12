@@ -9,7 +9,7 @@ import { OrderData } from '../components/Card/TopRightCard';
 
 const getAllOrders = (): AppThunk => async (dispatch: AppDispatch, getState) => {
     try {
-        const res = await axios.get(`http://localhost:3001/api/orders`, {
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/orders`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
             }
@@ -33,7 +33,7 @@ const createOrder = (order: OrderData)=> async (dispatch: AppDispatch, getState:
            
             id = toast.loading("Creating order, Please wait...");
             
-            await axios.post(`http://localhost:3001/api/orders/create`, order, {
+            await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/orders/create`, order, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token,
                 }
@@ -57,7 +57,7 @@ const createOrder = (order: OrderData)=> async (dispatch: AppDispatch, getState:
         return async (dispatch: Dispatch,getState: () => RootState) => {
             id = toast.loading("deleting  order, Please wait...");
             try {
-                await axios.delete(`http://localhost:3001/api/orders/${orderId}`, {
+                await axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/orders/${orderId}`, {
                     headers: {
                         Authorization: "Bearer " + getState().auth.user?.token
                     }
@@ -80,7 +80,7 @@ const payForOrder=(paymentAmount:PaymentData,orderId:string):AppThunk<Promise<vo
         id = toast.loading("paying order, Please wait...");
         try {
             
-            const res = await axios.put(`http://localhost:3001/api/orders/${orderId}`,paymentAmount, {
+            const res = await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/orders/${orderId}`,paymentAmount, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
@@ -100,7 +100,7 @@ const payForOrder=(paymentAmount:PaymentData,orderId:string):AppThunk<Promise<vo
 
 const getSingleOrder=(orderId:string):AppThunk<Promise<void>>=> async(dispatch:Dispatch,getState:()=>RootState)=>{
     try{
-        const res = await axios.get(`http://localhost:3001/api/orders/${orderId}`, {
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/orders/${orderId}`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
             }

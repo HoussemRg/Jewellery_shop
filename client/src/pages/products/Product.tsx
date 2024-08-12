@@ -136,7 +136,7 @@ const Product:React.FC<ProductProps> = ({ product, delete:deleteProduct }) => {
             color={theme.palette.secondary[300]}
             gutterBottom
             >
-            {category.categoryName}
+            {category?.categoryName || "N/A"}
             </Typography>
         </Box>
         <Box display="flex" gap="10px">
@@ -146,7 +146,7 @@ const Product:React.FC<ProductProps> = ({ product, delete:deleteProduct }) => {
             color={theme.palette.secondary[700]}
             gutterBottom
             >
-            {subCategory.subCategoryName}
+            {subCategory?.subCategoryName}
             </Typography>
             
         </Box>
@@ -210,7 +210,7 @@ const Product:React.FC<ProductProps> = ({ product, delete:deleteProduct }) => {
           <Typography>
            Purchase Price: {purchasePrice}
           </Typography>
-          {coupon && coupon.length > 0 && (
+          {coupon && coupon?.length > 0 && (
   <Box mt="20px" p="10px" borderRadius="8px" sx={{ backgroundColor: theme.palette.background.default, boxShadow: 2 }}>
     
     {coupon.map((coupon) =>  {
@@ -252,10 +252,10 @@ const Product:React.FC<ProductProps> = ({ product, delete:deleteProduct }) => {
 <Divider sx={{ mt: 1 }} /> 
 </Box>
 )}
-{category.coupon && category.coupon.length > 0 && (
+{category?.coupon && category?.coupon.length > 0 && (
   <Box mt="10px" p="6px" borderRadius="8px" sx={{ backgroundColor: theme.palette.background.default, boxShadow: 2 }}>
     
-    {category.coupon.map((coupon) => {  
+    {category?.coupon.map((coupon) => {  
       const isValid=new Date(coupon.expirationDate)>= new Date();
       return isValid &&
       (<Box 
@@ -273,30 +273,30 @@ const Product:React.FC<ProductProps> = ({ product, delete:deleteProduct }) => {
         }}
       >
         <Typography variant="body2" fontWeight="bold" color={theme.palette.primary.main}>
-          {coupon.couponName}
+          {coupon?.couponName}
         </Typography>
         <Typography variant="body2" fontWeight="bold" color={theme.palette.secondary.main}>
-        Type : {coupon.type}
+        Type : {coupon?.type}
       </Typography>
         <Typography variant="caption" color={theme.palette.success.main}>
-          {coupon.discountRate}% off
+          {coupon?.discountRate}% off
         </Typography>
         <Typography variant="caption" color={theme.palette.success.main}>
-      {`starts: ${new Date(coupon.startDate).toLocaleDateString()}`}
+      {`starts: ${new Date(coupon?.startDate).toLocaleDateString()}`}
     </Typography>
         <Typography variant="caption" color={theme.palette.error.main}>
-          {`Expires: ${new Date(coupon.expirationDate).toLocaleDateString()}`}
+          {`Expires: ${new Date(coupon?.expirationDate).toLocaleDateString()}`}
         </Typography>
       </Box>)
 })}
     <Divider sx={{ mt: 1 }} />
   </Box>
 )}
-{subCategory.coupon && subCategory.coupon.length > 0 && (
+{subCategory?.coupon && subCategory?.coupon.length > 0 && (
   <Box mt="10px" p="6px" borderRadius="8px" sx={{ backgroundColor: theme.palette.background.default, boxShadow: 2 }}>
     
-    {subCategory.coupon.map((coupon) => { 
-      const isValid=new Date(coupon.expirationDate)>= new Date();
+    {subCategory?.coupon.map((coupon) => { 
+      const isValid=new Date(coupon?.expirationDate)>= new Date();
       return isValid &&
       (<Box 
         key={coupon._id} 
@@ -313,19 +313,19 @@ const Product:React.FC<ProductProps> = ({ product, delete:deleteProduct }) => {
         }}
       >
         <Typography variant="body2" fontWeight="bold" color={theme.palette.primary.main}>
-          {coupon.couponName}
+          {coupon?.couponName}
         </Typography>
         <Typography variant="body2" fontWeight="bold" color={theme.palette.secondary.main}>
-        Type : {coupon.type}
+        Type : {coupon?.type}
       </Typography>
         <Typography variant="caption" color={theme.palette.success.main}>
-          {coupon.discountRate}% off
+          {coupon?.discountRate}% off
         </Typography>
         <Typography variant="caption" color={theme.palette.success.main}>
-      {`starts: ${new Date(coupon.startDate).toLocaleDateString()}`}
+      {`starts: ${new Date(coupon?.startDate).toLocaleDateString()}`}
     </Typography>
         <Typography variant="caption" color={theme.palette.error.main}>
-          {`Expires: ${new Date(coupon.expirationDate).toLocaleDateString()}`}
+          {`Expires: ${new Date(coupon?.expirationDate).toLocaleDateString()}`}
         </Typography>
       </Box>)
     })}
