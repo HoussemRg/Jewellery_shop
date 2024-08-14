@@ -44,6 +44,11 @@ const productSchema=new mongoose.Schema({
         type:Number,
         required:true,
     },
+    purchaseSource: {
+        type: String,
+        enum: ['Investor', 'Owner'],
+        required: true
+    },
     category:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Category',
@@ -59,6 +64,16 @@ const productSchema=new mongoose.Schema({
         ref:'Coupon',
         default:[]
     }],
+    investment: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Investment',
+        validate: {
+            validator: function(value) {
+                return this.purchaseSource !== 'Owner' || value.length === 0;
+            },
+            message: 'Investments are only allowed if purchaseSource is Investor.'
+        }
+    }
 },{timestamps:true});
 
 const validateCreateProduct=(obj)=>{
@@ -72,7 +87,9 @@ const validateCreateProduct=(obj)=>{
         unitPrice:joi.number().required(),
         stockQuantity:joi.number().required(),
         category:joi.string(),
-        subCategory:joi.string()
+        subCategory:joi.string(),
+        purchaseSource:joi.string().valid('Investor', 'Owner').required(),
+        investment:joi.string().optional()
     });
     return schema.validate(obj);
 }
@@ -87,7 +104,8 @@ const validateUpdateProduct=(obj)=>{
         unitPrice:joi.number(),
         stockQuantity:joi.number(),
         category:joi.string(),
-        subCategory:joi.string()
+        subCategory:joi.string(),
+        purchaseSource:joi.string()
     });
     return schema.validate(obj);
 }

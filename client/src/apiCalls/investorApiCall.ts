@@ -5,21 +5,21 @@ import {  Dispatch } from 'redux';
 import {  AppThunk, RootState } from '../store';
 
 
-import { clientActions } from '../slices/clientSlice';
-import { ClientData } from '../components/client/AddClientForm';
-import { ClientEditData } from '../components/client/UpdateClientForm';
+import { investorActions } from '../slices/investorSlice';
+import { InvestorData } from '../components/investor/AddInvestorForm';
+import { InvestorEditData } from '../components/investor/UpdateInvestorForm';
 
-const createClient=(client:ClientData):AppThunk<Promise<void>> =>{
+const createInvestor=(investor:InvestorData):AppThunk<Promise<void>> =>{
     return async(dispatch:Dispatch,getState)=>{
         try{
-            await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/clients/create`,client,{
+            await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/investors/create`,investor,{
                 headers:{
                     Authorization:"Bearer " + getState().auth.user?.token
                 }
             });
-            dispatch(clientActions.setIsClientCreated(true));
+            dispatch(investorActions.setIsInvestorCreated(true));
 
-            toast.success('client added successfully');
+            toast.success('investor added successfully');
         }catch(err){
             const error = err as AxiosError;
             if (error.response) {
@@ -31,17 +31,17 @@ const createClient=(client:ClientData):AppThunk<Promise<void>> =>{
     }
 }
 
-const getAllClients = ():AppThunk<Promise<void>> => {
+const getAllInvestors = ():AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         try {
-            dispatch(clientActions.setIsLoading(true));
-            const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/clients`, {
+            dispatch(investorActions.setIsLoading(true));
+            const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/investors`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             });
-            dispatch(clientActions.getAllClients(res.data.clients));
-            dispatch(clientActions.setIsLoading(false));
+            dispatch(investorActions.getAllInvestors(res.data.investors));
+            dispatch(investorActions.setIsLoading(false));
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (error.response) {
@@ -53,14 +53,14 @@ const getAllClients = ():AppThunk<Promise<void>> => {
     }
 }
 
-const getSingleClient=(clientId:string):AppThunk=> async(dispatch:Dispatch,getState)=>{
+const getSingleInvestor=(investorId:string):AppThunk=> async(dispatch:Dispatch,getState)=>{
     try{
-        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/clients/${clientId}`, {
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/investors/${investorId}`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
             }
         });
-        dispatch(clientActions.getSingleClient(res.data));
+        dispatch(investorActions.getSingleInvestor(res.data));
     }catch(err){
         const error = err as AxiosError;
             if (error.response) {
@@ -71,21 +71,21 @@ const getSingleClient=(clientId:string):AppThunk=> async(dispatch:Dispatch,getSt
     }
 }
 
-const updateClient = (newClient:Partial<ClientEditData>,userId:string):AppThunk<Promise<void>> => {
+const updateInvestor = (newInvestor:Partial<InvestorEditData>,userId:string):AppThunk<Promise<void>> => {
     let id: Id | undefined;
     return async (dispatch: Dispatch,getState: () => RootState) => {
         id = toast.loading("Updating  user, Please wait...");
         try {
             
-            const res = await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/clients/${userId}`,newClient, {
+            const res = await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/investors/${userId}`,newInvestor, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             });
-            dispatch(clientActions.updateClient(res.data));
-            dispatch(clientActions.setIsClientUpdated(true));
+            dispatch(investorActions.updateInvestor(res.data));
+            dispatch(investorActions.setIsInvestorUpdated(true));
          
-            toast.update(id, { render: "Client updated successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Investor updated successfully", type: "success", isLoading: false, autoClose: 1200 });
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (id) {
@@ -95,19 +95,19 @@ const updateClient = (newClient:Partial<ClientEditData>,userId:string):AppThunk<
     }
 }
 
-const deleteClient= (clientId:string):AppThunk<Promise<void>> => {
+const deleteInvestor= (investorId:string):AppThunk<Promise<void>> => {
     let id: Id | undefined;
     return async (dispatch: Dispatch,getState: () => RootState) => {
-        id = toast.loading("deleting  client, Please wait...");
+        id = toast.loading("deleting  investor, Please wait...");
         try {
-            await axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/clients/${clientId}`, {
+            await axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/investors/${investorId}`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             });
-            dispatch(clientActions.deleteClient(clientId));
-            dispatch(clientActions.setIsClientDeleted(true));
-            toast.update(id, { render: "Client deleted successfully", type: "success", isLoading: false, autoClose: 1200 });
+            dispatch(investorActions.deleteInvestor(investorId));
+            dispatch(investorActions.setIsInvestorDeleted(true));
+            toast.update(id, { render: "Investor deleted successfully", type: "success", isLoading: false, autoClose: 1200 });
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (id) {
@@ -117,4 +117,4 @@ const deleteClient= (clientId:string):AppThunk<Promise<void>> => {
     }
 }
 
-export {getAllClients,updateClient,deleteClient,getSingleClient,createClient}
+export {getAllInvestors,updateInvestor,deleteInvestor,getSingleInvestor,createInvestor}

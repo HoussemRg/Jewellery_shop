@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid, GridColDef, GridRenderCellParams, GridRowSelectionModel } from '@mui/x-data-grid';
-import { Box, IconButton, useTheme, Button } from '@mui/material';
+import { Box, IconButton, useTheme, Button, LinearProgress, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { useDispatch } from '../../hooks';
@@ -17,7 +17,7 @@ import PaymentIcon from '@mui/icons-material/Payment';
 
 const Orders: React.FC = () => {
   const theme = useTheme();
-  const { orders, isOrderDeleted } = useSelector((state: RootState) => state.order);
+  const { orders, isOrderDeleted,isLoading } = useSelector((state: RootState) => state.order);
   const { user } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
 
@@ -138,53 +138,15 @@ const Orders: React.FC = () => {
       <Box
         mt="40px"
         height="75vh"
-        sx={{
-          '& .MuiDataGrid-root': {
-            border: 'none',
-          },
-          '& .MuiDataGrid-cell': {
-            borderBottom: 'none',
-            color: theme.palette.text.primary,
-          },
-          '& .MuiDataGrid-columnHeaders': {
-            backgroundColor: theme.palette.background.default,
-            color: theme.palette.text.primary,
-            borderBottom: '1px solid',
-            borderBottomColor: theme.palette.divider,
-          },
-          '& .MuiDataGrid-virtualScroller': {
-            backgroundColor: theme.palette.background.paper,
-          },
-          '& .MuiDataGrid-footerContainer': {
-            backgroundColor: theme.palette.background.default,
-            color: theme.palette.text.primary,
-            borderTop: '1px solid',
-            borderTopColor: theme.palette.divider,
-          },
-          '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
-            color: theme.palette.primary.main,
-          },
-          '& .MuiCheckbox-root': {
-            color: theme.palette.primary.main,
-          },
-          '& .MuiDataGrid-row.Mui-selected': {
-            backgroundColor: theme.palette.action.selected,
-            color: theme.palette.common.white,
-          },
-          '& .MuiDataGrid-cell--withRenderer.Mui-selected': {
-            backgroundColor: theme.palette.action.selected,
-            color: theme.palette.common.white,
-          },
-          '& .MuiDataGrid-row:hover': {
-            backgroundColor: theme.palette.action.hover,
-          },
-          '& .MuiDataGrid-cell--withRenderer.MuiDataGrid-cell--editing': {
-            backgroundColor: theme.palette.action.selected,
-            color: theme.palette.common.white,
-          },
-        }}
+        
       >
-        <DataGrid
+        {isLoading ? 
+        (<Box sx={{ width: '100%' }}>
+          <LinearProgress />
+        </Box>) 
+        : 
+        orders.length>0 ? 
+        (<DataGrid
           rows={orders}
           columns={columns}
           getRowId={(row: OrderType) => row._id}
@@ -200,7 +162,60 @@ const Orders: React.FC = () => {
           onRowSelectionModelChange={(newSelection: GridRowSelectionModel) => {
             setSelectedRows(newSelection as string[]);
           }}
-        />
+          sx={{
+            '& .MuiDataGrid-root': {
+              border: 'none',
+            },
+            '& .MuiDataGrid-cell': {
+              borderBottom: 'none',
+              color: theme.palette.text.primary,
+            },
+            '& .MuiDataGrid-columnHeaders': {
+              backgroundColor: theme.palette.background.default,
+              color: theme.palette.text.primary,
+              borderBottom: '1px solid',
+              borderBottomColor: theme.palette.divider,
+            },
+            '& .MuiDataGrid-virtualScroller': {
+              backgroundColor: theme.palette.background.paper,
+            },
+            '& .MuiDataGrid-footerContainer': {
+              backgroundColor: theme.palette.background.default,
+              color: theme.palette.text.primary,
+              borderTop: '1px solid',
+              borderTopColor: theme.palette.divider,
+            },
+            '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
+              color: theme.palette.primary.main,
+            },
+            '& .MuiCheckbox-root': {
+              color: theme.palette.primary.main,
+            },
+            '& .MuiDataGrid-row.Mui-selected': {
+              backgroundColor: theme.palette.action.selected,
+              color: theme.palette.common.white,
+            },
+            '& .MuiDataGrid-cell--withRenderer.Mui-selected': {
+              backgroundColor: theme.palette.action.selected,
+              color: theme.palette.common.white,
+            },
+            '& .MuiDataGrid-row:hover': {
+              backgroundColor: theme.palette.action.hover,
+            },
+            '& .MuiDataGrid-cell--withRenderer.MuiDataGrid-cell--editing': {
+              backgroundColor: theme.palette.action.selected,
+              color: theme.palette.common.white,
+            },
+          }}
+        />) 
+        :
+        
+        (<Box width="100%" display="flex" justifyContent="center" alignItems="center" mt="100px">
+          <Typography>No Orders yet</Typography>
+        </Box>)}
+
+
+        
       </Box>
     </Box>
   );

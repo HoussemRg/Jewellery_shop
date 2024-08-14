@@ -25,8 +25,8 @@ interface ColorTokens {
 
 interface TokenPalette {
   grey: ColorTokens;
-  mainColor: ColorTokens; // Renamed from 'primary'
-  accentColor: ColorTokens; // Renamed from 'secondary'
+  mainColor: ColorTokens; 
+  accentColor: ColorTokens;
   neutral: ColorTokens;
   green: ColorTokens;
   red: ColorTokens;

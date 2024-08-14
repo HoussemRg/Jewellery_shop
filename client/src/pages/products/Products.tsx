@@ -1,4 +1,4 @@
-import { Box, Pagination, Typography, useMediaQuery } from "@mui/material";
+import { Box, LinearProgress, Pagination, Typography, useMediaQuery } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import FilterProducts from "../../components/product/FilterProducts";
@@ -16,7 +16,7 @@ import { useDispatch } from "../../hooks";
 
 const Products: React.FC = () => {
   const dispatch = useDispatch();
-  const { products, productsCount } = useSelector(
+  const { products, productsCount,isLoading } = useSelector(
     (state: RootState) => state.product
   );
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -72,10 +72,14 @@ const Products: React.FC = () => {
     dispatch(productActions.setIsProductsFiltered(false));
   };
 
-  return (
+  return(
     <Box m="1.5rem 2.5rem">
       <Header title="PRODUCTS" subtitle="See list of products" />
-      {productsCount > 0 ? (
+      {isLoading ? (
+        <Box sx={{ width: '100%' }}>
+          <LinearProgress />
+        </Box>
+      ) : productsCount > 0 ? (
         <Box my="1.5rem">
           <FilterProducts
             handleSetFiltering={handleSetFiltering}
@@ -102,7 +106,7 @@ const Products: React.FC = () => {
           deleteProductFunction={deleteProductFunction}
         />
       )}
-      {productsCount > 8 && !filtered && (
+      {productsCount > PRODUCT_PER_PAGE && !filtered && (
         <Box
           width="100%"
           display="flex"
@@ -118,7 +122,7 @@ const Products: React.FC = () => {
           />
         </Box>
       )}
-      {filteredProductsCount > 8 && filtered && (
+      {filteredProductsCount > PRODUCT_PER_PAGE && filtered && (
         <Box
           width="100%"
           display="flex"
@@ -136,6 +140,7 @@ const Products: React.FC = () => {
       )}
     </Box>
   );
+      
 };
 
 export default Products;

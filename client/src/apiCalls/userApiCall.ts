@@ -10,17 +10,18 @@ import { UserEditData } from '../components/user/UpdateUserForm';
 
 
 const registerUser=(user:UserData):AppThunk<Promise<void>> =>{
+    let id: Id | undefined;
     return async(dispatch:Dispatch)=>{
+        id = toast.loading("Creating  user, Please wait...");
         try{
-            await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/register`,user);
+            const res=await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/register`,user);
             dispatch(userActions.setIsUserCreated(true));
-            toast.success('user added successfully');
+            
+            toast.update(id, { render: res.data, type: "success", isLoading: false, autoClose: 1200 });
         }catch(err){
             const error = err as AxiosError;
-            if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
-            } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+            if (id) {
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
             }
         }
     }
@@ -29,13 +30,14 @@ const registerUser=(user:UserData):AppThunk<Promise<void>> =>{
 const getVendorsPerStore = ():AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         try {
+            dispatch(userActions.setIsLoading(true));
             const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/users/vendors`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             });
             dispatch(userActions.getAllVendorsPerStore(res.data.users));
-            
+            dispatch(userActions.setIsLoading(false));
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (error.response) {

@@ -35,6 +35,7 @@ export interface OrderState {
   isOrderCreated:boolean;
   isOrderUpdated:boolean;
   isOrderDeleted:boolean;
+  isLoading:boolean;
   singleOrder:SingleOrderType |null
 }
 
@@ -44,6 +45,7 @@ const initialState: OrderState = {
   isOrderCreated:false,
   isOrderUpdated:false,
   isOrderDeleted:false,
+  isLoading:false,
   singleOrder:null
 };
 
@@ -78,7 +80,10 @@ const orderSlice = createSlice({
       },
     getSingleOrder:(state,action:PayloadAction<SingleOrderType>)=>{
       state.singleOrder=action.payload;
-    }
+    },
+    setIsLoading:(state,action:PayloadAction<boolean>)=>{
+      state.isLoading=action.payload;
+    },
   },
 });
 

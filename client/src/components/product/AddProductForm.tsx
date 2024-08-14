@@ -28,6 +28,8 @@ const carrats = [
   { value: '22', label: '22' },
   { value: '24', label: '24' },
 ];
+const types=['Owner','Investor']
+type Maybe<T> = T | null | undefined;
 
 export interface ProductData {
   productName: string,
@@ -39,6 +41,8 @@ export interface ProductData {
   stockQuantity: number,
   category: string,
   subCategory: string,
+  purchaseSource:string,
+  investment?:Maybe<string >
 }
 
 const AddProductForm: React.FC<FormProps> = ({ handleClose, open, categories, subCategories }) => {
@@ -59,9 +63,11 @@ const AddProductForm: React.FC<FormProps> = ({ handleClose, open, categories, su
     stockQuantity: yup.number().required('Product stock quantity is required'),
     category: yup.string().required('Product category is required').notOneOf([''], 'Category is required'),
     subCategory: yup.string().required('Product sub-category is required').notOneOf([''], 'SubCategory is required'),
+    purchaseSource:yup.string().required().oneOf(['Owner', 'Investor'], 'Purchase source must be either "Owner" or "Investor"'),
+    investment:yup.string().notRequired().nullable()
   });
 
-  const { register, handleSubmit, formState: { errors },reset } = useForm<ProductData>({
+  const { register, handleSubmit, formState: { errors },reset,watch } = useForm<ProductData>({
     resolver: yupResolver(formSchema),
     
   });
@@ -92,7 +98,7 @@ const AddProductForm: React.FC<FormProps> = ({ handleClose, open, categories, su
     dispatch(createProduct(formData));
     reset();
   }
-  
+  const selectedPurchaseSource = watch('purchaseSource');
   useEffect(() => {
     if (isProductCreated) {
       dispatch(getProductsNumber());
@@ -245,6 +251,39 @@ const AddProductForm: React.FC<FormProps> = ({ handleClose, open, categories, su
             helperText={errors.stockQuantity?.message}
             {...register('stockQuantity')}
           />
+          <TextField
+            id="purchaseSource"
+            select
+            label="Select Purchase Source"
+          
+            defaultValue=''
+            error={!!errors.purchaseSource}
+            helperText={errors.purchaseSource?.message}
+            {...register('purchaseSource')}
+          >
+            {types.map((type) => (
+              <MenuItem key={type} value={type}>
+                {type}
+              </MenuItem>
+            ))}
+          </TextField>
+          {selectedPurchaseSource === 'Investor' && (
+            <TextField
+              id="investment"
+              select
+              label="Select Investment"
+              defaultValue=""
+              error={!!errors.investment}
+              helperText={errors.investment?.message}
+              {...register('investment')}
+            >
+              {investments.map((investment) => (
+                <MenuItem key={investment._id} value={investment._id}>
+                  {investment.investmentName}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
           <Box display="flex" flexDirection="column" justifyContent="center" alignItems="start" gap="10px">
             <Typography>
               Upload Product Photo

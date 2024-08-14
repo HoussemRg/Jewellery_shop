@@ -11,6 +11,8 @@ type ThunkResult<R> = ThunkAction<R, RootState, unknown, Action>;
 const getAllSubCategories=():ThunkResult<Promise<void>> =>{
     return async(dispatch:Dispatch,getState)=>{
         try{
+            dispatch(subCategoryActions.setIsLoading(true));
+
             const res= await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/subcategories`,{
                 headers:{
                     Authorization: "Bearer " + getState().auth.user?.token
@@ -18,6 +20,8 @@ const getAllSubCategories=():ThunkResult<Promise<void>> =>{
             })
             dispatch(subCategoryActions.getAllSubCategories(res.data?.subCategories));
             dispatch(subCategoryActions.getSubCategoryNumber(res.data?.count));
+            dispatch(subCategoryActions.setIsLoading(false));
+
         }catch(err){
             const error = err as AxiosError;
             if (error.response) {

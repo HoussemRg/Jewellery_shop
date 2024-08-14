@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from '../../hooks';
 import { RootState } from '../../store';
 import { DataGrid, GridColDef, GridRenderCellParams,GridRowSelectionModel } from '@mui/x-data-grid';
-import { Box, Button, IconButton, useTheme } from '@mui/material';
+import { Box, Button, IconButton, LinearProgress, Typography, useTheme } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DiscountIcon from '@mui/icons-material/Discount';
@@ -18,7 +18,7 @@ import ApplyCouonForm from '../../components/product/ApplyCouonForm';
 const SubCategories:React.FC = () => {
     const theme = useTheme();
 
-    const {isSubCategoryDeleted,subCategories} =useSelector((state:RootState)=> state.subCategory)
+    const {isSubCategoryDeleted,subCategories,isLoading} =useSelector((state:RootState)=> state.subCategory)
 
     const dispatch = useDispatch();
     const [selectedRows, setSelectedRows] = useState<string[]>([]);
@@ -142,70 +142,82 @@ const SubCategories:React.FC = () => {
         </Box>
         <Box
           mt="40px"
-          height="75vh"
-          sx={{
-            '& .MuiDataGrid-root': {
-              border: 'none',
-            },
-            '& .MuiDataGrid-cell': {
-              borderBottom: 'none',
-              color: theme.palette.text.primary,
-            },
-            '& .MuiDataGrid-columnHeaders': {
-              backgroundColor: theme.palette.background.default,
-              color: theme.palette.text.primary,
-              borderBottom: '1px solid',
-              borderBottomColor: theme.palette.divider,
-            },
-            '& .MuiDataGrid-virtualScroller': {
-              backgroundColor: theme.palette.background.paper,
-            },
-            '& .MuiDataGrid-footerContainer': {
-              backgroundColor: theme.palette.background.default,
-              color: theme.palette.text.primary,
-              borderTop: '1px solid',
-              borderTopColor: theme.palette.divider,
-            },
-            '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
-              color: theme.palette.primary.main,
-            },
-            '& .MuiCheckbox-root': {
-              color: theme.palette.primary.main,
-            },
-            '& .MuiDataGrid-row.Mui-selected': {
-              backgroundColor: theme.palette.action.selected,
-              color: theme.palette.common.white,
-            },
-            '& .MuiDataGrid-cell--withRenderer.Mui-selected': {
-              backgroundColor: theme.palette.action.selected,
-              color: theme.palette.common.white,
-            },
-            '& .MuiDataGrid-row:hover': {
-              backgroundColor: theme.palette.action.hover,
-            },
-            '& .MuiDataGrid-cell--withRenderer.MuiDataGrid-cell--editing': {
-              backgroundColor: theme.palette.action.selected,
-              color: theme.palette.common.white,
-            },
-          }}
+          height="75vh"   
         >
-          <DataGrid
-            rows={subCategoriesWithProductCount}
-            columns={columns}
-            getRowId={(row: SubCategoryState) => row._id}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 5,
-                },
-              },
-            }}
-            pageSizeOptions={[5]}
-            checkboxSelection
-            onRowSelectionModelChange={(newSelection: GridRowSelectionModel) => {
-              setSelectedRows(newSelection as string[]);
-            }}
-          />
+          {isLoading ?
+           (<Box sx={{ width: '100%' }}>
+            <LinearProgress />
+          </Box>)
+            :
+             subCategories.length>0 ?
+              (<DataGrid
+                rows={subCategoriesWithProductCount}
+                columns={columns}
+                getRowId={(row: SubCategoryState) => row._id}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 5,
+                    },
+                  },
+                }}
+                pageSizeOptions={[5]}
+                checkboxSelection
+                onRowSelectionModelChange={(newSelection: GridRowSelectionModel) => {
+                  setSelectedRows(newSelection as string[]);
+                }}
+                sx={{
+                  '& .MuiDataGrid-root': {
+                    border: 'none',
+                  },
+                  '& .MuiDataGrid-cell': {
+                    borderBottom: 'none',
+                    color: theme.palette.text.primary,
+                  },
+                  '& .MuiDataGrid-columnHeaders': {
+                    backgroundColor: theme.palette.background.default,
+                    color: theme.palette.text.primary,
+                    borderBottom: '1px solid',
+                    borderBottomColor: theme.palette.divider,
+                  },
+                  '& .MuiDataGrid-virtualScroller': {
+                    backgroundColor: theme.palette.background.paper,
+                  },
+                  '& .MuiDataGrid-footerContainer': {
+                    backgroundColor: theme.palette.background.default,
+                    color: theme.palette.text.primary,
+                    borderTop: '1px solid',
+                    borderTopColor: theme.palette.divider,
+                  },
+                  '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
+                    color: theme.palette.primary.main,
+                  },
+                  '& .MuiCheckbox-root': {
+                    color: theme.palette.primary.main,
+                  },
+                  '& .MuiDataGrid-row.Mui-selected': {
+                    backgroundColor: theme.palette.action.selected,
+                    color: theme.palette.common.white,
+                  },
+                  '& .MuiDataGrid-cell--withRenderer.Mui-selected': {
+                    backgroundColor: theme.palette.action.selected,
+                    color: theme.palette.common.white,
+                  },
+                  '& .MuiDataGrid-row:hover': {
+                    backgroundColor: theme.palette.action.hover,
+                  },
+                  '& .MuiDataGrid-cell--withRenderer.MuiDataGrid-cell--editing': {
+                    backgroundColor: theme.palette.action.selected,
+                    color: theme.palette.common.white,
+                  },
+                }}
+              />)
+               :
+                (<Box width="100%" display="flex" justifyContent="center" alignItems="center" mt="100px">
+                  <Typography>No Sub-Categories Yet</Typography>
+                </Box>)
+              }
+          
         </Box>
       </Box>
     );

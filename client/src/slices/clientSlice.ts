@@ -32,6 +32,7 @@ export interface ClientState {
   isClientCreated:boolean;
   isClientUpdated:boolean;
   isClientDeleted:boolean;
+  isLoading:boolean;
   singleClient:SingleClientType |null
 }
 
@@ -40,6 +41,7 @@ const initialState: ClientState = {
   isClientCreated:false,
   isClientUpdated:false,
   isClientDeleted:false,
+  isLoading:false,
   singleClient:null
 };
 
@@ -71,7 +73,10 @@ const clientSlice = createSlice({
       },
     getSingleClient:(state,action:PayloadAction<SingleClientType>)=>{
       state.singleClient=action.payload;
-    }
+    },
+    setIsLoading:(state,action:PayloadAction<boolean>)=>{
+      state.isLoading=action.payload;
+    },
   },
 });
 

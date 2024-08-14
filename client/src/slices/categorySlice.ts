@@ -17,6 +17,7 @@ export interface CategorySliceState {
     isCategoryCreated:boolean;
     isCategoryUpdated:boolean;
     isCategoryDeleted:boolean;
+    isLoading:boolean;
   }
   
 const initialState: CategorySliceState = {
@@ -25,6 +26,7 @@ const initialState: CategorySliceState = {
     isCategoryCreated:false,
     isCategoryUpdated:false,
     isCategoryDeleted:false,
+    isLoading:false
 
   };
 const categorySlice=createSlice({
@@ -54,6 +56,9 @@ const categorySlice=createSlice({
             state.categories = state.categories.filter((category) =>
                 category._id !== action.payload 
             );
+          },
+          setIsLoading:(state,action:PayloadAction<boolean>)=>{
+            state.isLoading=action.payload;
           },
         
     }

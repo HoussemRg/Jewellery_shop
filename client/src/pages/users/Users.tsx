@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid, GridColDef, GridRenderCellParams, GridRowSelectionModel } from '@mui/x-data-grid';
-import { Box, IconButton, useTheme, Button, Typography } from '@mui/material';
+import { Box, IconButton, useTheme, Button, Typography, LinearProgress } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { useDispatch } from '../../hooks';
 import { deleteUser, getVendorsPerStore } from '../../apiCalls/userApiCall';
-import {  UserType } from '../../slices/userSlice';
+import {   UserType } from '../../slices/userSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UpdateUserForm from '../../components/user/UpdateUserForm';
@@ -15,7 +15,7 @@ import UsersHeader from '../../components/user/UsersHeader';
 
 const Users: React.FC = () => {
   const theme = useTheme();
-  const { users,isUserDeleted } = useSelector((state: RootState) => state.user);
+  const { users,isUserDeleted,isLoading } = useSelector((state: RootState) => state.user);
   const { user } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
 
@@ -24,12 +24,14 @@ const Users: React.FC = () => {
   useEffect(()=>{
     if (user && user.store) {
       dispatch(getVendorsPerStore());
+      
     }
   },[user])
 
   useEffect(() => {
     if (user && user.store &&  !isUserDeleted) {
       dispatch(getVendorsPerStore());
+      
     }
   }, [dispatch,isUserDeleted]);
 
@@ -65,6 +67,7 @@ const Users: React.FC = () => {
       setOpenEditForm(false);
       if (user && user.store) {
         dispatch(getVendorsPerStore());
+        
       }
             
     };
@@ -124,74 +127,77 @@ const Users: React.FC = () => {
           </Button>
         )}
       </Box>
-      <Box
-        mt="40px"
-        height="75vh"
-        sx={{
-          '& .MuiDataGrid-root': {
-            border: 'none',
-          },
-          '& .MuiDataGrid-cell': {
-            borderBottom: 'none',
-            color: theme.palette.text.primary,
-          },
-          '& .MuiDataGrid-columnHeaders': {
-            backgroundColor: theme.palette.background.default,
-            color: theme.palette.text.primary,
-            borderBottom: '1px solid',
-            borderBottomColor: theme.palette.divider,
-          },
-          '& .MuiDataGrid-virtualScroller': {
-            backgroundColor: theme.palette.background.paper,
-          },
-          '& .MuiDataGrid-footerContainer': {
-            backgroundColor: theme.palette.background.default,
-            color: theme.palette.text.primary,
-            borderTop: '1px solid',
-            borderTopColor: theme.palette.divider,
-          },
-          '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
-            color: theme.palette.primary.main,
-          },
-          '& .MuiCheckbox-root': {
-            color: theme.palette.primary.main,
-          },
-          '& .MuiDataGrid-row.Mui-selected': {
-            backgroundColor: theme.palette.action.selected,
-            color: theme.palette.common.white,
-          },
-          '& .MuiDataGrid-cell--withRenderer.Mui-selected': {
-            backgroundColor: theme.palette.action.selected,
-            color: theme.palette.common.white,
-          },
-          '& .MuiDataGrid-row:hover': {
-            backgroundColor: theme.palette.action.hover,
-          },
-          '& .MuiDataGrid-cell--withRenderer.MuiDataGrid-cell--editing': {
-            backgroundColor: theme.palette.action.selected,
-            color: theme.palette.common.white,
-          },
-        }}
-      >
-        {users.length>0 ?  <DataGrid
-          rows={users}
-          columns={columns}
-          getRowId={(row: UserType) => row._id}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
+      <Box mt="40px" height="75vh">
+        {isLoading ? (
+          <Box sx={{ width: '100%' }}>
+            <LinearProgress />
+          </Box>
+        ) : users.length > 0 ? (
+          <DataGrid
+            rows={users}
+            columns={columns}
+            getRowId={(row: UserType) => row._id}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                },
               },
-            },
-          }}
-          pageSizeOptions={[5]}
-          checkboxSelection
-          onRowSelectionModelChange={(newSelection: GridRowSelectionModel) => {
-            setSelectedRows(newSelection as string[]);
-          }}
-        /> : <Box width="100%" display="flex" justifyContent="center" alignItems="center" mt="100px">
-        <Typography>No Vendors yet </Typography>
-        </Box>}
+            }}
+            pageSizeOptions={[5]}
+            checkboxSelection
+            onRowSelectionModelChange={(newSelection: GridRowSelectionModel) =>
+              setSelectedRows(newSelection as string[])
+            }
+            sx={{
+              '& .MuiDataGrid-root': {
+                border: 'none',
+              },
+              '& .MuiDataGrid-cell': {
+                borderBottom: 'none',
+                color: theme.palette.text.primary,
+              },
+              '& .MuiDataGrid-columnHeaders': {
+                backgroundColor: theme.palette.background.default,
+                color: theme.palette.text.primary,
+                borderBottom: '1px solid',
+                borderBottomColor: theme.palette.divider,
+              },
+              '& .MuiDataGrid-virtualScroller': {
+                backgroundColor: theme.palette.background.paper,
+              },
+              '& .MuiDataGrid-footerContainer': {
+                backgroundColor: theme.palette.background.default,
+                color: theme.palette.text.primary,
+                borderTop: '1px solid',
+                borderTopColor: theme.palette.divider,
+              },
+              '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
+                color: theme.palette.primary.main,
+              },
+              '& .MuiCheckbox-root': {
+                color: theme.palette.primary.main,
+              },
+              '& .MuiDataGrid-row.Mui-selected': {
+                backgroundColor: theme.palette.action.selected,
+                color: theme.palette.common.white,
+              },
+              '& .MuiDataGrid-row:hover': {
+                backgroundColor: theme.palette.action.hover,
+              },
+            }}
+          />
+        ) : (
+          <Box
+            width="100%"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            mt="100px"
+          >
+            <Typography>No Users Yet</Typography>
+          </Box>
+        )}
       </Box>
     </Box>
   );

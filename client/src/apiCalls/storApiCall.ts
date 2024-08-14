@@ -15,7 +15,7 @@ const createStore=(store:StoreData):AppThunk<Promise<void>> =>{
         try{
             await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/stores/create`,store);
             dispatch(storeActions.setIsStoreCreated(true));
-            toast.update(id, { render: "Store updated successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Store created successfully", type: "success", isLoading: false, autoClose: 1200 });
         }catch(err){
             const error = err as AxiosError;
             if (id) {
@@ -28,13 +28,16 @@ const createStore=(store:StoreData):AppThunk<Promise<void>> =>{
 const getAllStores = ():AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         try {
+            dispatch(storeActions.setIsLoading(true));
+
             const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/stores`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             });
             dispatch(storeActions.getAllStores(res.data.stores));
-            
+            dispatch(storeActions.setIsLoading(false));
+
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (error.response) {

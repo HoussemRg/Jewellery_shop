@@ -38,6 +38,7 @@ export interface UserState {
   isUserCreated:boolean;
   isUserUpdated:boolean;
   isUserDeleted:boolean;
+  isLoading:boolean;
   singleUser:SingleUserType |null
 }
 
@@ -46,6 +47,7 @@ const initialState: UserState = {
   isUserCreated:false,
   isUserUpdated:false,
   isUserDeleted:false,
+  isLoading:false,
   singleUser:null
 };
 
@@ -69,6 +71,9 @@ const userSlice = createSlice({
     },
     setIsUserDeleted:(state,action:PayloadAction<boolean>)=>{
       state.isUserDeleted=action.payload;
+    },
+    setIsLoading:(state,action:PayloadAction<boolean>)=>{
+      state.isLoading=action.payload;
     },
     deleteUser:(state, action: PayloadAction<string>) => {
         state.users = state.users.filter((user) =>

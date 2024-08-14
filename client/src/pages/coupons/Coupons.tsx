@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid, GridColDef, GridRenderCellParams, GridRowSelectionModel  } from '@mui/x-data-grid';
-import { Box, IconButton, useTheme, Button, Typography, useMediaQuery } from '@mui/material';
+import { Box, IconButton, useTheme, Button, Typography, useMediaQuery, LinearProgress } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { useDispatch } from '../../hooks';
@@ -17,7 +17,7 @@ import { format } from 'date-fns';
 const Coupons: React.FC = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const { coupons, isCouponDeleted } = useSelector((state: RootState) => state.coupon);
+  const { coupons, isCouponDeleted,isLoading } = useSelector((state: RootState) => state.coupon);
   const { user } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
 
@@ -135,56 +135,13 @@ const Coupons: React.FC = () => {
       <Box
         mt="40px"
         height="75vh"
-        sx={{
-          '& .MuiDataGrid-root': {
-            border: 'none',
-          },
-          '& .MuiDataGrid-cell': {
-            borderBottom: 'none',
-            color: theme.palette.text.primary,
-            padding: isSmallScreen ? '4px' : '8px',
-          },
-          '& .MuiDataGrid-columnHeaders': {
-            backgroundColor: theme.palette.background.default,
-            color: theme.palette.text.primary,
-            borderBottom: '1px solid',
-            borderBottomColor: theme.palette.divider,
-            fontSize: isSmallScreen ? '0.75rem' : '1rem',
-          },
-          '& .MuiDataGrid-virtualScroller': {
-            backgroundColor: theme.palette.background.paper,
-          },
-          '& .MuiDataGrid-footerContainer': {
-            backgroundColor: theme.palette.background.default,
-            color: theme.palette.text.primary,
-            borderTop: '1px solid',
-            borderTopColor: theme.palette.divider,
-          },
-          '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
-            color: theme.palette.primary.main,
-          },
-          '& .MuiCheckbox-root': {
-            color: theme.palette.primary.main,
-          },
-          '& .MuiDataGrid-row.Mui-selected': {
-            backgroundColor: theme.palette.action.selected,
-            color: theme.palette.common.white,
-          },
-          '& .MuiDataGrid-cell--withRenderer.Mui-selected': {
-            backgroundColor: theme.palette.action.selected,
-            color: theme.palette.common.white,
-          },
-          '& .MuiDataGrid-row:hover': {
-            backgroundColor: theme.palette.action.hover,
-          },
-          '& .MuiDataGrid-cell--withRenderer.MuiDataGrid-cell--editing': {
-            backgroundColor: theme.palette.action.selected,
-            color: theme.palette.common.white,
-          },
-        }}
       >
-        {coupons.length > 0 ? (
-          <DataGrid
+        { isLoading ?
+        (<Box sx={{ width: '100%' }}>
+          <LinearProgress />
+        </Box>) :
+         coupons.length > 0 ?
+          (<DataGrid
             rows={coupons}
             columns={columns}
             getRowId={(row: CouponType) => row._id}
@@ -200,12 +157,60 @@ const Coupons: React.FC = () => {
             onRowSelectionModelChange={(newSelection: GridRowSelectionModel) => {
               setSelectedRows(newSelection as string[]);
             }}
-          />
-        ) : (
-          <Box width="100%" display="flex" justifyContent="center" alignItems="center" mt="100px">
+            sx={{
+              '& .MuiDataGrid-root': {
+                border: 'none',
+              },
+              '& .MuiDataGrid-cell': {
+                borderBottom: 'none',
+                color: theme.palette.text.primary,
+                padding: isSmallScreen ? '4px' : '8px',
+              },
+              '& .MuiDataGrid-columnHeaders': {
+                backgroundColor: theme.palette.background.default,
+                color: theme.palette.text.primary,
+                borderBottom: '1px solid',
+                borderBottomColor: theme.palette.divider,
+                fontSize: isSmallScreen ? '0.75rem' : '1rem',
+              },
+              '& .MuiDataGrid-virtualScroller': {
+                backgroundColor: theme.palette.background.paper,
+              },
+              '& .MuiDataGrid-footerContainer': {
+                backgroundColor: theme.palette.background.default,
+                color: theme.palette.text.primary,
+                borderTop: '1px solid',
+                borderTopColor: theme.palette.divider,
+              },
+              '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
+                color: theme.palette.primary.main,
+              },
+              '& .MuiCheckbox-root': {
+                color: theme.palette.primary.main,
+              },
+              '& .MuiDataGrid-row.Mui-selected': {
+                backgroundColor: theme.palette.action.selected,
+                color: theme.palette.common.white,
+              },
+              '& .MuiDataGrid-cell--withRenderer.Mui-selected': {
+                backgroundColor: theme.palette.action.selected,
+                color: theme.palette.common.white,
+              },
+              '& .MuiDataGrid-row:hover': {
+                backgroundColor: theme.palette.action.hover,
+              },
+              '& .MuiDataGrid-cell--withRenderer.MuiDataGrid-cell--editing': {
+                backgroundColor: theme.palette.action.selected,
+                color: theme.palette.common.white,
+              },
+            }}
+          />)
+          : 
+          (<Box width="100%" display="flex" justifyContent="center" alignItems="center" mt="100px">
             <Typography>No Coupons yet</Typography>
-          </Box>
-        )}
+          </Box>)
+          }
+        
       </Box>
     </Box>
   );

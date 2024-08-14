@@ -14,6 +14,7 @@ export interface SubCategorySliceState {
     isSubCategoryCreated:boolean,
     isSubCategoryUpdated:boolean,
     isSubCategoryDeleted:boolean,
+    isLoading:boolean;
   }
   
 const initialState: SubCategorySliceState = {
@@ -22,6 +23,7 @@ const initialState: SubCategorySliceState = {
     isSubCategoryCreated:false,
     isSubCategoryUpdated:false,
     isSubCategoryDeleted:false,
+    isLoading:false
   };
 const subCategorySlice=createSlice({
     name:'subcategory',
@@ -50,6 +52,9 @@ const subCategorySlice=createSlice({
             state.subCategories = state.subCategories.filter((subCategory) =>
                 subCategory._id !== action.payload 
             );
+          },
+          setIsLoading:(state,action:PayloadAction<boolean>)=>{
+            state.isLoading=action.payload;
           },
         
     }

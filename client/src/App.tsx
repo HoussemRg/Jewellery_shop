@@ -13,7 +13,6 @@ import Vendors from './pages/users/Vendors';
 import UserProfile from './pages/users/UserProfile';
 import Stores from './pages/stores/Stores';
 import StoreDetails from './pages/stores/StoreDetails';
-import SuperAdminDashboard from './pages/dashboard/SuperAdminDashboard';
 import Categories from './pages/category/Categories';
 import SubCategories from './pages/subCategories/SubCategories';
 import Clients from './pages/clients/Clients';
@@ -23,6 +22,10 @@ import OrderDetails from './pages/order/OrderDetails';
 import Coupons from './pages/coupons/Coupons';
 import Users from './pages/users/Users';
 import EmailVerification from './pages/global/EmailVerification';
+import SuperAdminLayout from './pages/layout/SuperAdminLayout';
+import Investors from './pages/investor/investors';
+import InvestorProfile from './pages/investor/investorProfile';
+
 
 function App() {
   const mode=useSelector((state:RootState)=> state.theme.mode);
@@ -41,8 +44,11 @@ function App() {
           path="/users/:userId/verify/:token"
           element={<EmailVerification /> }
         />
-        <Route path='/admin-dashboard' element={user && user.role==='superAdmin' && <SuperAdminDashboard />} />
-        <Route  path='/admin-dashboard/users' element={ user  && user.role==='superAdmin' && <Users />} />
+        <Route   element={<SuperAdminLayout />}>
+          <Route path='/admin-dashboard' element={user && user.role==='superAdmin' && <Stores />} />
+          <Route  path='/admin-dashboard/users' element={ user  && user.role==='superAdmin' && <Users />} />
+        </Route>
+       
         <Route   element={<Layout />}>
           <Route  path='/dashboard/main' element={ user  ? <Dashboard /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/products' element={ user  ? <Products /> : <Navigate to="/"  />} />
@@ -57,6 +63,8 @@ function App() {
           <Route  path='/dashboard/stores/:id' element={<StoreDetails />} />
           <Route path='/dashboard/orders' element={ user && user?.role!=='vendor' ? <Orders /> : <Navigate to="/"  />} />
           <Route path='/dashboard/orders/:id' element={ user && user?.role!=='vendor' ? <OrderDetails /> : <Navigate to="/"  />} />
+          <Route  path='/dashboard/investors' element={ user  ? <Investors /> : <Navigate to="/"  />} />
+          <Route  path='/dashboard/investors/:id' element={ user  ? <InvestorProfile /> : <Navigate to="/"  />} />
     
         </Route>
 

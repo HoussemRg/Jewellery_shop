@@ -31,13 +31,14 @@ const createCoupon=(coupon:CouponData):AppThunk<Promise<void>> =>{
 const getAllCoupons = ():AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         try {
+            dispatch(couponActions.setIsLoading(true));
             const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/coupons`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             });
             dispatch(couponActions.getAllCoupons(res.data));
-            
+            dispatch(couponActions.setIsLoading(false));
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (error.response) {

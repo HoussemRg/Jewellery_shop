@@ -42,6 +42,7 @@ export interface CouponState {
   isCouponUpdated:boolean;
   isCouponDeleted:boolean;
   isCouponApplied:boolean;
+  isLoading:boolean;
   singleCoupon:SingleCouponType |null
 }
 
@@ -52,6 +53,7 @@ const initialState: CouponState = {
   isCouponUpdated:false,
   isCouponDeleted:false,
   isCouponApplied:false,
+  isLoading:false,
   singleCoupon:null
 };
 
@@ -89,6 +91,9 @@ const couponSlice = createSlice({
     },
     setIsCouponApplied:(state,action:PayloadAction<boolean>)=>{
       state.isCouponApplied=action.payload;
+    },
+    setIsLoading:(state,action:PayloadAction<boolean>)=>{
+      state.isLoading=action.payload;
     },
   },
 });

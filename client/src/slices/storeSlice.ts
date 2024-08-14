@@ -26,6 +26,7 @@ export interface StoreState {
   isStoreCreated:boolean;
   isStoreUpdated:boolean;
   isStoreDeleted:boolean;
+  isLoading:boolean;
   singleStore:SingleStoreType |null
 }
 
@@ -34,6 +35,7 @@ const initialState: StoreState = {
   isStoreCreated:false,
   isStoreUpdated:false,
   isStoreDeleted:false,
+  isLoading:false,
   singleStore:null
 };
 
@@ -65,7 +67,10 @@ const storeSlice = createSlice({
       },
     getSingleStore:(state,action:PayloadAction<SingleStoreType>)=>{
       state.singleStore=action.payload;
-    }
+    },
+    setIsLoading:(state,action:PayloadAction<boolean>)=>{
+      state.isLoading=action.payload;
+    },
   },
 });
 

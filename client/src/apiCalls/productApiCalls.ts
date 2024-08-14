@@ -10,12 +10,16 @@ type ThunkResult<R> = ThunkAction<R, RootState, unknown, Action<string>>;
 
 const getAllProducts = (page: number): AppThunk => async (dispatch: AppDispatch, getState) => {
     try {
+        dispatch(productActions.setIsLoading(true));
+
         const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/products?page=${page}`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
             }
         });
         dispatch(productActions.getProducts(res.data));
+        dispatch(productActions.setIsLoading(false));
+
     } catch (err: unknown) {
         const error = err as AxiosError;
         if (error.response) {
@@ -117,6 +121,8 @@ const getFilteredProducts=(params:Partial<FilterProductData>,page:number): Thunk
     return async(dispatch:Dispatch,getState)=>{
         //id = toast.loading("Searching products, Please wait...");
         try{
+            dispatch(productActions.setIsLoading(true));
+
             const res=await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/products/filter?page=${page}`,{params:params,headers:{
                 Authorization: "Bearer " + getState().auth.user?.token
             }}
@@ -124,6 +130,8 @@ const getFilteredProducts=(params:Partial<FilterProductData>,page:number): Thunk
             dispatch(productActions.getProductFiltered(res.data?.products));
             dispatch(productActions.getFilteredProductsCount(res.data?.count));
             dispatch(productActions.setIsProductsFiltered(true))
+            dispatch(productActions.setIsLoading(false));
+
             //toast.update(id, { render: "Products filtered", type: "success", isLoading: false, autoClose: 1200 });
         }catch(err){
             /*const error = err as AxiosError;

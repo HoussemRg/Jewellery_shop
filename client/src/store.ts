@@ -10,6 +10,7 @@ import { clientReducer, ClientState } from './slices/clientSlice';
 import { orderReducer, OrderState } from './slices/orderSlice';
 import { cardReducer, CardState } from './slices/cardSlice';
 import { couponReducer, CouponState } from './slices/couponSlice';
+import { investorReducer, InvestorState } from './slices/investorSlice';
 
 export type RootState = {
     theme: ThemeState;
@@ -22,7 +23,8 @@ export type RootState = {
     client:ClientState,
     order:OrderState,
     card:CardState,
-    coupon:CouponState
+    coupon:CouponState,
+    investor:InvestorState
 };
 
 const store = configureStore({
@@ -37,7 +39,8 @@ const store = configureStore({
         client:clientReducer,
         order:orderReducer,
         card:cardReducer,
-        coupon:couponReducer
+        coupon:couponReducer,
+        investor:investorReducer
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

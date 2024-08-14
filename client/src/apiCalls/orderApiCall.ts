@@ -9,12 +9,16 @@ import { OrderData } from '../components/Card/TopRightCard';
 
 const getAllOrders = (): AppThunk => async (dispatch: AppDispatch, getState) => {
     try {
+        dispatch(orderActions.setIsLoading(true));
+
         const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/orders`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
             }
         });
         dispatch(orderActions.getAllOrders(res.data));
+        dispatch(orderActions.setIsLoading(false));
+
     } catch (err: unknown) {
         const error = err as AxiosError;
         if (error.response) {

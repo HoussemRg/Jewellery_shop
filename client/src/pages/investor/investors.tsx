@@ -7,50 +7,45 @@ import { useDispatch } from '../../hooks';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ListIcon from '@mui/icons-material/List';
-import { Link, useNavigate } from 'react-router-dom';
-import { deleteClient, getAllClients } from '../../apiCalls/clientApiCall';
-import { ClientType } from '../../slices/clientSlice';
-import ClientHeader from '../../components/client/ClientHeader';
-import UpdateClientForm from '../../components/client/UpdateClientForm';
-import { cardActions } from '../../slices/cardSlice';
-import AddShoppingCartOutlinedIcon from '@mui/icons-material/AddShoppingCartOutlined';
+import { Link } from 'react-router-dom';
+import { deleteInvestor, getAllInvestors } from '../../apiCalls/investorApiCall';
+import { InvestorType } from '../../slices/investorSlice';
+import InvestorHeader from '../../components/investor/InvestorHeader';
+import UpdateInvestorForm from '../../components/investor/UpdateInvestorForm';
 
-const Clients: React.FC = () => {
+
+const Investors: React.FC = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
-  const { clients, isClientDeleted,isLoading } = useSelector((state: RootState) => state.client);
+  const { investors, isInvestorDeleted,isLoading } = useSelector((state: RootState) => state.investor);
   const { user } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!isClientDeleted) {
-      dispatch(getAllClients());
+    if (!isInvestorDeleted) {
+      dispatch(getAllInvestors());
     }
-  }, [user, dispatch, isClientDeleted]);
+  }, [user, dispatch, isInvestorDeleted]);
 
   const handleDelete = (id: string, event: React.MouseEvent) => {
     event.stopPropagation();
-    dispatch(deleteClient(id));
+    dispatch(deleteInvestor(id));
   };
 
-  const handleCreateCard = (clientId: string) => {
-    dispatch(cardActions.setClientId(clientId));
-    navigate('/dashboard/products');
-  };
+  
 
   const handleBulkDelete = () => {
-    selectedRows.forEach((id: string) => dispatch(deleteClient(id)));
+    selectedRows.forEach((id: string) => dispatch(deleteInvestor(id)));
   };
 
-  const [searchedClient, setSearchedClient] = useState<ClientType>();
-  const searchClient = (id: string) => {
-    const searchedClient = clients.find((client: ClientType) => client._id === id);
-    if (searchedClient) {
-      setSearchedClient(searchedClient);
+  const [searchedInvestor, setSearchedInvestor] = useState<InvestorType>();
+  const searchInvestor = (id: string) => {
+    const searchedInvestor = investors.find((investor: InvestorType) => investor._id === id);
+    if (searchedInvestor) {
+      setSearchedInvestor(searchedInvestor);
       setOpenEditForm(true);
     }
   };
@@ -59,7 +54,7 @@ const Clients: React.FC = () => {
 
   const handleClickOpenEditForm = (id: string, event: React.MouseEvent) => {
     event.stopPropagation();
-    searchClient(id);
+    searchInvestor(id);
   };
 
   const handleCloseEditForm = () => {
@@ -81,14 +76,12 @@ const Clients: React.FC = () => {
           <IconButton onClick={(event) => handleClickOpenEditForm(params.row._id, event)} color="success">
             <EditIcon />
           </IconButton>
-          <Link to={`/dashboard/clients/${params.row._id}`}>
+          <Link to={`/dashboard/investors/${params.row._id}`}>
             <IconButton color='primary'>
               <ListIcon />
             </IconButton>
           </Link>
-          <IconButton color='primary' onClick={() => handleCreateCard(params.row._id)}>
-            <AddShoppingCartOutlinedIcon />
-          </IconButton>
+          
         </Box>
       ),
     },
@@ -110,14 +103,12 @@ const Clients: React.FC = () => {
           <IconButton onClick={(event) => handleClickOpenEditForm(params.row._id, event)} color="success">
             <EditIcon />
           </IconButton>
-          <Link to={`/dashboard/clients/${params.row._id}`}>
+          <Link to={`/dashboard/investors/${params.row._id}`}>
             <IconButton color='primary'>
               <ListIcon />
             </IconButton>
           </Link>
-          <IconButton color='primary' onClick={() => handleCreateCard(params.row._id)}>
-            <AddShoppingCartOutlinedIcon />
-          </IconButton>
+         
         </Box>
       ),
     },
@@ -140,14 +131,12 @@ const Clients: React.FC = () => {
           <IconButton onClick={(event) => handleClickOpenEditForm(params.row._id, event)} color="success">
             <EditIcon />
           </IconButton>
-          <Link to={`/dashboard/clients/${params.row._id}`}>
+          <Link to={`/dashboard/investors/${params.row._id}`}>
             <IconButton color='primary'>
               <ListIcon />
             </IconButton>
           </Link>
-          <IconButton color='primary' onClick={() => handleCreateCard(params.row._id)}>
-            <AddShoppingCartOutlinedIcon />
-          </IconButton>
+         
         </Box>
       ),
     },
@@ -165,8 +154,8 @@ const Clients: React.FC = () => {
 
   return (
     <Box m="1.5rem 2.5rem">
-      <ClientHeader />
-      {searchedClient && <UpdateClientForm handleCloseEditForm={handleCloseEditForm} opendEditForm={openEditForm} clientToUpdate={searchedClient} />}
+      <InvestorHeader />
+      {searchedInvestor && <UpdateInvestorForm handleCloseEditForm={handleCloseEditForm} opendEditForm={openEditForm} investorToUpdate={searchedInvestor} />}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb="1rem">
         {selectedRows.length > 1 && (
           <Button
@@ -188,11 +177,11 @@ const Clients: React.FC = () => {
             <LinearProgress />
           </Box>)
             :
-             clients.length > 0 ?
+             investors.length > 0 ?
               (<DataGrid
-                rows={clients}
+                rows={investors}
                 columns={getColumns()}
-                getRowId={(row: ClientType) => row._id}
+                getRowId={(row: InvestorType) => row._id}
                 initialState={{
                   pagination: {
                     paginationModel: {
@@ -255,7 +244,7 @@ const Clients: React.FC = () => {
               />)
                : 
                (<Box width="100%" display="flex" justifyContent="center" alignItems="center" mt="100px">
-                <Typography>No Clients yet</Typography>
+                <Typography>No Investors yet</Typography>
               </Box>)}
 
 
@@ -265,4 +254,4 @@ const Clients: React.FC = () => {
   );
 };
 
-export default Clients;
+export default Investors;

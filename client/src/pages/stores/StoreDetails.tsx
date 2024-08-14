@@ -1,6 +1,6 @@
 import { Box, Grid, IconButton, Typography, useTheme } from '@mui/material';
 import React, { useEffect } from 'react';
-import image from '../../assets/photo.png';
+import store from '../../assets/store.png';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -82,8 +82,8 @@ const StoreDetails: React.FC = () => {
                             sx={{ boxShadow: `0 4px 8px ${theme.palette.grey[500]}` }}
                         >
                             <img 
-                                src={image} 
-                                alt="user photo" 
+                                src={store} 
+                                alt="store photo" 
                                 width="100%" 
                                 height="100%" 
                                 style={{ borderRadius: '50%' }} 

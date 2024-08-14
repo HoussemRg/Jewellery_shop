@@ -15,6 +15,8 @@ const { getConnection, initializeConnections, redisClient } = require('./Utils/d
 const { clientRoutes } = require("./Routes/clientRoutes");
 const { orderRoutes } = require("./Routes/orderRoutes");
 const { couponRoutes } = require("./Routes/couponRoutes");
+const { investorRoutes } = require("./Routes/investorRoutes");
+const { investmentRoutes } = require("./Routes/investmentRoutes");
 
 const app=express();
 app.use(express.json());
@@ -41,6 +43,8 @@ redisClient.on('ready', async () => {
   app.use('/api/clients', clientRoutes);
   app.use('/api/orders', orderRoutes);
   app.use('/api/coupons', couponRoutes);
+  app.use('/api/investors', investorRoutes);
+  app.use('/api/investments', investmentRoutes);
 
   app.listen(port, () => console.log(`http://localhost:${port}`));
 });
