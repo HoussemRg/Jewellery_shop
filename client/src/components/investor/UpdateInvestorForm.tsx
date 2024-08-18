@@ -88,16 +88,17 @@ const UpdateInvestorForm: React.FC<UpdateInvestorProps> = ({ handleCloseEditForm
           </Button>
         </DialogTitle>
         <DialogContent>
-          <Box
+        <Box
             component="form"
             sx={{
               display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'center',
+              flexWrap: 'nowrap', 
+              flexDirection:"column",
+              justifyContent: 'space-between', 
               alignItems: 'center',
               '& .MuiTextField-root': {
                 m: 1,
-                width: fullScreen ? '100%' : 'calc(50% - 16px)',
+                width: '100%',
                 boxSizing: 'border-box',
               },
             }}
@@ -150,6 +151,7 @@ const UpdateInvestorForm: React.FC<UpdateInvestorProps> = ({ handleCloseEditForm
               helperText={errors.phoneNumber?.message}
               {...register('phoneNumber')}
             />
+          
             <DialogActions>
               <Button autoFocus onClick={handleCloseEditForm} color="warning">
                 Cancel

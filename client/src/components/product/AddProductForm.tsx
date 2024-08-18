@@ -48,7 +48,7 @@ export interface ProductData {
 const AddProductForm: React.FC<FormProps> = ({ handleClose, open, categories, subCategories }) => {
   const dispatch = useDispatch();
   const { isProductCreated } = useSelector((state: RootState) => state.product);
-
+  const { investments } = useSelector((state: RootState) => state.investment);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -94,7 +94,11 @@ const AddProductForm: React.FC<FormProps> = ({ handleClose, open, categories, su
     formData.append('stockQuantity', data.stockQuantity.toString());
     formData.append('category', data.category);
     formData.append('subCategory', data.subCategory);
-
+    formData.append('purchaseSource',data.purchaseSource)
+    if(data.investment){
+      formData.append('investment',data.investment)
+    }
+    console.log(data)
     dispatch(createProduct(formData));
     reset();
   }

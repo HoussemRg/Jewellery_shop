@@ -5,6 +5,7 @@ const { getConnection } = require('../Utils/dbconnection');
 const { Product } = require('../Models/Product');
 const { SubCategory } = require('../Models/SubCategory');
 const { Coupon } = require('../Models/Coupon');
+const { OrderDetails } = require('../Models/OrderDetails');
 
 /**---------------------------------
  * @desc create new category 
@@ -26,7 +27,7 @@ const createCategory=asyncHandler(async(req,res)=>{
 })
 
 /**---------------------------------
- * @desc create new category 
+ * @desc get all categories
  * @route /api/categories
  * @request Get
  * @access public
@@ -35,12 +36,77 @@ const getAllCategories=asyncHandler(async(req,res)=>{
     const CategoryModel=req.storeDb.model('Category',Category.schema);
    
     const categoryies=await CategoryModel.find();
-    const count=await CategoryModel.countDocuments();
-    return res.status(200).send({categoryies,count})
+    return res.status(200).send(categoryies)
 })
 
+/**---------------------------------
+ * @desc get category number 
+ * @route /api/categories/count
+ * @request Get
+ * @access public
+-------------------------------------*/
+const getCategoriesNumber=asyncHandler(async(req,res)=>{
+    const CategoryModel=req.storeDb.model('Category',Category.schema);
+    const count=await CategoryModel.countDocuments();
+    return res.status(200).send({count:count})
+})
+/**---------------------------------
+ * @desc get top 5 selling categories 
+ * @route /api/categories/top
+ * @request Get
+ * @access for only admin or super admin
+ ------------------------------------*/
 
+ const getTopSellingCategories = asyncHandler(async (req, res) => {    
+    const ProductModel = req.storeDb.model('Product', Product.schema);
+    const OrderDetailsModel = req.storeDb.model('OrderDetails', OrderDetails.schema);
+    const CategoryModel = req.storeDb.model('Category', Category.schema);
 
+    const topCategories = await OrderDetailsModel.aggregate([
+        {
+            $lookup: {
+                from: 'products',
+                localField: 'product',
+                foreignField: '_id',
+                as: 'product'
+            }
+        },
+        {
+            $unwind: '$product'
+        },
+        {
+            $group: {
+                _id: '$product.category', 
+                totalQuantitySold: { $sum: '$quantity' }
+            }
+        },
+        {
+            $sort: { totalQuantitySold: -1 }
+        },
+        {
+            $limit: 5
+        },
+        {
+            $lookup: {
+                from: 'categories',
+                localField: '_id',
+                foreignField: '_id',
+                as: 'category'
+            }
+        },
+        {
+            $unwind: '$category'
+        },
+        {
+            $project: {
+                categoryName: '$category.categoryName',
+                totalQuantitySold: 1
+            }
+        }
+    ]);
+
+    return res.status(200).send(topCategories);
+});
 /**---------------------------------
  * @desc update category 
  * @route /api/categories/:storeId/:categoryId
@@ -106,4 +172,4 @@ const deleteCategory=asyncHandler(async(req,res)=>{
 
 
 
-module.exports={createCategory,getAllCategories,updateCategory,deleteCategory}
+module.exports={createCategory,getAllCategories,updateCategory,deleteCategory,getTopSellingCategories,getCategoriesNumber}

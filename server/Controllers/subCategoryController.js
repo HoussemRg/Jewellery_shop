@@ -5,6 +5,7 @@ const { getConnection } = require('../Utils/dbconnection');
 const { Product } = require('../Models/Product');
 const { Category } = require('../Models/Category');
 const { Coupon } = require('../Models/Coupon');
+const { OrderDetails } = require('../Models/OrderDetails');
 
 /**---------------------------------
  * @desc create new subSubCategory 
@@ -26,7 +27,7 @@ const createSubCategory=asyncHandler(async(req,res)=>{
 })
 
 /**---------------------------------
- * @desc create new subSubCategory 
+ * @desc get all subSubCategories
  * @route /api/categories/:storeId
  * @request Get
  * @access public
@@ -36,9 +37,81 @@ const getAllSubCategories=asyncHandler(async(req,res)=>{
     const SubCategoryModel=req.storeDb.model('SubCategory',SubCategory.schema);
    
     const subCategories=await SubCategoryModel.find();
-    const count=await SubCategoryModel.countDocuments();
-    return res.status(200).send({subCategories,count})
+
+    return res.status(200).send(subCategories)
 })
+/**---------------------------------
+ * @desc get subcategory number 
+ * @route /api/subCategories/count
+ * @request Get
+ * @access public
+-------------------------------------*/
+const getSubCategoriesNumber=asyncHandler(async(req,res)=>{
+    const SubCategoryModel=req.storeDb.model('SubCategory',SubCategory.schema);
+    const count=await SubCategoryModel.countDocuments();
+    return res.status(200).send({count:count})
+})
+
+
+/**---------------------------------
+ * @desc get top 5 selling subcategories 
+ * @route /api/categories/top
+ * @request Get
+ * @access for only admin or super admin
+ ------------------------------------*/
+
+ const getTopSellingSubCategories = asyncHandler(async (req, res) => {    
+    const ProductModel = req.storeDb.model('Product', Product.schema);
+    const OrderDetailsModel = req.storeDb.model('OrderDetails', OrderDetails.schema);
+    const SubCategoryModel = req.storeDb.model('SubCategory', SubCategory.schema);
+
+    const topSubCategories = await OrderDetailsModel.aggregate([
+        {
+            $lookup: {
+                from: 'products',
+                localField: 'product',
+                foreignField: '_id',
+                as: 'product'
+            }
+        },
+        {
+            $unwind: '$product'
+        },
+        {
+            $group: {
+                _id: '$product.subCategory', 
+                totalQuantitySold: { $sum: '$quantity' }
+            }
+        },
+        {
+            $sort: { totalQuantitySold: -1 }
+        },
+        {
+            $limit: 5
+        },
+        {
+            $lookup: {
+                from: 'subcategories',
+                localField: '_id',
+                foreignField: '_id',
+                as: 'subCategory'
+            }
+        },
+        {
+            $unwind: '$subCategory'
+        },
+        {
+            $project: {
+                subCategoryName: '$subCategory.subCategoryName',
+                totalQuantitySold: 1
+            }
+        }
+    ]);
+
+    return res.status(200).send(topSubCategories);
+});
+
+
 
 /**---------------------------------
  * @desc get single subcategory 
@@ -122,4 +195,4 @@ const getAllSubCategories=asyncHandler(async(req,res)=>{
 })
 
 
-module.exports={createSubCategory,getAllSubCategories,getSingleSubCategory,updateSubCategory,deleteSubCategory}
+module.exports={createSubCategory,getAllSubCategories,getSingleSubCategory,updateSubCategory,deleteSubCategory,getTopSellingSubCategories,getSubCategoriesNumber}

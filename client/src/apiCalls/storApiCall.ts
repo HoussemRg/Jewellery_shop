@@ -51,12 +51,14 @@ const getAllStores = ():AppThunk<Promise<void>> => {
 
 const getSingleStore=(storeId:string):AppThunk=> async(dispatch:AppDispatch,getState)=>{
     try{
+        dispatch(storeActions.setIsLoading(true));
         const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/stores/${storeId}`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
             }
         });
         dispatch(storeActions.getSingleStore(res.data));
+        dispatch(storeActions.setIsLoading(false));
     }catch(err){
         const error = err as AxiosError;
             if (error.response) {

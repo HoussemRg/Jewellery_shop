@@ -1,7 +1,7 @@
 const express=require('express');
 const { verifyTokenForOnlySuperAdmin, verifyToken, verifyTokenForOnlySuperAdminOrAdmin } = require('../Middlewares/verifyToken');
 const { validateId } = require('../Middlewares/verifyId');
-const { createClient, getAllClients, getSingleClient, updateClient, deleteClient } = require('../Controllers/clientController');
+const { createClient, getAllClients, getSingleClient, updateClient, deleteClient, getClientsNumber } = require('../Controllers/clientController');
 const { connectStoreDb } = require('../Middlewares/connectStoreDb');
 
 const clientRoutes=express.Router();
@@ -9,6 +9,8 @@ const clientRoutes=express.Router();
 clientRoutes.post('/create',verifyTokenForOnlySuperAdminOrAdmin,connectStoreDb,createClient);
 
 clientRoutes.get('/',verifyTokenForOnlySuperAdminOrAdmin,connectStoreDb,getAllClients);
+
+clientRoutes.get('/count',verifyTokenForOnlySuperAdminOrAdmin,connectStoreDb,getClientsNumber);
 
 clientRoutes.get('/:clientId',verifyTokenForOnlySuperAdminOrAdmin,validateId,connectStoreDb,getSingleClient);
 

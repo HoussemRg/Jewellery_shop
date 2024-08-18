@@ -62,6 +62,7 @@ const validateCreateInvestment=(obj)=>{
 
 const validateUpdateInvestment=(obj)=>{
     const schema=joi.object({
+        investmentName:joi.string(),
         investor:joi.string(),
         startDate:joi.date(),
         endDate:joi.date(),

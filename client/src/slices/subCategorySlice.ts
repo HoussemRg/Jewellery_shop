@@ -8,8 +8,15 @@ export interface SubCategoryState{
     product:string[]
 }
 
+
+export interface TopSubCategoryType{
+  _id:string;
+  totalQuantitySold:number;
+  categoryName:string;
+}
 export interface SubCategorySliceState {
     subCategories: SubCategoryState[];
+    topSubCategories:TopSubCategoryType[];
     subCategoryNumber: number; 
     isSubCategoryCreated:boolean,
     isSubCategoryUpdated:boolean,
@@ -19,6 +26,7 @@ export interface SubCategorySliceState {
   
 const initialState: SubCategorySliceState = {
     subCategories: [],
+    topSubCategories:[],
     subCategoryNumber: 0,
     isSubCategoryCreated:false,
     isSubCategoryUpdated:false,
@@ -31,7 +39,11 @@ const subCategorySlice=createSlice({
     reducers:{
         getAllSubCategories:(state,action: PayloadAction<SubCategoryState[]>)=>{
             state.subCategories=action.payload
-        },getSubCategoryNumber:(state,action: PayloadAction<number>)=>{
+        },
+        getTopSubCategories:(state,action: PayloadAction<TopSubCategoryType[]>)=>{
+          state.topSubCategories=action.payload
+      },
+        getSubCategoryNumber:(state,action: PayloadAction<number>)=>{
             state.subCategoryNumber=action.payload
         },
         setIsSubCategoryCreated:(state, action: PayloadAction<boolean>)=>{

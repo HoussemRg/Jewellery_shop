@@ -36,7 +36,7 @@ const getVendorsPerStore = ():AppThunk<Promise<void>> => {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             });
-            dispatch(userActions.getAllVendorsPerStore(res.data.users));
+            dispatch(userActions.getAllVendorsPerStore(res.data));
             dispatch(userActions.setIsLoading(false));
         } catch (err: unknown) {
             const error = err as AxiosError;
@@ -48,6 +48,28 @@ const getVendorsPerStore = ():AppThunk<Promise<void>> => {
         }
     }
 }
+
+const getVendorsNumber = ():AppThunk<Promise<void>> => {
+    return async (dispatch: Dispatch,getState: () => RootState) => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/users/vendors/count`, {
+                headers: {
+                    Authorization: "Bearer " + getState().auth.user?.token
+                }
+            });
+            dispatch(userActions.getVendorsNumber(res.data.count));
+           
+        } catch (err: unknown) {
+            const error = err as AxiosError;
+            if (error.response) {
+                toast.error(error.response.data as string, { autoClose: 1200 });
+            } else {
+                toast.error('An unknown error occurred', { autoClose: 1200 });
+            }
+        }
+    }
+}
+
 
 const getSingleUser=(userId:string):AppThunk<Promise<void>>=> async(dispatch:Dispatch,getState:()=>RootState)=>{
     try{
@@ -113,4 +135,4 @@ const deleteUser= (userId:string):AppThunk<Promise<void>> => {
     }
 }
 
-export {getVendorsPerStore,updateUser,deleteUser,registerUser,getSingleUser}
+export {getVendorsPerStore,updateUser,deleteUser,registerUser,getSingleUser,getVendorsNumber}

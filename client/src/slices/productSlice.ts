@@ -13,6 +13,12 @@ export interface CategoryType {
     coupon:CouponType[]
 }
 
+export interface TopProductsType{
+    _id:string;
+    totalQuantitySold:number;
+    productName:string;
+}
+
 export interface SubCategoryType {
     _id: string;
     subCategoryName: string;
@@ -32,11 +38,13 @@ export interface ProductType {
     stockQuantity: number;
     category: CategoryType;
     subCategory: SubCategoryType;
-    coupon:CouponType[]
+    coupon:CouponType[];
+    purchaseSource:string
 }
 
 export interface ProductState {
     products: ProductType[];
+    topProducts:TopProductsType[];
     currentPage:number
     productsCount: number;
     isProductCreated: boolean;
@@ -49,6 +57,7 @@ export interface ProductState {
 
 const initialState: ProductState = {
     products: [],
+    topProducts:[],
     currentPage:1,
     productsCount: 0,
     isProductCreated: false,
@@ -65,6 +74,9 @@ const productSlice = createSlice({
     reducers: {
         getProducts: (state, action: PayloadAction<ProductType[]>) => {
             state.products = action.payload;
+        },
+        getTopProducts:(state, action: PayloadAction<TopProductsType[]>) => {
+            state.topProducts = action.payload;
         },
         setCurrentPage:(state,action: PayloadAction<number>)=>{
             state.currentPage=action.payload

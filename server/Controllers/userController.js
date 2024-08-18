@@ -22,8 +22,27 @@ const bcrypt=require('bcrypt');
     if (!store) return res.status(400).send("Store not found");
     const userModel= storeConnection.model('User',User.schema);
     const users=await userModel.find({store:storeId}).select("-password");
+    res.status(200).send(users);
+ })
+
+ /**---------------------------------
+ * @desc get vendors number  
+ * @route /api/users/vendors/count
+ * @resquest Get
+ * @acess for only super admin or admin
+ ------------------------------------*/
+
+
+
+ const getVendorsNumber=asyncHandler(async(req,res)=>{
+    const storeId = req.user.store;
+    const storeConnection = await getConnection("Users");
+    const StoreModel = storeConnection.model('Store', Store.schema);
+    let store = await StoreModel.findById(storeId);
+    if (!store) return res.status(400).send("Store not found");
+    const userModel= storeConnection.model('User',User.schema);
     const count=await userModel.countDocuments({role:"vendor"});
-    res.status(200).send({users:users,count:count});
+    res.status(200).send({count:count});
  })
 
 /**---------------------------------
@@ -103,4 +122,4 @@ const getSingleUser=(asyncHandler(async(req,res)=>{
 
 
 
- module.exports={getAllvendors,getSingleUser,updateUser,deleteUser};
+ module.exports={getAllvendors,getSingleUser,updateUser,deleteUser,getVendorsNumber};

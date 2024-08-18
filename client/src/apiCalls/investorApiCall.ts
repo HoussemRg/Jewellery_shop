@@ -40,8 +40,29 @@ const getAllInvestors = ():AppThunk<Promise<void>> => {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             });
-            dispatch(investorActions.getAllInvestors(res.data.investors));
+            dispatch(investorActions.getAllInvestors(res.data));
             dispatch(investorActions.setIsLoading(false));
+        } catch (err: unknown) {
+            const error = err as AxiosError;
+            if (error.response) {
+                toast.error(error.response.data as string, { autoClose: 1200 });
+            } else {
+                toast.error('An unknown error occurred', { autoClose: 1200 });
+            }
+        }
+    }
+}
+
+
+const getInvestorsNumber = ():AppThunk<Promise<void>> => {
+    return async (dispatch: Dispatch,getState: () => RootState) => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/investors/count`, {
+                headers: {
+                    Authorization: "Bearer " + getState().auth.user?.token
+                }
+            });
+            dispatch(investorActions.getInvestorsNumber(res.data.count));
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (error.response) {
@@ -117,4 +138,4 @@ const deleteInvestor= (investorId:string):AppThunk<Promise<void>> => {
     }
 }
 
-export {getAllInvestors,updateInvestor,deleteInvestor,getSingleInvestor,createInvestor}
+export {getAllInvestors,updateInvestor,deleteInvestor,getSingleInvestor,createInvestor,getInvestorsNumber}

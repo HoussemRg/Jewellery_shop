@@ -17,6 +17,7 @@ const getAllOrders = (): AppThunk => async (dispatch: AppDispatch, getState) => 
             }
         });
         dispatch(orderActions.getAllOrders(res.data));
+      
         dispatch(orderActions.setIsLoading(false));
 
     } catch (err: unknown) {
@@ -29,6 +30,27 @@ const getAllOrders = (): AppThunk => async (dispatch: AppDispatch, getState) => 
     }
 };
 
+const getOrdersNumber = (): AppThunk => async (dispatch: AppDispatch, getState) => {
+    try {
+    
+
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/orders/count`, {
+            headers: {
+                Authorization: "Bearer " + getState().auth.user?.token
+            }
+        });
+        dispatch(orderActions.getOrdersNumber(res.data.count));
+      
+
+    } catch (err: unknown) {
+        const error = err as AxiosError;
+        if (error.response) {
+            toast.error(error.response.data as string, { autoClose: 1200 });
+        } else {
+            toast.error('An unknown error occurred', { autoClose: 1200 });
+        }
+    }
+};
 
 
 const createOrder = (order: OrderData)=> async (dispatch: AppDispatch, getState: () => RootState) => {
@@ -119,4 +141,4 @@ const getSingleOrder=(orderId:string):AppThunk<Promise<void>>=> async(dispatch:D
             }
     }
 }
-export { getAllOrders, getSingleOrder, createOrder ,deleteOrder,payForOrder };
+export { getAllOrders, getSingleOrder, createOrder ,deleteOrder,payForOrder,getOrdersNumber };

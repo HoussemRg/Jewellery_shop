@@ -37,6 +37,7 @@ export interface SingleInvestorType{
 }
 export interface InvestorState {
   investors: InvestorType[];
+  investorsNumber:number;
   isInvestorCreated:boolean;
   isInvestorUpdated:boolean;
   isInvestorDeleted:boolean;
@@ -46,6 +47,7 @@ export interface InvestorState {
 
 const initialState: InvestorState = {
   investors: [],
+  investorsNumber:0,
   isInvestorCreated:false,
   isInvestorUpdated:false,
   isInvestorDeleted:false,
@@ -59,6 +61,9 @@ const investorSlice = createSlice({
   reducers: {
     getAllInvestors: (state, action: PayloadAction<InvestorType[]>) => {
       state.investors = action.payload;
+    },
+    getInvestorsNumber: (state, action: PayloadAction<number>) => {
+      state.investorsNumber = action.payload;
     },
     setIsInvestorCreated:(state, action: PayloadAction<boolean>)=>{
         state.isInvestorCreated=action.payload;

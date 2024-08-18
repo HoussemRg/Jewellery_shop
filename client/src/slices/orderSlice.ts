@@ -31,6 +31,7 @@ export interface SingleOrderType{
 }
 export interface OrderState {
   orders: OrderType[];
+  ordersNumber:number;
   isOrderPaid:boolean;
   isOrderCreated:boolean;
   isOrderUpdated:boolean;
@@ -41,6 +42,7 @@ export interface OrderState {
 
 const initialState: OrderState = {
   orders: [],
+  ordersNumber:0,
   isOrderPaid:false,
   isOrderCreated:false,
   isOrderUpdated:false,
@@ -55,6 +57,9 @@ const orderSlice = createSlice({
   reducers: {
     getAllOrders: (state, action: PayloadAction<OrderType[]>) => {
       state.orders = action.payload;
+    },
+    getOrdersNumber:(state, action: PayloadAction<number>) => {
+      state.ordersNumber = action.payload;
     },
     setIsOrderPaid:(state, action: PayloadAction<boolean>)=>{
         state.isOrderPaid=action.payload;

@@ -12,6 +12,7 @@ export interface ProductToBuyType{
     stockQuantity: number;
     category: CategoryType;
     subCategory: SubCategoryType;
+    
 }
 
 export interface CardState {

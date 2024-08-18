@@ -108,7 +108,7 @@ const TopRightCard: React.FC<CardParams> = ({handleClose}) => {
       </CardContent>
       <CardActions sx={{display:"flex" , justifyContent:"end"}} >
         
-      <Button variant="contained" onClick={onSubmit}>Contained</Button> 
+      <Button variant="contained" onClick={onSubmit}>Buy</Button> 
       </CardActions>
     </Card>
   );

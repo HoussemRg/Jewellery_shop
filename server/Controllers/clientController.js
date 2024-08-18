@@ -39,8 +39,19 @@ const getAllClients=asyncHandler(async(req,res)=>{
  
     const ClientModel=req.storeDb.models.Client || req.storeDb.model('Client', Client.schema);
     const clients=await ClientModel.find().select('-order');
+    res.status(200).send(clients);
+ })
+
+  /**---------------------------------
+ * @desc get  clients number
+ * @route /api/clients/count
+ * @request get
+ * @access only admin or superAdmin
+ ------------------------------------*/
+ const getClientsNumber=asyncHandler(async(req,res)=>{
+    const ClientModel = req.storeDb.models.Client || req.storeDb.model('Client', Client.schema);
     const count=await ClientModel.countDocuments();
-    res.status(200).send({clients:clients,count:count});
+    res.status(200).send({count:count});
  })
 /**---------------------------------
  * @desc get single client 
@@ -113,4 +124,4 @@ const getAllClients=asyncHandler(async(req,res)=>{
   res.status(200).send("Client deleted successfully");
     
  })
-module.exports={createClient,getAllClients,getSingleClient,updateClient,deleteClient};
+module.exports={createClient,getAllClients,getSingleClient,updateClient,deleteClient,getClientsNumber};

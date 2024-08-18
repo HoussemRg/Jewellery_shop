@@ -212,14 +212,12 @@ const Clients: React.FC = () => {
                   '& .MuiDataGrid-cell': {
                     borderBottom: 'none',
                     color: theme.palette.text.primary,
-                    padding: isSmallScreen ? '4px' : '8px',
                   },
                   '& .MuiDataGrid-columnHeaders': {
                     backgroundColor: theme.palette.background.default,
                     color: theme.palette.text.primary,
                     borderBottom: '1px solid',
                     borderBottomColor: theme.palette.divider,
-                    fontSize: isSmallScreen ? '0.75rem' : '1rem',
                   },
                   '& .MuiDataGrid-virtualScroller': {
                     backgroundColor: theme.palette.background.paper,

@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { useDispatch } from '../../hooks';
 import { getFilteredProducts } from '../../apiCalls/productApiCalls';
+import { productActions } from '../../slices/productSlice';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
@@ -30,7 +31,7 @@ const carrats = [
     { value: '22', label: '22' },
     { value: '24', label: '24' },
 ];
-
+const purchaseSource=['Owner','Investor'];
 export interface FilterProductData {
     productName?: string | null;
     carat?: number | null;
@@ -40,6 +41,7 @@ export interface FilterProductData {
     stockQuantity?: number | null;
     categoryName?: string | null;
     subCategoryName?: string | null;
+    purchaseSource?:string | null;
 }
 
 interface FilterProductsProps {
@@ -84,7 +86,8 @@ const FilterProducts: React.FC<FilterProductsProps> = ({ handleSetFiltering, han
           .notRequired()
           .nullable(),
       category: yup.string().notRequired().nullable(),
-      subCategory: yup.string().notRequired().nullable()
+      subCategory: yup.string().notRequired().nullable(),
+      purchaseSource: yup.string().notRequired().oneOf(['Owner', 'Investor'], 'Purchase source must be either "Owner" or "Investor"'),
   });
 
     const { filteredProducts } = useSelector((state: RootState) => state.product);
@@ -99,6 +102,7 @@ const FilterProducts: React.FC<FilterProductsProps> = ({ handleSetFiltering, han
             stockQuantity: null,
             categoryName: null,
             subCategoryName: null,
+            purchaseSource:null,
         }
     });
 
@@ -112,7 +116,9 @@ const FilterProducts: React.FC<FilterProductsProps> = ({ handleSetFiltering, han
         dispatch(getFilteredProducts(validDataForm, currentPage));
         setValidData(validDataForm);
         handleSetFiltering();
-        setExpanded(false); // Collapse the accordion after submission
+        setExpanded(false); 
+        dispatch(productActions.resetFiltredProducts());
+        dispatch(productActions.resetFiltredProductsCount());
         reset();
     };
 
@@ -273,6 +279,26 @@ const FilterProducts: React.FC<FilterProductsProps> = ({ handleSetFiltering, han
                                     helperText={errors.stockQuantity?.message}
                                     {...register('stockQuantity')}
                                 />
+                            </Item>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Item>
+                                <TextField
+                                    id="purchaseSource"
+                                    select
+                                    label="Select Source"
+                                    sx={{ width: "100%" }}
+                                    defaultValue=""
+                                    error={!!errors.purchaseSource}
+                                    helperText={errors.purchaseSource?.message}
+                                    {...register('purchaseSource')}
+                                >
+                                    {purchaseSource.map((src) => (
+                                        <MenuItem key={src} value={src}>
+                                            {src}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
                             </Item>
                         </Grid>
                         <Grid item xs={12}>

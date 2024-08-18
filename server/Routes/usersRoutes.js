@@ -1,5 +1,5 @@
 const express=require('express');
-const {  getAllvendors, getSingleUser, updateUser, deleteUser } = require('../Controllers/userController');
+const {  getAllvendors, getSingleUser, updateUser, deleteUser, getVendorsNumber } = require('../Controllers/userController');
 const { verifyTokenForOnlySuperAdmin, verifyToken, verifyTokenForOnlySuperAdminOrAdmin } = require('../Middlewares/verifyToken');
 const { validateId } = require('../Middlewares/verifyId');
 
@@ -7,6 +7,8 @@ const usersRoutes=express.Router();
 
 
 usersRoutes.get('/vendors',verifyTokenForOnlySuperAdminOrAdmin,getAllvendors);
+
+usersRoutes.get('/vendors/count',verifyTokenForOnlySuperAdminOrAdmin,getVendorsNumber);
 
 usersRoutes.get('/:id',verifyToken,validateId,getSingleUser);
 

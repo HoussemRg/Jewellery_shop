@@ -30,6 +30,46 @@ const getAllCategories=():ThunkResult<Promise<void>> =>{
         }
     }
 }
+const getCategoriesNumber=():ThunkResult<Promise<void>> =>{
+    return async(dispatch:Dispatch,getState)=>{
+        try{
+            const res= await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/categories/count`,{
+                headers:{
+                    Authorization: "Bearer " + getState().auth.user?.token
+                }
+            })
+            dispatch(categoryActions.getCategoryNumber(res.data?.count));
+        }catch(err){
+            const error = err as AxiosError;
+            if (error.response) {
+                toast.error(error.response.data as string, { autoClose: 1200 });
+            } else {
+                toast.error('An unknown error occurred', { autoClose: 1200 });
+            }
+        }
+    }
+}
+const getTopCategories=():ThunkResult<Promise<void>> =>{
+    return async(dispatch:Dispatch,getState)=>{
+        try{
+            
+            const res= await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/categories/top`,{
+                headers:{
+                    Authorization: "Bearer " + getState().auth.user?.token
+                }
+            })
+            dispatch(categoryActions.getAllCategories(res.data?.categoryies));
+            dispatch(categoryActions.getTopCategories(res.data));
+        }catch(err){
+            const error = err as AxiosError;
+            if (error.response) {
+                toast.error(error.response.data as string, { autoClose: 1200 });
+            } else {
+                toast.error('An unknown error occurred', { autoClose: 1200 });
+            }
+        }
+    }
+}
 
 const createCategory=(category:CategoryData):AppThunk<Promise<void>> =>{
     let id: Id | undefined;
@@ -100,4 +140,4 @@ const deleteCategory= (categoryId:string):AppThunk<Promise<void>> => {
 }
 
 
-export {getAllCategories,createCategory,updateCategory,deleteCategory}
+export {getAllCategories,createCategory,updateCategory,deleteCategory,getTopCategories,getCategoriesNumber}

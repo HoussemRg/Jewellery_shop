@@ -25,6 +25,9 @@ import EmailVerification from './pages/global/EmailVerification';
 import SuperAdminLayout from './pages/layout/SuperAdminLayout';
 import Investors from './pages/investor/investors';
 import InvestorProfile from './pages/investor/investorProfile';
+import Investments from './pages/investment/Investments';
+import InvestmentDetails from './pages/investment/InvestmentDetails';
+import InvestmentsPerInvestor from './pages/investment/InvestmentsPerInvestor';
 
 
 function App() {
@@ -65,7 +68,9 @@ function App() {
           <Route path='/dashboard/orders/:id' element={ user && user?.role!=='vendor' ? <OrderDetails /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/investors' element={ user  ? <Investors /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/investors/:id' element={ user  ? <InvestorProfile /> : <Navigate to="/"  />} />
-    
+          <Route  path='/dashboard/investments' element={ user  ? <Investments /> : <Navigate to="/"  />} />
+          <Route  path='/dashboard/investments/:id' element={ user  ? <InvestmentDetails /> : <Navigate to="/"  />} />
+          <Route  path='/dashboard/investments/investor/:investorId' element={ user  ? <InvestmentsPerInvestor /> : <Navigate to="/"  />} />
         </Route>
 
       </Routes>

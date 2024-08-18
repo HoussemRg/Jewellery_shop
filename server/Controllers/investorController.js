@@ -40,8 +40,21 @@ const getAllInvestors=asyncHandler(async(req,res)=>{
  
     const InvestorModel=req.storeDb.models.Investor || req.storeDb.model('Investor', Investor.schema);
     const investors=await InvestorModel.find();
+ 
+    res.status(200).send(investors);
+ })
+
+ /**---------------------------------
+ * @desc get investors number
+ * @route /api/investors/count
+ * @resquest Get
+ * @acess only admin or superAdmin
+ ------------------------------------*/
+const getInvestorsNumber=asyncHandler(async(req,res)=>{
+ 
+    const InvestorModel=req.storeDb.models.Investor || req.storeDb.model('Investor', Investor.schema);
     const count=await InvestorModel.countDocuments();
-    res.status(200).send({investors:investors,count:count});
+    res.status(200).send({count:count});
  })
 /**---------------------------------
  * @desc get single investor 
@@ -123,4 +136,4 @@ const getAllInvestors=asyncHandler(async(req,res)=>{
     res.status(200).send("Investor deleted successfully");
     
  })
-module.exports={createInvestor,getAllInvestors,getSingleInvestor,updateInvestor,deleteInvestor};
+module.exports={createInvestor,getAllInvestors,getSingleInvestor,updateInvestor,deleteInvestor,getInvestorsNumber};

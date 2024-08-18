@@ -35,6 +35,7 @@ export interface SingleUserType{
 }
 export interface UserState {
   users: UserType[];
+  vendorsNumber:number;
   isUserCreated:boolean;
   isUserUpdated:boolean;
   isUserDeleted:boolean;
@@ -44,6 +45,7 @@ export interface UserState {
 
 const initialState: UserState = {
   users: [],
+  vendorsNumber:0,
   isUserCreated:false,
   isUserUpdated:false,
   isUserDeleted:false,
@@ -57,6 +59,9 @@ const userSlice = createSlice({
   reducers: {
     getAllVendorsPerStore: (state, action: PayloadAction<UserType[]>) => {
       state.users = action.payload;
+    },
+    getVendorsNumber: (state, action: PayloadAction<number>) => {
+      state.vendorsNumber = action.payload;
     },
     setIsUserCreated:(state, action: PayloadAction<boolean>)=>{
         state.isUserCreated=action.payload;

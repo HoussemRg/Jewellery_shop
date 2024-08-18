@@ -11,6 +11,8 @@ import { orderReducer, OrderState } from './slices/orderSlice';
 import { cardReducer, CardState } from './slices/cardSlice';
 import { couponReducer, CouponState } from './slices/couponSlice';
 import { investorReducer, InvestorState } from './slices/investorSlice';
+import { investmentReducer, InvestmentState } from './slices/investmentSlice';
+import { gainReducer, GainState } from './slices/gainSlice';
 
 export type RootState = {
     theme: ThemeState;
@@ -24,7 +26,10 @@ export type RootState = {
     order:OrderState,
     card:CardState,
     coupon:CouponState,
-    investor:InvestorState
+    investor:InvestorState;
+    investment:InvestmentState,
+    gain:GainState
+    
 };
 
 const store = configureStore({
@@ -40,7 +45,9 @@ const store = configureStore({
         order:orderReducer,
         card:cardReducer,
         coupon:couponReducer,
-        investor:investorReducer
+        investor:investorReducer,
+        investment:investmentReducer,
+        gain:gainReducer
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

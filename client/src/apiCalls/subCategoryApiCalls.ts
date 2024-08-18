@@ -18,9 +18,49 @@ const getAllSubCategories=():ThunkResult<Promise<void>> =>{
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             })
-            dispatch(subCategoryActions.getAllSubCategories(res.data?.subCategories));
+            dispatch(subCategoryActions.getAllSubCategories(res.data));
+
+        }catch(err){
+            const error = err as AxiosError;
+            if (error.response) {
+                toast.error(error.response.data as string, { autoClose: 1200 });
+            } else {
+                toast.error('An unknown error occurred', { autoClose: 1200 });
+            }
+        }
+    }
+}
+const getSubCategoriesNumber=():ThunkResult<Promise<void>> =>{
+    return async(dispatch:Dispatch,getState)=>{
+        try{
+            const res= await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/subcategories/count`,{
+                headers:{
+                    Authorization: "Bearer " + getState().auth.user?.token
+                }
+            })
             dispatch(subCategoryActions.getSubCategoryNumber(res.data?.count));
-            dispatch(subCategoryActions.setIsLoading(false));
+
+        }catch(err){
+            const error = err as AxiosError;
+            if (error.response) {
+                toast.error(error.response.data as string, { autoClose: 1200 });
+            } else {
+                toast.error('An unknown error occurred', { autoClose: 1200 });
+            }
+        }
+    }
+}
+
+const getTopSubCategories=():ThunkResult<Promise<void>> =>{
+    return async(dispatch:Dispatch,getState)=>{
+        try{
+
+            const res= await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/subcategories/top`,{
+                headers:{
+                    Authorization: "Bearer " + getState().auth.user?.token
+                }
+            })
+            dispatch(subCategoryActions.getTopSubCategories(res.data));
 
         }catch(err){
             const error = err as AxiosError;
@@ -100,4 +140,4 @@ const deleteSubCategory= (subCategoryId:string):AppThunk<Promise<void>> => {
 }
 
 
-export {getAllSubCategories,createSubCategory,updateSubCategory,deleteSubCategory}
+export {getAllSubCategories,createSubCategory,updateSubCategory,deleteSubCategory,getTopSubCategories,getSubCategoriesNumber}

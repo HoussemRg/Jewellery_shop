@@ -75,7 +75,7 @@ const Products: React.FC = () => {
   return(
     <Box m="1.5rem 2.5rem">
       <Header title="PRODUCTS" subtitle="See list of products" />
-      {isLoading ? (
+      {isLoading && productsCount==0 ? (
         <Box sx={{ width: '100%' }}>
           <LinearProgress />
         </Box>

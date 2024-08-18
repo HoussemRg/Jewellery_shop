@@ -29,6 +29,7 @@ export interface SingleClientType{
 }
 export interface ClientState {
   clients: ClientType[];
+  clientsNumber:number;
   isClientCreated:boolean;
   isClientUpdated:boolean;
   isClientDeleted:boolean;
@@ -38,6 +39,7 @@ export interface ClientState {
 
 const initialState: ClientState = {
   clients: [],
+  clientsNumber:0,
   isClientCreated:false,
   isClientUpdated:false,
   isClientDeleted:false,
@@ -51,6 +53,9 @@ const clientSlice = createSlice({
   reducers: {
     getAllClients: (state, action: PayloadAction<ClientType[]>) => {
       state.clients = action.payload;
+    },
+    getClientsNumber: (state, action: PayloadAction<number>) => {
+      state.clientsNumber = action.payload;
     },
     setIsClientCreated:(state, action: PayloadAction<boolean>)=>{
         state.isClientCreated=action.payload;

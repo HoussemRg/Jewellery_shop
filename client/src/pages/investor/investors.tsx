@@ -12,12 +12,11 @@ import { deleteInvestor, getAllInvestors } from '../../apiCalls/investorApiCall'
 import { InvestorType } from '../../slices/investorSlice';
 import InvestorHeader from '../../components/investor/InvestorHeader';
 import UpdateInvestorForm from '../../components/investor/UpdateInvestorForm';
-
+import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
 
 const Investors: React.FC = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
   const { investors, isInvestorDeleted,isLoading } = useSelector((state: RootState) => state.investor);
   const { user } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
@@ -61,7 +60,7 @@ const Investors: React.FC = () => {
     setOpenEditForm(false);
   };
 
-  const smallScreenColumns: GridColDef[] = [
+  const columns: GridColDef[] = [
     { field: 'firstName', headerName: 'First Name', flex: 1 },
     { field: 'lastName', headerName: 'Last Name', flex: 1 },
     {
@@ -79,6 +78,11 @@ const Investors: React.FC = () => {
           <Link to={`/dashboard/investors/${params.row._id}`}>
             <IconButton color='primary'>
               <ListIcon />
+            </IconButton>
+          </Link>
+          <Link to={`/dashboard/investments/investor/${params.row._id}`}>
+            <IconButton color='primary'>
+              <MonetizationOnOutlinedIcon />
             </IconButton>
           </Link>
           
@@ -87,70 +91,7 @@ const Investors: React.FC = () => {
     },
   ];
 
-  const mediumScreenColumns: GridColDef[] = [
-    { field: 'firstName', headerName: 'First Name', flex: 1 },
-    { field: 'lastName', headerName: 'Last Name', flex: 1 },
-    { field: 'email', headerName: 'Email', flex: 1 },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      flex: 1,
-      renderCell: (params: GridRenderCellParams) => (
-        <Box>
-          <IconButton onClick={(event) => handleDelete(params.row._id, event)} color="secondary">
-            <DeleteIcon />
-          </IconButton>
-          <IconButton onClick={(event) => handleClickOpenEditForm(params.row._id, event)} color="success">
-            <EditIcon />
-          </IconButton>
-          <Link to={`/dashboard/investors/${params.row._id}`}>
-            <IconButton color='primary'>
-              <ListIcon />
-            </IconButton>
-          </Link>
-         
-        </Box>
-      ),
-    },
-  ];
-
-  const largeScreenColumns: GridColDef[] = [
-    { field: '_id', headerName: 'ID', flex: 1 },
-    { field: 'firstName', headerName: 'First Name', flex: 1 },
-    { field: 'lastName', headerName: 'Last Name', flex: 1 },
-    { field: 'email', headerName: 'Email', flex: 1 },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      flex: 1,
-      renderCell: (params: GridRenderCellParams) => (
-        <Box>
-          <IconButton onClick={(event) => handleDelete(params.row._id, event)} color="secondary">
-            <DeleteIcon />
-          </IconButton>
-          <IconButton onClick={(event) => handleClickOpenEditForm(params.row._id, event)} color="success">
-            <EditIcon />
-          </IconButton>
-          <Link to={`/dashboard/investors/${params.row._id}`}>
-            <IconButton color='primary'>
-              <ListIcon />
-            </IconButton>
-          </Link>
-         
-        </Box>
-      ),
-    },
-  ];
-
-  const getColumns = () => {
-    if (isSmallScreen) {
-      return smallScreenColumns;
-    }
-    if (isMediumScreen) {
-      return mediumScreenColumns;
-    }
-    return largeScreenColumns;
-  };
+  
 
   return (
     <Box m="1.5rem 2.5rem">
@@ -180,7 +121,7 @@ const Investors: React.FC = () => {
              investors.length > 0 ?
               (<DataGrid
                 rows={investors}
-                columns={getColumns()}
+                columns={columns}
                 getRowId={(row: InvestorType) => row._id}
                 initialState={{
                   pagination: {
@@ -201,14 +142,12 @@ const Investors: React.FC = () => {
                   '& .MuiDataGrid-cell': {
                     borderBottom: 'none',
                     color: theme.palette.text.primary,
-                    padding: isSmallScreen ? '4px' : '8px',
                   },
                   '& .MuiDataGrid-columnHeaders': {
                     backgroundColor: theme.palette.background.default,
                     color: theme.palette.text.primary,
                     borderBottom: '1px solid',
                     borderBottomColor: theme.palette.divider,
-                    fontSize: isSmallScreen ? '0.75rem' : '1rem',
                   },
                   '& .MuiDataGrid-virtualScroller': {
                     backgroundColor: theme.palette.background.paper,

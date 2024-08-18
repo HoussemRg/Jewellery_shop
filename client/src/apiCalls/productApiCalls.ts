@@ -48,6 +48,25 @@ const getProductsNumber = (): AppThunk => async (dispatch:AppDispatch,getState) 
         }
     }
 
+    const getTopProductsSales = (): AppThunk => async (dispatch:AppDispatch,getState) => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/products/top`, {
+                headers: {
+                    Authorization: "Bearer " + getState().auth.user?.token
+                }
+            });
+            dispatch(productActions.getTopProducts(res.data));
+        } catch (err: unknown) {
+            const error = err as AxiosError;
+            if (error.response) {
+                toast.error(error.response.data as string, { autoClose: 1200 });
+            } else {
+                toast.error('An unknown error occurred', { autoClose: 1200 });
+            }
+        }
+    }
+
+
 
 const createProduct = (product: FormData)=> async (dispatch: AppDispatch, getState: () => RootState) => {
         let id: Id | undefined;
@@ -147,4 +166,4 @@ const getFilteredProducts=(params:Partial<FilterProductData>,page:number): Thunk
         }
     }
 }
-export { getAllProducts, getProductsNumber, createProduct ,deleteProduct,updateProduct,getFilteredProducts };
+export { getAllProducts, getProductsNumber, createProduct ,deleteProduct,updateProduct,getFilteredProducts,getTopProductsSales };

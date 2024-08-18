@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ProductType } from '../../slices/productSlice';
+import ErrorIcon from '@mui/icons-material/Error';
 import {
   Box,
   Button,
@@ -45,6 +46,7 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
     category,
     subCategory,
     coupon,
+    purchaseSource
   } = product;
 
   const theme = useTheme();
@@ -55,7 +57,7 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
   const [openCouponForm, setOpenCouponForm] = useState<boolean>(false);
   const { categories } = useSelector((state: RootState) => state.category);
   const { subCategories } = useSelector((state: RootState) => state.subCategory);
-  const { productsList, isCardOpened, clientId } = useSelector((state: RootState) => state.card);
+  const { productsList, isCardOpened,clientId } = useSelector((state: RootState) => state.card);
   const { filteredCoupons } = useSelector((state: RootState) => state.coupon);
 
   const handleOpenForm = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -78,7 +80,7 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
       productPhoto,
       stockQuantity,
       category,
-      subCategory,
+      subCategory
     };
     dispatch(cardActions.addProduct(productToBuy));
     if (!isCardOpened) {
@@ -124,7 +126,7 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
             itemId={product._id}
           />
           <Box display="flex" justifyContent="center" alignItems="center">
-            {!productsList.find((product: ProductToBuyType) => product._id === _id) && clientId && (
+            {!productsList.find((product: ProductToBuyType) => product._id === _id) && stockQuantity > 0 && clientId && (
               <IconButton onClick={handleAddProduct} color="primary">
                 <AddCircleOutlineOutlinedIcon />
               </IconButton>
@@ -158,12 +160,25 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
             {subCategory?.subCategoryName}
           </Typography>
         </Box>
-
         <Box display="flex" gap="10px">
-          <Typography color={theme.palette.secondary.main}>Stock :</Typography>
+          <Typography color={theme.palette.secondary.main}>Purchase Source:</Typography>
           <Typography sx={{ fontSize: 14 }} color={theme.palette.text.secondary} gutterBottom>
-            {stockQuantity}
+            {purchaseSource}
           </Typography>
+        </Box>
+        
+          <Box display="flex" justifyContent="space-between" alignItems="center"width="100%">
+          <Box display="flex" gap="10px">
+              <Typography color={theme.palette.secondary.main}>Stock :</Typography>
+              <Typography sx={{ fontSize: 14 }} color={theme.palette.text.secondary} gutterBottom>
+                {stockQuantity}
+              </Typography>
+              
+            </Box> 
+            {stockQuantity<2 
+                && <ErrorIcon color='warning' />
+              } 
+
         </Box>
 
         <Typography variant="body2" color={theme.palette.text.primary}>
@@ -181,7 +196,7 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
             See More
           </Button>
           <Box display="flex" justifyContent="space-around" alignItems="center">
-            <IconButton aria-label="delete" color="info" onClick={() => deleteProduct(product._id)}>
+             <IconButton aria-label="delete" color="info" onClick={() => deleteProduct(product._id)}>
               <DeleteIcon />
             </IconButton>
             <IconButton color="success" aria-label="edit" onClick={handleOpenForm}>
@@ -251,10 +266,85 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
               <Divider sx={{ mt: 1 }} />
             </Box>
           )}
-
-          <Typography mt="12px">
-            Purchase Price: {purchasePrice} - Unit Price: {unitPrice} - Stock: {stockQuantity}
-          </Typography>
+          {category.coupon && category.coupon.length > 0 && (
+            <Box mt="20px" p="10px" borderRadius="8px" sx={{ backgroundColor: theme.palette.background.paper, boxShadow: 2 }}>
+              {category.coupon.map((coupon) => {
+                const isValid = new Date(coupon.expirationDate) >= new Date();
+                return (
+                  isValid && (
+                    <Box
+                      key={coupon._id}
+                      display="flex"
+                      flexDirection={{ xs: 'row', md: 'column' }}
+                      justifyContent={{ xs: 'space-between', md: 'flex-start' }}
+                      alignItems={{ xs: 'center', md: 'flex-start' }}
+                      my="6px"
+                      p="6px"
+                      borderRadius="8px"
+                      sx={{ backgroundColor: theme.palette.background.default, boxShadow: 1 }}
+                    >
+                      <Typography variant="body2" fontWeight="bold" color={theme.palette.primary.main}>
+                        {coupon.couponName}
+                      </Typography>
+                      <Typography variant="body2" fontWeight="bold" color={theme.palette.secondary.main}>
+                        Type : {coupon.type}
+                      </Typography>
+                      <Typography variant="caption" color={theme.palette.success.main}>
+                        {coupon.discountRate}% off
+                      </Typography>
+                      <Typography variant="caption" color={theme.palette.success.main}>
+                        {`Starts: ${new Date(coupon.startDate).toLocaleDateString()}`}
+                      </Typography>
+                      <Typography variant="caption" color={theme.palette.error.main}>
+                        {`Expires: ${new Date(coupon.expirationDate).toLocaleDateString()}`}
+                      </Typography>
+                    </Box>
+                  )
+                );
+              })}
+              <Divider sx={{ mt: 1 }} />
+            </Box>
+          )}
+          {subCategory.coupon && subCategory.coupon.length > 0 && (
+            <Box mt="20px" p="10px" borderRadius="8px" sx={{ backgroundColor: theme.palette.background.paper, boxShadow: 2 }}>
+              {subCategory.coupon.map((coupon) => {
+                const isValid = new Date(coupon.expirationDate) >= new Date();
+                return (
+                  isValid && (
+                    <Box
+                      key={coupon._id}
+                      display="flex"
+                      flexDirection={{ xs: 'row', md: 'column' }}
+                      justifyContent={{ xs: 'space-between', md: 'flex-start' }}
+                      alignItems={{ xs: 'center', md: 'flex-start' }}
+                      my="6px"
+                      p="6px"
+                      borderRadius="8px"
+                      sx={{ backgroundColor: theme.palette.background.default, boxShadow: 1 }}
+                    >
+                      <Typography variant="body2" fontWeight="bold" color={theme.palette.primary.main}>
+                        {coupon.couponName}
+                      </Typography>
+                      <Typography variant="body2" fontWeight="bold" color={theme.palette.secondary.main}>
+                        Type : {coupon.type}
+                      </Typography>
+                      <Typography variant="caption" color={theme.palette.success.main}>
+                        {coupon.discountRate}% off
+                      </Typography>
+                      <Typography variant="caption" color={theme.palette.success.main}>
+                        {`Starts: ${new Date(coupon.startDate).toLocaleDateString()}`}
+                      </Typography>
+                      <Typography variant="caption" color={theme.palette.error.main}>
+                        {`Expires: ${new Date(coupon.expirationDate).toLocaleDateString()}`}
+                      </Typography>
+                    </Box>
+                  )
+                );
+              })}
+              <Divider sx={{ mt: 1 }} />
+            </Box>
+          )}
+          
         </CardContent>
       </Collapse>
     </Card>

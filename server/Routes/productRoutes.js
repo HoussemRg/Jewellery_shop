@@ -1,6 +1,6 @@
 const express=require('express');
 const { verifyTokenForOnlySuperAdminOrAdmin, verifyToken } = require('../Middlewares/verifyToken');
-const { createProduct, getAllProducts, getSingleProduct, updateProduct, deleteProduct, updateProductPhoto, getNumberOfProducts, filterProducts } = require('../Controllers/productController');
+const { createProduct, getAllProducts, getSingleProduct, updateProduct, deleteProduct, updateProductPhoto, getNumberOfProducts, filterProducts, getTopSellingProducts } = require('../Controllers/productController');
 const { uploadProductPhoto } = require('../Middlewares/uploadPhoto');
 const { validateId } = require('../Middlewares/verifyId');
 const { connectStoreDb } = require('../Middlewares/connectStoreDb');
@@ -8,9 +8,11 @@ const { connectStoreDb } = require('../Middlewares/connectStoreDb');
 
 const productRoutes=express.Router();
 
-productRoutes.post('/create',verifyTokenForOnlySuperAdminOrAdmin,validateId,uploadProductPhoto.single('image'),connectStoreDb,createProduct);
+productRoutes.post('/create',verifyTokenForOnlySuperAdminOrAdmin,uploadProductPhoto.single('image'),connectStoreDb,createProduct);
 
-productRoutes.get('/',verifyTokenForOnlySuperAdminOrAdmin,validateId,connectStoreDb,getAllProducts);
+productRoutes.get('/',verifyTokenForOnlySuperAdminOrAdmin,connectStoreDb,getAllProducts);
+
+productRoutes.get('/top',verifyTokenForOnlySuperAdminOrAdmin,connectStoreDb,getTopSellingProducts);
 
 productRoutes.get('/count',verifyToken,connectStoreDb,getNumberOfProducts);
 

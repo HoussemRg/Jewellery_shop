@@ -7,7 +7,8 @@ const { Category } = require('../Models/Category');
 const { SubCategory } = require('../Models/SubCategory');
 const { Coupon } = require('../Models/Coupon');
 const { Investment } = require('../Models/investment');
-
+const { OrderDetails } = require('../Models/OrderDetails');
+const { Gain } = require('../Models/Gain');
 
 /**---------------------------------
  * @desc create new product 
@@ -23,7 +24,6 @@ const { Investment } = require('../Models/investment');
     const CategoryModel = req.storeDb.model('Category', Category.schema);
     const SubCategoryModel = req.storeDb.model('SubCategory', SubCategory.schema);
     const InvestmentModel = req.storeDb.model('Investment', Investment.schema);
-
     let category = await CategoryModel.findById(req.body.category);
     if (!category) return res.status(400).send("Category not found");
 
@@ -52,7 +52,7 @@ const { Investment } = require('../Models/investment');
         investment = await InvestmentModel.findById(req.body.investment);
         if (!investment) return res.status(400).send('Investment not found');
 
-        const requiredAmount = productData.purchasePrice * productData.stockQuantity;
+        const requiredAmount = productData.purchasePrice  * productData.weight * productData.stockQuantity;
         if ((investment.investmentAmount - investment.investedAmount) < requiredAmount) {
             return res.status(400).send('Not enough cash for investing');
         }
@@ -63,6 +63,7 @@ const { Investment } = require('../Models/investment');
 
     let product = new ProductModel(productData);
     await product.save();
+    
 
     if (investment) {
         investment.product.push(product._id);
@@ -140,6 +141,53 @@ const getAllProducts=asyncHandler(async(req,res)=>{
     return res.status(200).send({count:count})
 })
 
+/**---------------------------------
+ * @desc get top 5 selling products 
+ * @route /api/products/top
+ * @request Get
+ * @access for only admin or super admin
+ ------------------------------------*/
+
+ const getTopSellingProducts=asyncHandler(async(req,res)=>{    
+    const ProductModel=req.storeDb.model('Product',Product.schema);
+    const OrderDetailsModel=req.storeDb.model('OrderDetails',OrderDetails.schema);
+    const topProducts = await OrderDetailsModel.aggregate([
+        {
+            $group: {
+                _id: "$product",
+                totalQuantitySold: { $sum: "$quantity" },
+            }
+        },
+        {
+            $sort: { totalQuantitySold: -1 }
+        },
+        {
+            $limit: 5 
+        },
+        {
+            $lookup: {
+                from: 'products',
+                localField: '_id',
+                foreignField: '_id',
+                as: 'product'
+            }
+        },
+        {
+            $unwind: {
+                path: '$product',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $project: {
+                productName: "$product.productName",
+                totalQuantitySold: 1
+            }
+        }
+    ]);
+
+    return res.status(200).send(topProducts);
+})
 
 /**---------------------------------
  * @desc get single product 
@@ -191,28 +239,25 @@ const getSingleProduct=asyncHandler(async(req,res)=>{
  * @access only admin and super admin
  ------------------------------------*/
  const deleteProduct=asyncHandler(async(req,res)=>{
-  
+    const {productId}=req.params;
     const ProductModel=req.storeDb.model('Product',Product.schema);
     const CouponModel=req.storeDb.model('Coupon',Coupon.schema);
     const InvestmentModel=req.storeDb.model('Investment',Investment.schema);
+    const CategoryModel=req.storeDb.model('Category',Category.schema);
+    const SubCategoryModel=req.storeDb.model('SubCategory',SubCategory.schema);
+    const OrderDetailsModel=req.storeDb.model('OrderDetails',OrderDetails.schema);
     let product=await ProductModel.findById(req.params.productId);
-    if(!product) return res.status(400).send("Product not found");
-    req.store.product=req.store.product.filter(productId=> productId.toString() !== product._id.toString());
-    await req.store.save();
-    await CouponModel.updateMany(
-        { product: product._id },
-        { $pull: { product: product._id } }
-    );
-    if (product.investment) {
-        let investment = await InvestmentModel.findById(product.investment);
-        if (!investment) return res.status(400).send("Investment not found");
-
-        investment.investedAmount -= (product.purchasePrice * product.stockQuantity);
-        await investment.save();
-
-        investment.product = investment.product.filter(prodId => prodId.toString() !== product._id.toString());
-        await investment.save();
+    if(!product) return res.status(404).send("Product not found");
+    const orderDetails = await OrderDetailsModel.find({ product: productId });
+    if (orderDetails.length > 0) {    
+        return res.status(400).send('Cannot delete product, it is part of an existing order.');
     }
+    const associatedInvestments = await InvestmentModel.findOne({ product: productId });
+    if (associatedInvestments) return res.status(400).send('Product cannot be deleted as it is associated with an investment');
+    await CategoryModel.updateMany({ product: productId }, { $pull: { product: productId } });
+    await CouponModel.updateMany({ product: productId }, { $pull: { product: productId } });
+    await SubCategoryModel.updateMany({ product: productId }, { $pull: { product: productId } });
+    await Store.updateMany({ product: productId }, { $pull: { product: productId } });   
     await ProductModel.findByIdAndDelete(product._id);
     return res.status(200).send("Product deleted successfully");
 })
@@ -229,7 +274,7 @@ const updateProductPhoto=asyncHandler(async(req,res)=>{
     
     const ProductModel=req.storeDb.model('Product',Product.schema);
     let product=await ProductModel.findById(req.params.productId);
-    if(!product) return res.status(400).send("Product not found");
+    if(!product) return res.status(404).send("Product not found");
     product.productPhoto=req.file.buffer;
     product.save();
     const updatedProduct=await ProductModel.findById(req.params.productId);
@@ -246,10 +291,10 @@ const updateProductPhoto=asyncHandler(async(req,res)=>{
 const filterProducts=asyncHandler(async(req,res)=>{
     
     const ProductModel=req.storeDb.model('Product',Product.schema);
-    const {productName,categoryName,subCategoryName,carat,weight,stockQuantity,minPrice,maxPrice,page}=req.query;
+    const {productName,categoryName,subCategoryName,carat,weight,stockQuantity,minPrice,maxPrice,purchaseSource,page}=req.query;
     let matchConditions={};
     const PRODUCTS_PER_PAGE=8;
-    if (!productName && !categoryName && !subCategoryName && !carat && !weight && !stockQuantity && !minPrice && !maxPrice) {
+    if (!productName && !categoryName && !subCategoryName && !carat && !weight && !stockQuantity && !minPrice && !maxPrice && !purchaseSource) {
         return res.status(200).send({ products: [], count: 0 });
       }
     if(productName){
@@ -269,6 +314,9 @@ const filterProducts=asyncHandler(async(req,res)=>{
     }
     if (maxPrice) {
         matchConditions.maxCalculatedPrice = { ...matchConditions.maxCalculatedPrice, $lte: Number(maxPrice) }
+    }
+    if (purchaseSource) {
+        matchConditions.purchaseSource = purchaseSource;
     }
     let pipeline = [
         {
@@ -374,4 +422,4 @@ const filterProducts=asyncHandler(async(req,res)=>{
 })
 
 
-module.exports={createProduct,getAllProducts,getSingleProduct,updateProduct,deleteProduct,updateProductPhoto,getNumberOfProducts,filterProducts};
+module.exports={createProduct,getAllProducts,getSingleProduct,updateProduct,deleteProduct,updateProductPhoto,getNumberOfProducts,filterProducts,getTopSellingProducts};
