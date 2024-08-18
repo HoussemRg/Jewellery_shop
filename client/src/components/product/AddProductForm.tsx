@@ -11,6 +11,7 @@ import { RootState } from '../../store';
 import { productActions } from '../../slices/productSlice';
 import { CategoryState } from '../../slices/categorySlice';
 import { SubCategoryState } from '../../slices/subCategorySlice';
+import { getAllInvestments } from '../../apiCalls/investmentApiCall';
 
 export interface FormProps {
   handleClose: () => void,
@@ -111,6 +112,12 @@ const AddProductForm: React.FC<FormProps> = ({ handleClose, open, categories, su
       handleClose();
     }
   }, [isProductCreated, dispatch, handleClose]);
+  useEffect(() => {
+   
+      dispatch(getAllInvestments());
+     
+    
+  }, []);
   
   return (
     <Dialog

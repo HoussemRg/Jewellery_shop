@@ -25,7 +25,7 @@ const gainSlice = createSlice({
   name: 'gain',
   initialState,
   reducers: {
-    getGain: (state, action: PayloadAction<GainType>) => {
+    getGain: (state, action: PayloadAction<GainType | null>) => {
       state.gain = action.payload;
     },
     getGainPerYear: (state, action: PayloadAction<GainPerYearType[]>) => {

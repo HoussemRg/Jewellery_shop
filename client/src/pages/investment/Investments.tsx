@@ -8,7 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ListIcon from '@mui/icons-material/List';
 import { Link } from 'react-router-dom';
-import { deleteInvestment, getAllInvestments } from '../../apiCalls/investmentApiCall';
+import { controlInvestmentsState, deleteInvestment, getAllInvestments } from '../../apiCalls/investmentApiCall';
 import { InvestmentType } from '../../slices/investmentSlice';
 import InvestmentHeader from '../../components/investment/InvestmentHeader';
 import UpdateInvestmentForm from '../../components/investment/UpdateInvestmentForm';
@@ -25,6 +25,7 @@ const Investments: React.FC = () => {
 
   useEffect(() => {
     if (!isInvestmentDeleted) {
+      dispatch(controlInvestmentsState());
       dispatch(getAllInvestments());
     }
   }, [user, dispatch, isInvestmentDeleted]);
@@ -85,6 +86,7 @@ const Investments: React.FC = () => {
     { field: 'investmentAmount', headerName: 'Investment Amount ', flex: 1 },
     { field: 'investedAmount', headerName: 'Invested Amount ', flex: 1 },
     { field: 'gain', headerName: 'Gain ', flex: 1 },
+    { field: 'investmentState', headerName: 'Investment State ', flex: 1 },
     {
       field: 'actions',
       headerName: 'Actions',

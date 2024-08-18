@@ -150,9 +150,29 @@ const { Product } = require('../Models/Product');
     await InvestmentModel.findByIdAndDelete(investmentId);
     return res.status(200).send('investment deleted successfully');
  })
+/**---------------------------------
+ * @desc update investments status every day
+ * @route /api/investments/status
+ * @resquest put
+ * @acess only admin or superAdmin
+ ------------------------------------*/
+
+ const controlInvestments=asyncHandler(async(req,res)=>{
+   const InvestmentModel = req.storeDb.models.Investment || req.storeDb.model('Investment', Investment.schema);
+    const date = new Date();
+    
+    const filter = {
+        investmentState: "InActive",
+        startDate: { $lte: date },
+        endDate: { $gte: date },
+    };
+
+    const result = await InvestmentModel.updateMany(filter, { investmentState: "Active" });
+
+    return res.status(200).send(`${result.modifiedCount} investments updated to Active`);
+ })
 
 
-
- module.exports={createInvestment,getAllInvestments,getSingleInvestment,deleteInvestment,updateInvestment,getAllInvestmentsPerInvestor};
+ module.exports={createInvestment,getAllInvestments,getSingleInvestment,deleteInvestment,updateInvestment,getAllInvestmentsPerInvestor,controlInvestments};
 
  

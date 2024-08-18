@@ -53,7 +53,7 @@ function App() {
         </Route>
        
         <Route   element={<Layout />}>
-          <Route  path='/dashboard/main' element={ user  ? <Dashboard /> : <Navigate to="/"  />} />
+          <Route  path='/dashboard/main' element={ user && user.role!=='vendor'  ? <Dashboard /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/products' element={ user  ? <Products /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/categories' element={ user  ? <Categories /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/subCategories' element={ user  ? <SubCategories /> : <Navigate to="/"  />} />
@@ -62,10 +62,9 @@ function App() {
           <Route  path='/dashboard/clients' element={ user  ? <Clients /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/coupons' element={ user  ? <Coupons /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/clients/:id' element={ user  ?<ClientProfile />:<Navigate to="/"  />} />
-          <Route path='/dashboard/stores' element={ user && user?.role==='superAdmin' ? <Stores /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/stores/:id' element={<StoreDetails />} />
-          <Route path='/dashboard/orders' element={ user && user?.role!=='vendor' ? <Orders /> : <Navigate to="/"  />} />
-          <Route path='/dashboard/orders/:id' element={ user && user?.role!=='vendor' ? <OrderDetails /> : <Navigate to="/"  />} />
+          <Route path='/dashboard/orders' element={ user ? <Orders /> : <Navigate to="/"  />} />
+          <Route path='/dashboard/orders/:id' element={ user ? <OrderDetails /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/investors' element={ user  ? <Investors /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/investors/:id' element={ user  ? <InvestorProfile /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/investments' element={ user  ? <Investments /> : <Navigate to="/"  />} />

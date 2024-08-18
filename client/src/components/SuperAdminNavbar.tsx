@@ -4,7 +4,7 @@ import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography, u
 import { authActions, UserLoggedInState } from '../slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { themeActions } from '../slices/themeSlice';
-import { ArrowDropDownOutlined, DarkModeOutlined, LightModeOutlined, SettingsOutlined } from '@mui/icons-material';
+import { ArrowDropDownOutlined, DarkModeOutlined, LightModeOutlined } from '@mui/icons-material';
 import FlexBetween from './FlexBetween';
 import Photo from '../assets/photo.png'
 
@@ -48,9 +48,7 @@ const SuperAdminNavbar:React.FC<NavbarProps> = ({user}) => {
                         : <LightModeOutlined sx={{fontSize:"25px"}} />
                     }
                 </IconButton>
-                <IconButton  >
-                    <SettingsOutlined sx={{fontSize:"25px"}} />
-                </IconButton>
+                
                 <FlexBetween>
             <Button
               onClick={handleClick}

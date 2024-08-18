@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { createInvestment, getAllInvestments } from '../../apiCalls/investmentApiCall';
 import { investmentActions } from '../../slices/investmentSlice';
+import { getAllInvestors } from '../../apiCalls/investorApiCall';
 
 export interface FormProps {
   handleClose: () => void,
@@ -36,6 +37,9 @@ const AddInvestmentForm: React.FC<FormProps> = ({ handleClose, open }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
+  useEffect(()=>{
+    dispatch(getAllInvestors());
+  },[])
 
   const formSchema = yup.object({
     investmentName: yup.string().required('Investment Name is required').min(3).max(50).trim(),

@@ -78,6 +78,26 @@ const getAllInvestmentsPerInvestor = (investorId:string):AppThunk<Promise<void>>
     }
 }
 
+const controlInvestmentsState = ():AppThunk<Promise<void>> => {
+    return async (dispatch: Dispatch,getState: () => RootState) => {
+        try {
+            await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/investments/status`,{}, {
+                headers: {
+                    Authorization: "Bearer " + getState().auth.user?.token
+                }
+            });
+         
+
+        } catch (err: unknown) {
+            const error = err as AxiosError;
+            if (error.response) {
+                toast.error(error.response.data as string, { autoClose: 1200 });
+            } else {
+                toast.error('An unknown error occurred', { autoClose: 1200 });
+            }
+        }
+    }
+}
 
 const getSingleInvestment=(investmentId:string):AppThunk=> async(dispatch:Dispatch,getState)=>{
     try{
@@ -143,4 +163,4 @@ const deleteInvestment= (investmentId:string):AppThunk<Promise<void>> => {
     }
 }
 
-export {getAllInvestments,updateInvestment,deleteInvestment,getSingleInvestment,createInvestment,getAllInvestmentsPerInvestor}
+export {getAllInvestments,updateInvestment,deleteInvestment,getSingleInvestment,createInvestment,getAllInvestmentsPerInvestor,controlInvestmentsState}

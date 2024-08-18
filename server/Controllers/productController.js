@@ -90,14 +90,14 @@ const { Gain } = require('../Models/Gain');
 const getAllProducts=asyncHandler(async(req,res)=>{
     const PRODUCTS_PER_PAGE=8;
     const {page}=req.query;
-    
-   
     const ProductModel=req.storeDb.models.Product || req.storeDb.model('Product', Product.schema);
     req.storeDb.models.Category || req.storeDb.model('Category', Category.schema);
     req.storeDb.models.SubCategory || req.storeDb.model('SubCategory', SubCategory.schema);
     req.storeDb.models.Coupon || req.storeDb.model('Coupon', Coupon.schema);
-    req.storeDb.models.Coupon || req.storeDb.model('Investment', Investment.schema);
-    const products=await ProductModel.find().sort({createdAt:-1}).skip((page-1)*PRODUCTS_PER_PAGE).limit(PRODUCTS_PER_PAGE).populate({
+    req.storeDb.models.Investment || req.storeDb.model('Investment', Investment.schema);
+
+    
+    let products=await ProductModel.find().sort({createdAt:-1}).skip((page-1)*PRODUCTS_PER_PAGE).limit(PRODUCTS_PER_PAGE).populate({
         path:'category',
         model:'Category',
         select:"-product",
@@ -119,9 +119,16 @@ const getAllProducts=asyncHandler(async(req,res)=>{
         path:'coupon',
         model:'Coupon',
         select:"-product"
+    }).populate({
+        path: 'investment',
+        model: 'Investment',
+        select: "investmentState"
     });
 
-   
+    products = products.filter(product => 
+        product.purchaseSource === 'Owner' || 
+        (product.purchaseSource === 'Investor' && product.stockQuantity !== 0 && product.investment?.investmentState === 'Active')
+    );
 
     return res.status(200).send(products)
 })

@@ -19,6 +19,7 @@ const getAllSubCategories=():ThunkResult<Promise<void>> =>{
                 }
             })
             dispatch(subCategoryActions.getAllSubCategories(res.data));
+            dispatch(subCategoryActions.setIsLoading(false));
 
         }catch(err){
             const error = err as AxiosError;

@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { HighlightOffOutlined } from '@mui/icons-material';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, TextField, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, useMediaQuery, useTheme } from '@mui/material';
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup'
@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { investmentActions, InvestmentType } from '../../slices/investmentSlice';
 import { updateInvestment } from '../../apiCalls/investmentApiCall';
+import { getAllInvestors } from '../../apiCalls/investorApiCall';
 interface UpdateInvestmentProps{
     handleCloseEditForm: () => void,
     opendEditForm: boolean,
@@ -26,11 +27,12 @@ export interface InvestmentEditData{
 const UpdateInvestmentForm: React.FC<UpdateInvestmentProps> = ({ handleCloseEditForm, opendEditForm, investmentToUpdate}) => {
     const theme = useTheme();
     const {isInvestmentUpdated} = useSelector((state:RootState)=> state.investment)
-    const {investors} = useSelector((state:RootState)=> state.investor)
     const dispatch=useDispatch();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     
-    
+    useEffect(()=>{
+      dispatch(getAllInvestors());
+    },[])
     const formSchema = yup.object({
         investmentName: yup.string().required('Investment Name is required').min(3).max(50).trim(),
         investor: yup.string().required('Investor is required').trim(),
@@ -48,13 +50,11 @@ const UpdateInvestmentForm: React.FC<UpdateInvestmentProps> = ({ handleCloseEdit
       resolver: yupResolver(formSchema),
       defaultValues: {
         investmentName: investmentToUpdate.investmentName,
-        investor: investmentToUpdate._id,
         startDate: investmentToUpdate.startDate,
         endDate: investmentToUpdate.endDate,
         investmentAmount: investmentToUpdate.investmentAmount,
       }
     });
-    
     const submitForm = (data: InvestmentEditData) => {
         const validDataForm: Partial<InvestmentEditData> = {};
         Object.entries(data).forEach(([key, value]) => {
@@ -120,22 +120,7 @@ const UpdateInvestmentForm: React.FC<UpdateInvestmentProps> = ({ handleCloseEdit
             helperText={errors.investmentName?.message}
             {...register('investmentName')}
           />
-          <TextField
-            id="investor"
-            select
-            label="Select Investor"
           
-            defaultValue=''
-            error={!!errors.investor}
-            helperText={errors.investor?.message}
-            {...register('investor')}
-          >
-            {investors.map((inv) => (
-              <MenuItem key={inv._id} value={inv._id}>
-                {inv.firstName + ' ' + inv.lastName}
-              </MenuItem>
-            ))}
-          </TextField>
           <TextField
             required
             InputLabelProps={{ shrink: true }}

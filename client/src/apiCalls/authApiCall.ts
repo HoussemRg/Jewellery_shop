@@ -54,6 +54,7 @@ const regenerateTokenForSuperAdmin=(storeId:string)=>async(dispatch:AppDispatch,
         dispatch(userActions.getAllVendorsPerStore([]));
         
         dispatch(productActions.resetFiltredProductsCount());
+        dispatch(authActions.setIsTokenRegenrated(true));
   }catch (err:unknown) {
       const error = err as AxiosError;
       if (error.response) {

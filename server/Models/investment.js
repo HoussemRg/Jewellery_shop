@@ -27,8 +27,8 @@ const investmentSchema=new mongoose.Schema({
     },
     investmentState:{
         type:String,
-        enum: ['Active', 'inActive'],
-        default:'inActive'
+        enum: ['Active', 'InActive'],
+        default:'InActive'
     },
     investmentAmount:{
         type:Number,

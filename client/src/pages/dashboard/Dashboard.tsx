@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Card, CardContent, Typography, Box, useTheme, Select, MenuItem } from '@mui/material';
+import { Grid, Card, CardContent, Typography, Box, useTheme, Select, MenuItem, LinearProgress } from '@mui/material';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { useDispatch } from '../../hooks';
 import { useSelector } from 'react-redux';
@@ -19,7 +19,7 @@ const Dashboard = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const thisYear = new Date().getFullYear();
-    const [year, setYear] = useState(thisYear); // State for selected year
+    const [year, setYear] = useState(thisYear);
     const [ordersData, setOrdersData] = useState<{ name: string, count: number }[]>([]);
     const { vendorsNumber } = useSelector((state: RootState) => state.user);
     const { gain, gainPerYear } = useSelector((state: RootState) => state.gain);
@@ -83,8 +83,7 @@ const Dashboard = () => {
 
     return (
         <Box p={2}>
-            <Grid container spacing={3}>
-                {/* Overview Cards */}
+            {gainPerYear.length>0 ? <Grid container spacing={3}>
                 <Grid item xs={12} sm={6} md={3}>
                     <Card>
                         <CardContent>
@@ -150,7 +149,6 @@ const Dashboard = () => {
                     </Card>
                 </Grid>
 
-                {/* Year Input and Charts */}
                 <Grid item xs={12} md={8}>
                     <Card>
                         <CardContent>
@@ -268,7 +266,9 @@ const Dashboard = () => {
                         </CardContent>
                     </Card>
                 </Grid>
-            </Grid>
+            </Grid> : <Box sx={{ width: '100%' }}>
+            <LinearProgress />
+          </Box>}
         </Box>
     );
 };

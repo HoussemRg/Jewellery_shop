@@ -13,6 +13,7 @@ import { productActions } from "../../slices/productSlice";
 import ProductsGrid from "./ProductsGrid";
 import ProductsFiltred from "./ProductsFiltred";
 import { useDispatch } from "../../hooks";
+import { controlInvestmentsState } from "../../apiCalls/investmentApiCall";
 
 const Products: React.FC = () => {
   const dispatch = useDispatch();
@@ -47,7 +48,9 @@ const Products: React.FC = () => {
   };
 
   useEffect(() => {
+    dispatch(controlInvestmentsState());
     dispatch(getAllProducts(currentPage));
+    
   }, [currentPage, productsCount, filtered, dispatch]);
 
   useEffect(() => {

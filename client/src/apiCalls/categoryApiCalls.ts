@@ -17,8 +17,8 @@ const getAllCategories=():ThunkResult<Promise<void>> =>{
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             })
-            dispatch(categoryActions.getAllCategories(res.data?.categoryies));
-            dispatch(categoryActions.getCategoryNumber(res.data?.count));
+            dispatch(categoryActions.getAllCategories(res.data));
+   
             dispatch(categoryActions.setIsLoading(false));
         }catch(err){
             const error = err as AxiosError;
@@ -58,7 +58,7 @@ const getTopCategories=():ThunkResult<Promise<void>> =>{
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             })
-            dispatch(categoryActions.getAllCategories(res.data?.categoryies));
+   
             dispatch(categoryActions.getTopCategories(res.data));
         }catch(err){
             const error = err as AxiosError;

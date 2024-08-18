@@ -69,7 +69,7 @@ const AddUserForm: React.FC<FormProps> = ({ handleClose, open }) => {
 
   useEffect(() => {
     if (isUserCreated && user) {
-      dispatch(getVendorsPerStore(user?.store));
+      dispatch(getVendorsPerStore());
       handleClose();
       reset();
       dispatch(userActions.setIsUserCreated(false));
