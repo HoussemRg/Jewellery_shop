@@ -81,7 +81,7 @@ const UpdateInvestorForm: React.FC<UpdateInvestorProps> = ({ handleCloseEditForm
           <Box>Update Investor</Box>
           <Button
             onClick={handleCloseEditForm}
-            color="warning"
+            color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
             sx={{ padding: 0 }}
           >
             <HighlightOffOutlined />
@@ -153,10 +153,10 @@ const UpdateInvestorForm: React.FC<UpdateInvestorProps> = ({ handleCloseEditForm
             />
           
             <DialogActions>
-              <Button autoFocus onClick={handleCloseEditForm} color="warning">
+              <Button autoFocus onClick={handleCloseEditForm} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                 Cancel
               </Button>
-              <Button type="submit" color="success">
+              <Button type="submit" color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                 Submit
               </Button>
             </DialogActions>

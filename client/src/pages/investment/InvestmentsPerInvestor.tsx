@@ -92,14 +92,14 @@ const InvestmentsPerInvestor: React.FC = () => {
       flex: 1,
       renderCell: (params: GridRenderCellParams) => (
         <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-          <IconButton onClick={(event) => handleDelete(params.row._id, event)} color="secondary">
+          <IconButton onClick={(event) => handleDelete(params.row._id, event)} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
             <DeleteIcon />
           </IconButton>
           <IconButton onClick={(event) => handleClickOpenEditForm(params.row._id, event)} color="success">
             <EditIcon />
           </IconButton>
           <Link to={`/dashboard/investments/${params.row._id}`}>
-            <IconButton color='primary'>
+            <IconButton color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
               <ListIcon />
             </IconButton>
           </Link>
@@ -122,7 +122,7 @@ const InvestmentsPerInvestor: React.FC = () => {
         {selectedRows.length > 1 && (
           <Button
             variant="contained"
-            color="secondary"
+            color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
             onClick={handleBulkDelete}
             startIcon={<DeleteIcon />}
           >

@@ -43,7 +43,7 @@ const Header:React.FC<HeaderProps> = ({title,subtitle}:HeaderProps) => {
           </Typography>
         </Box>
         <Box>
-        <Button variant="contained" endIcon={<AddIcon />} onClick={handleClickOpen} color="secondary">
+        <Button variant="contained" endIcon={<AddIcon />} onClick={handleClickOpen} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'} >
         <Typography variant='h5' >
             Add
           </Typography> 

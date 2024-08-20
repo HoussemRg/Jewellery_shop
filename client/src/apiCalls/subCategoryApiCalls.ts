@@ -121,7 +121,7 @@ const updateSubCategory = (newSubCategory:Partial<SubCategoryEditData>,subCatego
 const deleteSubCategory= (subCategoryId:string):AppThunk<Promise<void>> => {
     let id: Id | undefined;
     return async (dispatch: Dispatch,getState: () => RootState) => {
-        id = toast.loading("deleting  category, Please wait...");
+        id = toast.loading("deleting  Sub-Category, Please wait...");
         try {
             await axios.delete(`${import.meta.env.VITE_SERVER_URL}/api/subCategories/${subCategoryId}`, {
                 headers: {

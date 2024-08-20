@@ -107,14 +107,14 @@ const StoreDetails: React.FC = () => {
                             width="100%"
                         >
                             {singleStore && <IconButton
-                                color="error"
+                                color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
                                 sx={{ '&:hover': { color: theme.palette.error.dark } }}
                                 onClick={()=>handleDelete(singleStore?._id)}
                             >
                                 <DeleteIcon />
                             </IconButton>}
                             <IconButton
-                                color="primary"
+                                color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
                                 sx={{ '&:hover': { color: theme.palette.primary.dark } }}
                                 onClick={handleClickOpenEditForm}
                             >
@@ -146,31 +146,31 @@ const StoreDetails: React.FC = () => {
                         />
                         <Grid container rowSpacing={4} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Store Name</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Store Name</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleStore?.storeName}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Description</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Description</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleStore?.description}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Address</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Address</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleStore?.address}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Owner</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Owner</Typography>
                                 {singleStore?.user && singleStore?.user.find((user:UserType)=> user.role==='admin')?._id ? <Link to={`/dashboard/users/${singleStore?.user.find((user:UserType)=> user.role==='admin')?._id}`}><Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleStore?.user.find((user:UserType)=> user.role==='admin') ? singleStore?.user.find((user:UserType)=> user.role==='admin')?.firstName+ " " + singleStore?.user.find((user:UserType)=> user.role==='admin')?.lastName : "Owner is not affected yet"}</Typography></Link> : <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>Owner is not affected yet</Typography>}
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Registred At</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Registred At</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{formatDateString(singleStore?.createdAt)}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Last Update</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Last Update</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{formatDateString(singleStore?.updatedAt)}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Vendors Number</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Vendors Number</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleStore?.user.filter((user:UserType)=> user.role==='vendor').length}</Typography>
                             </Grid>
                             

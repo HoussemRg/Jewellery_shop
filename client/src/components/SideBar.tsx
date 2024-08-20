@@ -3,7 +3,6 @@ import {
 } from '@mui/material';
 import { Box, Drawer } from '@mui/material';
 import React, { ReactElement, useState, useEffect } from 'react';
-import FlexBetween from './FlexBetween';
 import { 
     CategoryOutlined, ChevronLeft, CurrencyExchangeOutlined, DiscountOutlined, 
     Groups2Outlined, HomeOutlined, PersonPinOutlined, ReceiptLongOutlined, 
@@ -12,7 +11,7 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
-
+import LOGO from '../assets/AppLogo.jpg'
 interface SideBarProps {
     drawerWidth: string;
     isSideBarOpened: boolean;
@@ -66,16 +65,17 @@ const SideBar: React.FC<SideBarProps> = ({ isNonMobile, drawerWidth, isSideBarOp
     const drawerContent = (
         <Box width="100%" height="100%" display="flex" flexDirection="column">
             <Box m="0.5rem 0.1rem 0rem 3rem">
-                <FlexBetween color={theme.palette.secondary.main}>
+                <Box display="flex" justifyContent="space-around" alignItems="center" width="50%" color={theme.palette.secondary.main} >
                     <Box display='flex' alignItems="center" gap="0.5rem">
-                        <Typography variant="h4" fontWeight="bold">LOGO</Typography>
+                        <Box component="img" src={LOGO} alt='logo' sx={{height:'24%',width:'24%', borderRadius:'50%'}}></Box>
+                        
                     </Box>
                     {!isNonMobile && (
                         <IconButton onClick={() => setIsSideBarOpened(!isSideBarOpened)}>
                             <ChevronLeft />
                         </IconButton>
                     )}
-                </FlexBetween>
+                </Box>
             </Box>
             <List sx={{ overflowY: 'auto', flexGrow: 1 }}>
                 {user?.role==="vendor" ? vendorNavItems.map(({ text, icon, link }) => {

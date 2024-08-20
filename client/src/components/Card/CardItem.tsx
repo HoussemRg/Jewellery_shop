@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { cardActions, ProductToBuyType } from '../../slices/cardSlice';
-import { Box, IconButton, TextField, Typography } from '@mui/material';
+import { Box, IconButton, TextField, Typography, useTheme } from '@mui/material';
 import getImageType from '../../utils/getImageType';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import { useDispatch } from '../../hooks';
@@ -13,7 +13,7 @@ interface CardItem {
 const CardItem: React.FC<CardItem> = ({ product, onQuantityChange }) => {
   const dispatch = useDispatch();
   const [quantityError, setQuantityError] = useState(false);
-
+const theme=useTheme();
   const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(event.target.value, 10);
 
@@ -31,7 +31,7 @@ const CardItem: React.FC<CardItem> = ({ product, onQuantityChange }) => {
   };
 
   return (
-    <Box display="flex" gap={3}>
+    <Box display="flex" gap={3} sx={{backgroundColor:theme.palette.background.paper}}>
       <Box display="flex" justifyContent="center" alignItems="center" my="20px" width="30%">
         <img src={getImageType(product.productPhoto.data)} alt='Product Photo' width="60%" style={{ borderRadius: '8px' }} />
       </Box>
@@ -66,7 +66,7 @@ const CardItem: React.FC<CardItem> = ({ product, onQuantityChange }) => {
       </Box>
       <IconButton
         onClick={() => handleRemoveItem(product._id)}
-        color="primary"
+        color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
         sx={{ padding: 0 }}
       >
         <HighlightOffOutlinedIcon />

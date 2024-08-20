@@ -31,7 +31,7 @@ const { Gain } = require('../Models/Gain');
 
     req.storeDb.models.Coupon || req.storeDb.model('Coupon', Coupon.schema);
         const client = await ClientModel.findById(req.body.clientId);
-        if (!client)  return res.status(400).send("Client not found");
+        if (!client)  return res.status(404).send("Client not found");
         const now=Date.now();
         let totalAmount = 0;
         let orderDetails = [];
@@ -43,7 +43,7 @@ const { Gain } = require('../Models/Gain');
                 model:'Coupon',
                 select: '-product ',
             });
-            if (!product) return res.status(400).send(`Product with id: ${productId} not found`);
+            if (!product) return res.status(404).send(`Product with id: ${productId} not found`);
             if (product.stockQuantity < quantity) return res.status(400).send(`Stock quantity of ${product.productName} is insufficient`);
 
             
@@ -148,7 +148,7 @@ const { Gain } = require('../Models/Gain');
         select:'firstName lastName'
     });
    
-    if(!order) return res.status(400).send("Order not found");
+    if(!order) return res.status(404).send("Order not found");
     if(req.body.payedAmount > order.totalAmount-order.payedAmount){
         return res.status(400).send("Your payment amount is higher than the total amount");
     }
@@ -242,17 +242,35 @@ const { Gain } = require('../Models/Gain');
  * @access only admin or superAdmin
  ------------------------------------*/
 
-const deleteOrder=asyncHandler(async(req,res)=>{
-    const orderId=req.params.orderId
-    const OrderDetailsModel = req.storeDb.models.OrderDetails || req.storeDb.model('OrderDetails', OrderDetails.schema);
-    const OrderModel = req.storeDb.models.Order || req.storeDb.model('Order', Order.schema);
-    const order=await OrderModel.findById(orderId);
-    if(!order) return res.status(404).send("Order not found");
-    await OrderDetailsModel.deleteMany({order:orderId});
-    const orderDeleted=await OrderModel.findByIdAndDelete(orderId);
-    return res.status(200).send(orderDeleted);
 
-})
+ 
+ const deleteOrder = asyncHandler(async (req, res) => {
+     const orderId = req.params.orderId;
+ 
+     const order = await Order.findById(orderId).populate('orderDetails');
+     if (!order) return res.status(404).send("Order not found");
+ 
+     await Client.updateOne(
+         { _id: order.client },
+         { $pull: { order: order._id } }
+     );
+ 
+     
+     for (let orderDetail of order.orderDetails) {
+         await Product.updateOne(
+             { _id: orderDetail.product },
+             { $pull: { orderDetails: orderDetail._id } } 
+         );
+ 
+         await OrderDetails.findByIdAndDelete(orderDetail._id);
+     }
+ 
+     const orderDeleted = await Order.findByIdAndDelete(orderId);
+ 
+     return res.status(200).send(orderDeleted);
+ });
+ 
+ module.exports = { deleteOrder };
 
 
 

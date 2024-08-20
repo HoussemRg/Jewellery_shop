@@ -75,18 +75,18 @@ const Clients: React.FC = () => {
       flex: 1,
       renderCell: (params: GridRenderCellParams) => (
         <Box>
-          <IconButton onClick={(event) => handleDelete(params.row._id, event)} color="secondary">
+          <IconButton onClick={(event) => handleDelete(params.row._id, event)} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
             <DeleteIcon />
           </IconButton>
-          <IconButton onClick={(event) => handleClickOpenEditForm(params.row._id, event)} color="success">
+          <IconButton onClick={(event) => handleClickOpenEditForm(params.row._id, event)} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
             <EditIcon />
           </IconButton>
           <Link to={`/dashboard/clients/${params.row._id}`}>
-            <IconButton color='primary'>
+            <IconButton color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
               <ListIcon />
             </IconButton>
           </Link>
-          <IconButton color='primary' onClick={() => handleCreateCard(params.row._id)}>
+          <IconButton color={theme.palette.mode === 'light' ? 'primary' : 'secondary'} onClick={() => handleCreateCard(params.row._id)}>
             <AddShoppingCartOutlinedIcon />
           </IconButton>
         </Box>
@@ -104,18 +104,18 @@ const Clients: React.FC = () => {
       flex: 1,
       renderCell: (params: GridRenderCellParams) => (
         <Box>
-          <IconButton onClick={(event) => handleDelete(params.row._id, event)} color="secondary">
+          <IconButton onClick={(event) => handleDelete(params.row._id, event)} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
             <DeleteIcon />
           </IconButton>
-          <IconButton onClick={(event) => handleClickOpenEditForm(params.row._id, event)} color="success">
+          <IconButton onClick={(event) => handleClickOpenEditForm(params.row._id, event)} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
             <EditIcon />
           </IconButton>
           <Link to={`/dashboard/clients/${params.row._id}`}>
-            <IconButton color='primary'>
+            <IconButton color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
               <ListIcon />
             </IconButton>
           </Link>
-          <IconButton color='primary' onClick={() => handleCreateCard(params.row._id)}>
+          <IconButton color={theme.palette.mode === 'light' ? 'primary' : 'secondary'} onClick={() => handleCreateCard(params.row._id)}>
             <AddShoppingCartOutlinedIcon />
           </IconButton>
         </Box>
@@ -134,18 +134,18 @@ const Clients: React.FC = () => {
       flex: 1,
       renderCell: (params: GridRenderCellParams) => (
         <Box>
-          <IconButton onClick={(event) => handleDelete(params.row._id, event)} color="secondary">
+          <IconButton onClick={(event) => handleDelete(params.row._id, event)} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
             <DeleteIcon />
           </IconButton>
-          <IconButton onClick={(event) => handleClickOpenEditForm(params.row._id, event)} color="success">
+          <IconButton onClick={(event) => handleClickOpenEditForm(params.row._id, event)} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
             <EditIcon />
           </IconButton>
           <Link to={`/dashboard/clients/${params.row._id}`}>
-            <IconButton color='primary'>
+            <IconButton color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
               <ListIcon />
             </IconButton>
           </Link>
-          <IconButton color='primary' onClick={() => handleCreateCard(params.row._id)}>
+          <IconButton color={theme.palette.mode === 'light' ? 'primary' : 'secondary'} onClick={() => handleCreateCard(params.row._id)}>
             <AddShoppingCartOutlinedIcon />
           </IconButton>
         </Box>
@@ -171,7 +171,7 @@ const Clients: React.FC = () => {
         {selectedRows.length > 1 && (
           <Button
             variant="contained"
-            color="secondary"
+            color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
             onClick={handleBulkDelete}
             startIcon={<DeleteIcon />}
           >

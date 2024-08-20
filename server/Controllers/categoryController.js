@@ -120,7 +120,7 @@ const getCategoriesNumber=asyncHandler(async(req,res)=>{
     
     const CategoryModel=req.storeDb.model('Category',Category.schema);
     let category=await CategoryModel.findById(req.params.categoryId);
-    if(!category) return res.status(400).send("Product not found");
+    if(!category) return res.status(404).send("Product not found");
     const newCategory=req.body;
     category=await CategoryModel.findByIdAndUpdate(req.params.categoryId,
         {$set:newCategory},
@@ -143,7 +143,7 @@ const deleteCategory=asyncHandler(async(req,res)=>{
   
     const CategoryModel=req.storeDb.model('Category',Category.schema);
     let category=await CategoryModel.findById(req.params.categoryId);
-    if(!category) return res.status(400).send("Category not found");
+    if(!category) return res.status(404).send("Category not found");
     const ProductModel=req.storeDb.model('Product',Product.schema);
     const SubCategoryModel=req.storeDb.model('SubCategory',SubCategory.schema);
     const CouponModel=req.storeDb.model('Coupon',Coupon.schema);

@@ -102,7 +102,7 @@ const ClientProfile: React.FC = () => {
                         >
                             <Typography 
                                 variant='h5' 
-                                sx={{ color: theme.palette.primary.main }}
+                                color={theme.palette.secondary[100]}
                             >
                                 {singleClient?.firstName + " " + singleClient?.lastName}
                             </Typography>
@@ -116,14 +116,14 @@ const ClientProfile: React.FC = () => {
                             width="100%"
                         >
                             {singleClient && <IconButton
-                                color="error"
+                                color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
                                 sx={{ '&:hover': { color: theme.palette.error.dark } }}
                                 onClick={()=>handleDelete(singleClient?._id)}
                             >
                                 <DeleteIcon />
                             </IconButton>}
                             <IconButton
-                                color="primary"
+                                color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
                                 sx={{ '&:hover': { color: theme.palette.primary.dark } }}
                                 onClick={handleClickOpenEditForm}
                             >
@@ -143,7 +143,7 @@ const ClientProfile: React.FC = () => {
                     >
                         <Typography 
                             variant='h3' 
-                            sx={{ color: theme.palette.primary.main }}
+                            color={theme.palette.secondary[100]}
                         >
                             Information
                         </Typography>
@@ -155,31 +155,31 @@ const ClientProfile: React.FC = () => {
                         />
                         <Grid container rowSpacing={4} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Cin</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Cin</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleClient?.cin}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Email</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Email</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleClient?.email}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Address</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Address</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleClient?.address}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Phone Number</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Phone Number</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleClient?.phoneNumber}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Registred At</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Registred At</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{formatDateString(singleClient?.createdAt)}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Last Update</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Last Update</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{formatDateString(singleClient?.updatedAt)}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Orders Number</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Orders Number</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleClient?.order.length}</Typography>
                             </Grid>
                         </Grid>

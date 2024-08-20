@@ -67,7 +67,7 @@ const getSingleStore=asyncHandler(async(req,res)=>{
         model:'User',
         select:"-password -store "
     })
-    if(!store) return res.status(400).send('Store not found');
+    if(!store) return res.status(404).send('Store not found');
     return res.status(200).send(store);
 })
 
@@ -109,7 +109,7 @@ const getSingleStore=asyncHandler(async(req,res)=>{
     const UserModel = connection.model('User', User.schema);
 
     const store = await StoreModel.findById(storeId);
-    if (!store) return res.status(400).send("Store not found");
+    if (!store) return res.status(404).send("Store not found");
 
     for (const userId of store.user) {
         await UserModel.findByIdAndDelete(userId);

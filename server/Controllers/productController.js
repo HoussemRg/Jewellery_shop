@@ -27,10 +27,10 @@ const { getConnection } = require('../Utils/dbconnection');
     const SubCategoryModel = req.storeDb.model('SubCategory', SubCategory.schema);
     const InvestmentModel = req.storeDb.model('Investment', Investment.schema);
     let category = await CategoryModel.findById(req.body.category);
-    if (!category) return res.status(400).send("Category not found");
+    if (!category) return res.status(404).send("Category not found");
 
     let subCategory = await SubCategoryModel.findById(req.body.subCategory);
-    if (!subCategory) return res.status(400).send("SubCategory not found");
+    if (!subCategory) return res.status(404).send("SubCategory not found");
 
     let productData = {
         productName: req.body.productName,
@@ -52,7 +52,7 @@ const { getConnection } = require('../Utils/dbconnection');
         if (!req.body.investment) return res.status(400).send('Investment is required when purchase source is Investor');
 
         investment = await InvestmentModel.findById(req.body.investment);
-        if (!investment) return res.status(400).send('Investment not found');
+        if (!investment) return res.status(404).send('Investment not found');
 
         const requiredAmount = productData.purchasePrice  * productData.weight * productData.stockQuantity;
         if ((investment.investmentAmount - investment.investedAmount) < requiredAmount) {
@@ -275,7 +275,7 @@ return res.status(200).send(paginatedProducts);
 const getSingleProduct=asyncHandler(async(req,res)=>{
     const ProductModel=req.storeDb.model('Product',Product.schema);
     const product=await ProductModel.findById(req.params.productId);
-    if(!product) return res.status(400).send("Product not found");
+    if(!product) return res.status(404).send("Product not found");
     return res.status(200).send(product);
 })
 
@@ -291,7 +291,7 @@ const getSingleProduct=asyncHandler(async(req,res)=>{
     if (error) return res.status(400).send(error.details[0].message);
     const ProductModel = req.storeDb.model('Product', Product.schema);
     let product = await ProductModel.findById(req.params.productId);
-    if (!product) return res.status(400).send("Product not found");
+    if (!product) return res.status(404).send("Product not found");
 
     
     const newProduct = { ...req.body };

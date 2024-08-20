@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { FilterAltOutlined } from '@mui/icons-material';
 import ClearIcon from '@mui/icons-material/Clear';
 import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
@@ -55,7 +55,8 @@ const FilterProducts: React.FC<FilterProductsProps> = ({ handleSetFiltering, han
     const { categories } = useSelector((state: RootState) => state.category);
     const { subCategories } = useSelector((state: RootState) => state.subCategory);
     const [validData, setValidData] = useState<FilterProductData>({});
-    const [expanded, setExpanded] = useState<boolean>(false); // State to manage accordion expansion
+    const [expanded, setExpanded] = useState<boolean>(false);
+    const theme=useTheme();
     const dispatch = useDispatch();
 
     const formSchema = yup.object().shape({
@@ -135,7 +136,7 @@ const FilterProducts: React.FC<FilterProductsProps> = ({ handleSetFiltering, han
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1-content"
                     id="panel1-header"
-                    onClick={() => setExpanded(!expanded)} // Toggle expansion on click
+                    onClick={() => setExpanded(!expanded)} 
                 >
                     <Box display="flex" gap="10px" justifyContent="space-between" alignItems="center">
                         <FilterAltOutlined />
@@ -303,7 +304,7 @@ const FilterProducts: React.FC<FilterProductsProps> = ({ handleSetFiltering, han
                         </Grid>
                         <Grid item xs={12}>
                             <Item>
-                                <Button type="submit" color="success">
+                                <Button type="submit" color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                                     Submit
                                 </Button>
                             </Item>

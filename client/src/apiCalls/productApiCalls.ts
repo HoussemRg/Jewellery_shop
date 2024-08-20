@@ -23,9 +23,9 @@ const getAllProducts = (page: number): AppThunk => async (dispatch: AppDispatch,
     } catch (err: unknown) {
         const error = err as AxiosError;
         if (error.response) {
-            toast.error(error.response.data as string, { autoClose: 1200 });
+            toast.error(error.response.data as string, { autoClose: 800 });
         } else {
-            toast.error('An unknown error occurred', { autoClose: 1200 });
+            toast.error('An unknown error occurred', { autoClose: 800 });
         }
     }
 };
@@ -45,9 +45,9 @@ const getAllProductsList = (): AppThunk => async (dispatch: AppDispatch, getStat
     } catch (err: unknown) {
         const error = err as AxiosError;
         if (error.response) {
-            toast.error(error.response.data as string, { autoClose: 1200 });
+            toast.error(error.response.data as string, { autoClose: 800 });
         } else {
-            toast.error('An unknown error occurred', { autoClose: 1200 });
+            toast.error('An unknown error occurred', { autoClose: 800 });
         }
     }
 };
@@ -65,9 +65,9 @@ const getProductsNumber = (): AppThunk => async (dispatch:AppDispatch,getState) 
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 800 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 800 });
             }
         }
     }
@@ -83,9 +83,9 @@ const getProductsNumber = (): AppThunk => async (dispatch:AppDispatch,getState) 
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 800 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 800 });
             }
         }
     }
@@ -104,11 +104,11 @@ const createProduct = (product: FormData)=> async (dispatch: AppDispatch, getSta
             });
             dispatch(getProductsNumber());
             dispatch(productActions.setIsProductCreated(true));
-            toast.update(id, { render: "Product created successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Product created successfully", type: "success", isLoading: false, autoClose: 800 });
         } catch (err) {
             const error = err as AxiosError;
             if (id) {
-                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 800 });
             }
         }
     }
@@ -127,11 +127,11 @@ const updateProduct = (product: FormData,productId:string):AppThunk  =>  async (
             console.log(res.data);
             dispatch(productActions.updateProduct(res.data))
             dispatch(productActions.setIsProductUpdated(true));
-            toast.update(id, { render: "Product updated successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Product updated successfully", type: "success", isLoading: false, autoClose: 800 });
         } catch (err) {
             const error = err as AxiosError;
             if (id) {
-                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 800 });
             }
         }
     }
@@ -151,9 +151,9 @@ const deleteProduct=(id:string):AppThunk=> async(dispatch:AppDispatch,getState)=
         }catch(err){
             const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 800 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 800 });
             }
         }
     }
@@ -164,7 +164,7 @@ const getFilteredProducts=(params:Partial<FilterProductData>,page:number): Thunk
     return async(dispatch:Dispatch,getState)=>{
         //id = toast.loading("Searching products, Please wait...");
         try{
-            dispatch(productActions.setIsLoading(true));
+            
 
             const res=await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/products/filter?page=${page}`,{params:params,headers:{
                 Authorization: "Bearer " + getState().auth.user?.token
@@ -173,19 +173,19 @@ const getFilteredProducts=(params:Partial<FilterProductData>,page:number): Thunk
             dispatch(productActions.getProductFiltered(res.data?.products));
             dispatch(productActions.getFilteredProductsCount(res.data?.count));
             dispatch(productActions.setIsProductsFiltered(true))
-            dispatch(productActions.setIsLoading(false));
+          
 
-            //toast.update(id, { render: "Products filtered", type: "success", isLoading: false, autoClose: 1200 });
+            //toast.update(id, { render: "Products filtered", type: "success", isLoading: false, autoClose: 800 });
         }catch(err){
             /*const error = err as AxiosError;
             if (id) {
-                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 800 });
             }*/
                 const error = err as AxiosError;
                 if (error.response) {
-                    toast.error(error.response.data as string, { autoClose: 1200 });
+                    toast.error(error.response.data as string, { autoClose: 800 });
                 } else {
-                    toast.error('An unknown error occurred', { autoClose: 1200 });
+                    toast.error('An unknown error occurred', { autoClose: 800 });
                 }
         }
     }

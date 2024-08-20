@@ -72,7 +72,7 @@ const UpdateCategoryForm: React.FC<UpdateCategoryProps> = ({ handleCloseEditForm
           <Box>Update Category</Box>
           <Button
             onClick={handleCloseEditForm}
-            color="warning"
+            color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
             sx={{ padding: 0 }}
           >
             <HighlightOffOutlined />
@@ -116,10 +116,10 @@ const UpdateCategoryForm: React.FC<UpdateCategoryProps> = ({ handleCloseEditForm
             />
             
             <DialogActions>
-              <Button autoFocus onClick={handleCloseEditForm} color="warning">
+              <Button autoFocus onClick={handleCloseEditForm} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                 Cancel
               </Button>
-              <Button type="submit" color="success">
+              <Button type="submit" color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                 Submit
               </Button>
             </DialogActions>

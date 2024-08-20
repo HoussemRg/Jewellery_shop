@@ -74,7 +74,7 @@ const OrderDetails: React.FC = () => {
           <LinearProgress />
         </Box>) : (<Box display='flex' flexDirection="column" justifyContent="center" alignItems="start" gap={5} p={3}>
          <Box display='flex' flexDirection="column" justifyContent="center" alignItems="start" gap={2} width="100%">
-         <Typography variant='h3' color="primary">Order #{singleOrder?._id}</Typography>
+         <Typography variant='h3' color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>Order #{singleOrder?._id}</Typography>
       <List sx={{ ...style, mb: 3 }} aria-label="order details">
         <Box display='flex' flexDirection="column" justifyContent="center" alignItems="start" gap={2}>
           
@@ -94,7 +94,7 @@ const OrderDetails: React.FC = () => {
         
 
       <Box display='flex' flexDirection="column" justifyContent="center" alignItems="start" gap={2} width="100%">
-        <Typography variant='h3' color="primary">Client</Typography>
+        <Typography variant='h3' color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>Client</Typography>
         <List sx={{ ...style, mb: 3 }} aria-label="client details">
           <ListItem>
             <ListItemText primary="Full Name: " />
@@ -124,15 +124,14 @@ const OrderDetails: React.FC = () => {
       </Box>
 
       <Box display='flex' flexDirection="column" justifyContent="center" alignItems="start" gap={2} width="100%">
-        <Typography variant='h3' color="primary">Items Ordered</Typography>
+        <Typography variant='h3' color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>Items Ordered</Typography>
         <Box
           mt="40px"
           width="100%"
           height="75vh"
           sx={{
             '& .MuiDataGrid-root': {
-              border: 'none',
-              width: '100%', 
+              
             },
             '& .MuiDataGrid-cell': {
               borderBottom: 'none',

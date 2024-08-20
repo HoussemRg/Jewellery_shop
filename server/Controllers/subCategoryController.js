@@ -128,7 +128,7 @@ const getSubCategoriesNumber=asyncHandler(async(req,res)=>{
         ref:'Product',
         select:"-category -subCategory -store"
     });
-    if(!subCategory) return res.status(400).send("SubCategory not found");
+    if(!subCategory) return res.status(404).send("SubCategory not found");
     return res.status(200).send(subCategory);
 })
 
@@ -145,7 +145,7 @@ const getSubCategoriesNumber=asyncHandler(async(req,res)=>{
     
     const SubCategoryModel=req.storeDb.model('SubCategory',SubCategory.schema);
     let subCategory=await SubCategoryModel.findById(req.params.subCategoryId);
-    if(!subCategory) return res.status(400).send("SubCategory not found");
+    if(!subCategory) return res.status(404).send("SubCategory not found");
     const newSubCategory=req.body;
     subCategory=await SubCategoryModel.findByIdAndUpdate(req.params.subCategoryId,
         {$set:newSubCategory},
@@ -167,7 +167,7 @@ const getSubCategoriesNumber=asyncHandler(async(req,res)=>{
    
     const SubCategoryModel=req.storeDb.model('SubCategory',SubCategory.schema);
     let subcategory=await SubCategoryModel.findById(req.params.subCategoryId);
-    if(!subcategory) return res.status(400).send("SubCategory not found");
+    if(!subcategory) return res.status(404).send("SubCategory not found");
     const ProductModel=req.storeDb.model('Product',Product.schema);
     const CouponModel=req.storeDb.model('Coupon',Coupon.schema);
     const CategoryModel=req.storeDb.model('Category',Category.schema);

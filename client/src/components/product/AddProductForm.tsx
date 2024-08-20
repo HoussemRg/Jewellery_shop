@@ -132,7 +132,7 @@ const AddProductForm: React.FC<FormProps> = ({ handleClose, open, categories, su
         <Box>Add New Product</Box>
         <Button
           onClick={handleClose}
-          color="warning"
+          color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
           sx={{ padding: 0 }}
         >
           <HighlightOffOutlined />
@@ -305,10 +305,10 @@ const AddProductForm: React.FC<FormProps> = ({ handleClose, open, categories, su
             />
           </Box>
           <DialogActions>
-            <Button autoFocus onClick={handleClose} color="warning">
+            <Button autoFocus onClick={handleClose} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
               Cancel
             </Button>
-            <Button type="submit" color="success">
+            <Button type="submit" color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
               Submit
             </Button>
           </DialogActions>

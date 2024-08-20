@@ -55,7 +55,7 @@ const ApplyCouonForm:React.FC<ApplyCouponFormProps> = ({handleCloseCouponForm,op
         >
             <DialogTitle display="flex" justifyContent="space-between" alignItems="center">
                 <Box>Apply Coupon</Box>
-                <Button onClick={handleCloseCouponForm} color="warning" sx={{ padding: 0 }}>
+                <Button onClick={handleCloseCouponForm} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'} sx={{ padding: 0 }}>
                     <HighlightOffOutlined />
                 </Button>
             </DialogTitle>
@@ -96,10 +96,10 @@ const ApplyCouonForm:React.FC<ApplyCouponFormProps> = ({handleCloseCouponForm,op
                         ))}
                         </TextField>
                     <DialogActions>
-                        <Button autoFocus onClick={handleCloseCouponForm} color="warning">
+                        <Button autoFocus onClick={handleCloseCouponForm} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                             Cancel
                         </Button>
-                        <Button type="submit" color="success">
+                        <Button type="submit" color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                             Submit
                         </Button>
                     </DialogActions>

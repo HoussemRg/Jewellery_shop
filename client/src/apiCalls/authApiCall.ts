@@ -29,9 +29,9 @@ const loginUser=(user:AuthData)=> async(dispatch:AppDispatch)=>{
       }catch (err:unknown) {
           const error = err as AxiosError;
           if (error.response) {
-              toast.error(error.response.data as string, { autoClose: 1200 });
+              toast.error(error.response.data as string, { autoClose: 800 });
             } else {
-              toast.error('An unknown error occurred', { autoClose: 1200 });
+              toast.error('An unknown error occurred', { autoClose: 800 });
             }
         }
       }
@@ -59,9 +59,9 @@ const regenerateTokenForSuperAdmin=(storeId:string, callback: () => void)=>async
   }catch (err:unknown) {
       const error = err as AxiosError;
       if (error.response) {
-          toast.error(error.response.data as string, { autoClose: 1200 });
+          toast.error(error.response.data as string, { autoClose: 800 });
         } else {
-          toast.error('An unknown error occurred', { autoClose: 1200 });
+          toast.error('An unknown error occurred', { autoClose: 800 });
         }
     }
   }
@@ -72,14 +72,14 @@ const regenerateTokenForSuperAdmin=(storeId:string, callback: () => void)=>async
         dispatch(authActions.setIsLoading(true));
           const res=await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/auth/${userId}/verify/${token}`);
           dispatch(authActions.verifyEmail());
-          toast.success(res.data,{autoClose:1200})
+          toast.success(res.data,{autoClose:800})
           dispatch(authActions.setIsLoading(false));
       }catch(err){
         const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 800 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 800 });
             }
       }
     }

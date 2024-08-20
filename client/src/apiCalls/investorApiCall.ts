@@ -23,9 +23,9 @@ const createInvestor=(investor:InvestorData):AppThunk<Promise<void>> =>{
         }catch(err){
             const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 800 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 800 });
             }
         }
     }
@@ -45,9 +45,9 @@ const getAllInvestors = ():AppThunk<Promise<void>> => {
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 800 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 800 });
             }
         }
     }
@@ -66,9 +66,9 @@ const getInvestorsNumber = ():AppThunk<Promise<void>> => {
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 800 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 800 });
             }
         }
     }
@@ -87,9 +87,9 @@ const getSingleInvestor=(investorId:string):AppThunk=> async(dispatch:Dispatch,g
     }catch(err){
         const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 800 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 800 });
             }
     }
 }
@@ -97,7 +97,7 @@ const getSingleInvestor=(investorId:string):AppThunk=> async(dispatch:Dispatch,g
 const updateInvestor = (newInvestor:Partial<InvestorEditData>,userId:string):AppThunk<Promise<void>> => {
     let id: Id | undefined;
     return async (dispatch: Dispatch,getState: () => RootState) => {
-        id = toast.loading("Updating  user, Please wait...");
+        id = toast.loading("Updating  investor, Please wait...");
         try {
             
             const res = await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/investors/${userId}`,newInvestor, {
@@ -108,11 +108,11 @@ const updateInvestor = (newInvestor:Partial<InvestorEditData>,userId:string):App
             dispatch(investorActions.updateInvestor(res.data));
             dispatch(investorActions.setIsInvestorUpdated(true));
          
-            toast.update(id, { render: "Investor updated successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Investor updated successfully", type: "success", isLoading: false, autoClose: 800 });
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (id) {
-                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 800 });
             }
         }
     }
@@ -130,11 +130,11 @@ const deleteInvestor= (investorId:string):AppThunk<Promise<void>> => {
             });
             dispatch(investorActions.deleteInvestor(investorId));
             dispatch(investorActions.setIsInvestorDeleted(true));
-            toast.update(id, { render: "Investor deleted successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Investor deleted successfully", type: "success", isLoading: false, autoClose: 800 });
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (id) {
-                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 800 });
             }
         }
     }

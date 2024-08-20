@@ -7,6 +7,7 @@ import { themeActions } from '../slices/themeSlice';
 import { ArrowDropDownOutlined, DarkModeOutlined, LightModeOutlined } from '@mui/icons-material';
 import FlexBetween from './FlexBetween';
 import Photo from '../assets/photo.png'
+import LOGO from '../assets/AppLogo.jpg'
 
 interface NavbarProps {
     user:UserLoggedInState | null;
@@ -37,9 +38,7 @@ const SuperAdminNavbar:React.FC<NavbarProps> = ({user}) => {
         boxShadow:'none'
     }}>
         <Toolbar sx={{justifyContent:'space-between'}} >
-            <Typography variant="h2" color="primary">
-                LOGO
-            </Typography>
+            <Box component="img" src={LOGO} alt='logo' sx={{height:'5%',width:'5%', borderRadius:'50%'}}></Box>
             <FlexBetween gap="1.5rem">
                 <IconButton onClick={()=> dispatch(themeActions.setMode())} >
                     {

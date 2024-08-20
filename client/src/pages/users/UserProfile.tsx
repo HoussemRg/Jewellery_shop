@@ -109,13 +109,14 @@ const UserProfile: React.FC = () => {
                         >
                             <Typography 
                                 variant='h4' 
-                                sx={{ color: theme.palette.primary.main }}
+                                color={theme.palette.secondary[100]}
                             >
                                 {singleUser?.firstName + " " + singleUser?.lastName}
                             </Typography>
                             <Typography 
                                 variant='h6' 
-                                sx={{ color: theme.palette.grey[300] }}
+                                color={theme.palette.mode === 'dark'? theme.palette.grey[300] : theme.palette.grey[700] }
+                           
                             >
                                 {singleUser?.role}
                             </Typography>
@@ -128,14 +129,14 @@ const UserProfile: React.FC = () => {
                             width="100%"
                         >
                             {singleUser && <IconButton
-                                color="error"
+                                color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
                                 sx={{ '&:hover': { color: theme.palette.error.dark } }}
                                 onClick={()=>handleDelete(singleUser?._id)}
                             >
                                 <DeleteIcon />
                             </IconButton>}
                             <IconButton
-                                color="primary"
+                                color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
                                 sx={{ '&:hover': { color: theme.palette.primary.dark } }}
                                 onClick={handleClickOpenEditForm}
                             >
@@ -155,7 +156,7 @@ const UserProfile: React.FC = () => {
                     >
                         <Typography 
                             variant='h3' 
-                            sx={{ color: theme.palette.primary.main }}
+                            color={theme.palette.secondary[100]}
                         >
                             Information
                         </Typography>
@@ -167,36 +168,36 @@ const UserProfile: React.FC = () => {
                         />
                         <Grid container rowSpacing={4} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Cin</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]} >Cin</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleUser?.cin}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Email</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Email</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleUser?.email}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Address</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Address</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleUser?.address}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Phone Number</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Phone Number</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleUser?.phoneNumber}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Registred At</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Registred At</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{formatDateString(singleUser?.createdAt)}</Typography>
                             </Grid>
                             <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Last Update</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Last Update</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{formatDateString(singleUser?.updatedAt)}</Typography>
                             </Grid>
                             {singleUser && singleUser.role !== 'superAdmin' && <Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Store</Typography>
+                                <Typography variant='h4' color={theme.palette.secondary[100]}>Store</Typography>
                                 <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleUser?.store?.storeName}</Typography>
                             </Grid>}
                             {singleUser && singleUser.role !== 'superAdmin' &&<Grid item xs={6} display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="start">
-                                <Typography variant='h4' sx={{ color: theme.palette.grey[400] }}>Store Address</Typography>
-                                <Typography variant='h6' sx={{ color: theme.palette.grey[400] }}>{singleUser?.store?.address}</Typography>
+                                <Typography variant='h4'color={theme.palette.secondary[100]}>Store Address</Typography>
+                                <Typography variant='h6' sx={{ color: theme.palette.grey[900] }}>{singleUser?.store?.address}</Typography>
                             </Grid>}
                         </Grid>
                     </Box>

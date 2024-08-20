@@ -19,7 +19,7 @@ const bcrypt=require('bcrypt');
     const storeConnection = await getConnection("Users");
     const StoreModel = storeConnection.model('Store', Store.schema);
     let store = await StoreModel.findById(storeId);
-    if (!store) return res.status(400).send("Store not found");
+    if (!store) return res.status(404).send("Store not found");
     const userModel= storeConnection.model('User',User.schema);
     const users=await userModel.find({store:storeId}).sort({createdAt:-1}).select("-password");
     res.status(200).send(users);
@@ -39,7 +39,7 @@ const bcrypt=require('bcrypt');
     const storeConnection = await getConnection("Users");
     const StoreModel = storeConnection.model('Store', Store.schema);
     let store = await StoreModel.findById(storeId);
-    if (!store) return res.status(400).send("Store not found");
+    if (!store) return res.status(404).send("Store not found");
     const userModel= storeConnection.model('User',User.schema);
     const count=await userModel.countDocuments({role:"vendor"});
     res.status(200).send({count:count});
@@ -61,7 +61,7 @@ const getSingleUser=(asyncHandler(async(req,res)=>{
         model:'Store',
         select: '_id storeName description address'
     });
-    if(!user) return res.status(400).send("User not found");
+    if(!user) return res.status(404).send("User not found");
     return res.status(200).send(user);
 }))
 
@@ -81,7 +81,7 @@ const getSingleUser=(asyncHandler(async(req,res)=>{
     const userConnection=await getConnection('Users');
     const userModel= userConnection.model('User',User.schema);
     let user=await userModel.findById(userId);
-    if(!user) return res.status(400).send("User not found");
+    if(!user) return res.status(404).send("User not found");
     let newUser=req.body;
     if(newUser.password){
         const salt=await bcrypt.genSalt(parseInt(process.env.SALTROUND));
@@ -107,10 +107,10 @@ const getSingleUser=(asyncHandler(async(req,res)=>{
     const userConnection=await getConnection('Users');
     const userModel= userConnection.model('User',User.schema);
     let user=await userModel.findById(userId);
-    if(!user) return res.status(400).send("User not found");
+    if(!user) return res.status(404).send("User not found");
     const storeModel=userConnection.model('Store',Store.schema);
     let store=await storeModel.findById(user.store);
-    if(!store) return res.status(400).send("Store not found")
+    if(!store) return res.status(404).send("Store not found")
     store.user=store.user.filter(id => id.toString() !==userId);
     await userModel.findByIdAndDelete(userId);
     await store.save();

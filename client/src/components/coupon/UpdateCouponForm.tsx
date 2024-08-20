@@ -79,7 +79,7 @@ const UpdateCouponForm: React.FC<UpdateCouponProps> = ({ handleCloseEditForm, op
           <Box>Update Coupon</Box>
           <Button
             onClick={handleCloseEditForm}
-            color="warning"
+            color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
             sx={{ padding: 0 }}
           >
             <HighlightOffOutlined />
@@ -144,10 +144,10 @@ const UpdateCouponForm: React.FC<UpdateCouponProps> = ({ handleCloseEditForm, op
             {...register('discountRate')}
           />
             <DialogActions>
-              <Button autoFocus onClick={handleCloseEditForm} color="warning">
+              <Button autoFocus onClick={handleCloseEditForm} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                 Cancel
               </Button>
-              <Button type="submit" color="success">
+              <Button type="submit" color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                 Submit
               </Button>
             </DialogActions>

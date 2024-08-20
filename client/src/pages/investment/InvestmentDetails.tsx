@@ -75,7 +75,7 @@ const InvestmentDetails: React.FC = () => {
            (<Box display='flex' flexDirection="column" justifyContent="center" alignItems="start" gap={5} p={3}>
           
             <Box display='flex' flexDirection="column" justifyContent="center" alignItems="start" gap={2} width="100%">
-       <Typography variant='h3' color="primary">Investment Informations</Typography>
+       <Typography variant='h3' color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>Investment Informations</Typography>
        
        <List sx={{ ...style, mb: 3 }} aria-label="client details">
          <ListItem>
@@ -115,7 +115,7 @@ const InvestmentDetails: React.FC = () => {
        </List>
        </Box>
        <Box display='flex' flexDirection="column" justifyContent="center" alignItems="start" gap={2} width="100%">
-       <Typography variant='h3' color="primary">Investor Informations</Typography>
+       <Typography variant='h3' color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>Investor Informations</Typography>
        
        <List sx={{ ...style, mb: 3 }} aria-label="client details">
          <ListItem>
@@ -146,7 +146,7 @@ const InvestmentDetails: React.FC = () => {
        </List>
        </Box>
        <Box display='flex' flexDirection="column" justifyContent="center" alignItems="start" gap={2} width="100%">
-       <Typography variant='h3' color="primary">Products List</Typography>
+       <Typography variant='h3' color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>Products List</Typography>
        <Box
          mt="40px"
          width="100%"

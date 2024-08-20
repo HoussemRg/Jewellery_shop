@@ -23,9 +23,9 @@ const getAllOrders = (): AppThunk => async (dispatch: AppDispatch, getState) => 
     } catch (err: unknown) {
         const error = err as AxiosError;
         if (error.response) {
-            toast.error(error.response.data as string, { autoClose: 1200 });
+            toast.error(error.response.data as string, { autoClose: 800 });
         } else {
-            toast.error('An unknown error occurred', { autoClose: 1200 });
+            toast.error('An unknown error occurred', { autoClose: 800 });
         }
     }
 };
@@ -43,9 +43,9 @@ const getOrdersNumber = (): AppThunk => async (dispatch: AppDispatch, getState) 
     } catch (err: unknown) {
         const error = err as AxiosError;
         if (error.response) {
-            toast.error(error.response.data as string, { autoClose: 1200 });
+            toast.error(error.response.data as string, { autoClose: 800 });
         } else {
-            toast.error('An unknown error occurred', { autoClose: 1200 });
+            toast.error('An unknown error occurred', { autoClose: 800 });
         }
     }
 };
@@ -64,11 +64,11 @@ const createOrder = (order: OrderData)=> async (dispatch: AppDispatch, getState:
             });
             
             dispatch(orderActions.setIsOrderCreated(true));
-            toast.update(id, { render: "Order created successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Order created successfully", type: "success", isLoading: false, autoClose: 800 });
         } catch (err) {
             const error = err as AxiosError;
             if (id) {
-                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 800 });
             }
         }
     }
@@ -88,11 +88,11 @@ const createOrder = (order: OrderData)=> async (dispatch: AppDispatch, getState:
                 });
                 dispatch(orderActions.deleteOrder(orderId));
                 dispatch(orderActions.setIsOrderDeleted(true));
-                toast.update(id, { render: "Order deleted successfully", type: "success", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: "Order deleted successfully", type: "success", isLoading: false, autoClose: 800 });
             } catch (err: unknown) {
                 const error = err as AxiosError;
                 if (id) {
-                    toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                    toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 800 });
                 }
             }
         }
@@ -112,11 +112,11 @@ const payForOrder=(paymentAmount:PaymentData,orderId:string):AppThunk<Promise<vo
             dispatch(orderActions.updateOrder(res.data));
             dispatch(orderActions.setIsOrderPaid(true));
          
-            toast.update(id, { render: "Order payed successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Order payed successfully", type: "success", isLoading: false, autoClose: 800 });
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (id) {
-                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 800 });
             }
         }
     }
@@ -135,9 +135,9 @@ const getSingleOrder=(orderId:string):AppThunk<Promise<void>>=> async(dispatch:D
     }catch(err){
         const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 800 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 800 });
             }
     }
 }

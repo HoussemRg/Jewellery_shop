@@ -62,7 +62,7 @@ const { Product } = require('../Models/Product');
    const InvestmentModel=req.storeDb.models.Investment || req.storeDb.model('Investment', Investment.schema);
    const InvestorModel=req.storeDb.models.Investor || req.storeDb.model('Investor', Investor.schema);
    const investor=await InvestorModel.findById(investorId);
-   if(!investor) return res.status(400).send('Investor not found');
+   if(!investor) return res.status(404).send('Investor not found');
    const investments=await InvestmentModel.find({investor:investor._id}).sort({createdAt:-1}).populate({
      path:'investor',
      model:'Investor',
@@ -117,7 +117,7 @@ const { Product } = require('../Models/Product');
     const investmentId=req.params.investmentId;
     const InvestmentModel=req.storeDb.models.Investment || req.storeDb.model('Investment', Investment.schema);
     let investment=await InvestmentModel.findById(investmentId);
-    if(!investment) return res.status(400).send('Investment not found');
+    if(!investment) return res.status(404).send('Investment not found');
     const newInvestment=req.body;
     investment=await InvestmentModel.findByIdAndUpdate(
         investmentId,
@@ -140,7 +140,7 @@ const { Product } = require('../Models/Product');
     const InvestorModel=req.storeDb.models.Investor || req.storeDb.model('Investor', Investor.schema);
     const ProductModel=req.storeDb.models.Product || req.storeDb.model('Product', Product.schema);
     let investment=await InvestmentModel.findById(investmentId);
-    if(!investment) return res.status(400).send('Investment not found');
+    if(!investment) return res.status(404).send('Investment not found');
     await InvestorModel.updateMany(
       { investment: investment._id },
       { $pull: { investment: investment._id } }

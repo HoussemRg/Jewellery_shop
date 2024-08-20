@@ -110,7 +110,7 @@ const Products: React.FC = () => {
           isLoading={isLoading}
         />
       )}
-      {productsCount > PRODUCT_PER_PAGE && !filtered && (
+      {productsCount > PRODUCT_PER_PAGE && !isLoading && !filtered && (
         <Box
           width="100%"
           display="flex"

@@ -91,7 +91,7 @@ const UpdateUserForm: React.FC<UpdateUserProps> = ({ handleCloseEditForm, opendE
           <Box>Edit user</Box>
           <Button
             onClick={handleCloseEditForm}
-            color="warning"
+            color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
             sx={{ padding: 0 }}
           >
             <HighlightOffOutlined />
@@ -173,10 +173,10 @@ const UpdateUserForm: React.FC<UpdateUserProps> = ({ handleCloseEditForm, opendE
             />
             
             <DialogActions>
-              <Button autoFocus onClick={handleCloseEditForm} color="warning">
+              <Button autoFocus onClick={handleCloseEditForm} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                 Cancel
               </Button>
-              <Button type="submit" color="success">
+              <Button type="submit" color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                 Submit
               </Button>
             </DialogActions>

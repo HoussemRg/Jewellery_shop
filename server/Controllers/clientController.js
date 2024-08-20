@@ -69,7 +69,7 @@ const getAllClients=asyncHandler(async(req,res)=>{
         model:'Order',
         select: '_id totalAmount'
     });
-    if(!client) return res.status(400).send("Client not found");
+    if(!client) return res.status(404).send("Client not found");
     return res.status(200).send(client);
 }))
 
@@ -88,7 +88,7 @@ const getAllClients=asyncHandler(async(req,res)=>{
     
     const ClientModel=req.storeDb.models.Client || req.storeDb.model('Client', Client.schema);
     let client=await ClientModel.findById(clientId);
-    if(!client) return res.status(400).send("Client not found");
+    if(!client) return res.status(404).send("Client not found");
     let newClient=req.body;
     newClient=await ClientModel.findByIdAndUpdate(clientId,
         {$set:newClient},
@@ -110,7 +110,7 @@ const getAllClients=asyncHandler(async(req,res)=>{
     const OrderModel=req.storeDb.models.Order || req.storeDb.model('Order', Order.schema);
     const OrderDetailsModel=req.storeDb.models.OrderDetails || req.storeDb.model('OrderDetails', OrderDetails.schema);
     const client=await ClientModel.findById(clientId);
-    if (!client) return res.status(400).send("Client not found");
+    if (!client) return res.status(404).send("Client not found");
     const orders = await OrderModel.find({ client: client._id });
 
   for (let order of orders) {

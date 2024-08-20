@@ -75,7 +75,7 @@ const getInvestorsNumber=asyncHandler(async(req,res)=>{
         
         
     });
-    if(!investor) return res.status(400).send("Investor not found");
+    if(!investor) return res.status(404).send("Investor not found");
     return res.status(200).send(investor);
 }))
 
@@ -94,7 +94,7 @@ const getInvestorsNumber=asyncHandler(async(req,res)=>{
     
     const InvestorModel=req.storeDb.models.Investor || req.storeDb.model('Investor', Investor.schema);
     let investor=await InvestorModel.findById(investorId);
-    if(!investor) return res.status(400).send("Investor not found");
+    if(!investor) return res.status(404).send("Investor not found");
     let newInvestor=req.body;
     newInvestor=await InvestorModel.findByIdAndUpdate(investorId,
         {$set:newInvestor},
@@ -117,7 +117,7 @@ const getInvestorsNumber=asyncHandler(async(req,res)=>{
     const ProductModel = req.storeDb.models.Product || req.storeDb.model('Product', Product.schema);
 
     const investor = await InvestorModel.findById(investorId);
-    if (!investor) return res.status(400).send("Investor not found");
+    if (!investor) return res.status(404).send("Investor not found");
 
     const investments = await InvestmentModel.find({ investor: investor._id });
 

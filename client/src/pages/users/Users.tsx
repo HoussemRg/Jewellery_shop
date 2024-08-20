@@ -88,19 +88,19 @@ const Users: React.FC = () => {
           <Box>
             <IconButton
               onClick={(event) => handleDelete(params.row._id, event)}
-              color="secondary"
+              color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
             >
               <DeleteIcon />
             </IconButton>
             <IconButton
               onClick={(event) => handleClickOpenEditForm(params.row._id, event)}
-              color="success"
+              color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
             >
               <EditIcon />
             </IconButton>
             <Link to={`/dashboard/users/${params.row._id}`}
             >
-              <IconButton color='primary'>
+              <IconButton color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                 <ListIcon />
               </IconButton>
               
@@ -119,7 +119,7 @@ const Users: React.FC = () => {
         {selectedRows.length > 1 && (
           <Button
             variant="contained"
-            color="secondary"
+            color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
             onClick={handleBulkDelete}
             startIcon={<DeleteIcon />}
           >

@@ -92,7 +92,7 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
   return (
     <Card
       sx={{
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: theme.palette.background.paper,
         borderRadius: '12px',
         boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
         transition: 'transform 0.3s ease-in-out',
@@ -103,13 +103,13 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
     >
       <CardContent>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h5" component="div" color={theme.palette.primary.main}>
+          <Typography variant="h5" component="div" color={theme.palette.mode==='dark' ?"textSecondary" : "primary"}>
             {productName}
           </Typography>
           
           <Box display="flex" justifyContent="center" alignItems="center">
             {!productsList.find((product: ProductToBuyType) => product._id === _id) && stockQuantity > 0 && clientId && (
-              <IconButton onClick={handleAddProduct} color="primary">
+              <IconButton onClick={handleAddProduct} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                 <AddCircleOutlineOutlinedIcon />
               </IconButton>
             )}
@@ -117,7 +117,7 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
           </Box>
         </Box>
 
-        <Typography sx={{ mb: '1.5rem' }} color={theme.palette.secondary.main}>
+        <Typography sx={{ mb: '1.5rem' }} color={theme.palette.secondary[300]}>
           {`$${(unitPrice * weight).toFixed(2)}`}
         </Typography>
 
@@ -126,20 +126,20 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
         </Box>
 
         <Box display="flex" gap="10px">
-          <Typography color={theme.palette.secondary.main}>Category:</Typography>
+          <Typography color={theme.palette.mode==='dark' ? theme.palette.secondary.main : '#0d47a1'}>Category:</Typography>
           <Typography sx={{ fontSize: 14 }} color={theme.palette.text.secondary} gutterBottom>
             {category?.categoryName || 'N/A'}
           </Typography>
         </Box>
 
         <Box display="flex" gap="10px">
-          <Typography color={theme.palette.secondary.main}>Sub-Category:</Typography>
+          <Typography color={theme.palette.mode==='dark' ? theme.palette.secondary.main : '#0d47a1'}>Sub-Category:</Typography>
           <Typography sx={{ fontSize: 14 }} color={theme.palette.text.secondary} gutterBottom>
             {subCategory?.subCategoryName}
           </Typography>
         </Box>
         <Box display="flex" gap="10px">
-          <Typography color={theme.palette.secondary.main}>Purchase Source:</Typography>
+          <Typography color={theme.palette.mode==='dark' ? theme.palette.secondary.main : '#0d47a1'}>Purchase Source:</Typography>
           <Typography sx={{ fontSize: 14 }} color={theme.palette.text.secondary} gutterBottom>
             {purchaseSource}
           </Typography>
@@ -147,7 +147,7 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
         
           <Box display="flex" justifyContent="space-between" alignItems="center"width="100%">
           <Box display="flex" gap="10px">
-              <Typography color={theme.palette.secondary.main}>Stock :</Typography>
+              <Typography color={theme.palette.mode==='dark' ? theme.palette.secondary.main : '#0d47a1'}>Stock :</Typography>
               <Typography sx={{ fontSize: 14 }} color={theme.palette.text.secondary} gutterBottom>
                 {stockQuantity}
               </Typography>
@@ -168,16 +168,16 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
         <FlexBetween width="100%">
           <Button
             size="small"
-            sx={{ backgroundColor: theme.palette.primary.light, color: theme.palette.primary.contrastText }}
+            sx={{ backgroundColor: theme.palette.grey.A700, color: theme.palette.primary.contrastText }}
             onClick={() => setIsExpanded(!isExpanded)}
           >
             See More
           </Button>
           <Box display="flex" justifyContent="space-around" alignItems="center">
-             <IconButton aria-label="delete" color="info" onClick={() => deleteProduct(product._id)}>
+             <IconButton aria-label="delete" color={theme.palette.mode === 'light' ? 'primary' : 'secondary'} onClick={() => deleteProduct(product._id)}>
               <DeleteIcon />
             </IconButton>
-            <IconButton color="success" aria-label="edit" onClick={handleOpenForm}>
+            <IconButton color={theme.palette.mode === 'light' ? 'primary' : 'secondary'} aria-label="edit" onClick={handleOpenForm}>
               <EditIcon />
               <EditProductForm
                 handleCloseEditForm={handleCloseForm}
@@ -200,10 +200,10 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
         }}
       >
         <CardContent>
-          <Typography>id: {_id}</Typography>
-          <Typography>Carat: {carat}</Typography>
-          <Typography>Weight: {weight}</Typography>
-          <Typography>Purchase Price: {purchasePrice}</Typography>
+          <Typography color={theme.palette.mode==='dark' ? theme.palette.secondary.main : '#0d47a1'}>Carat: {carat}</Typography>
+          <Typography color={theme.palette.mode==='dark' ? theme.palette.secondary.main : '#0d47a1'}>Weight: {weight}</Typography>
+          <Typography color={theme.palette.mode==='dark' ? theme.palette.secondary.main : '#0d47a1'}>Purchase Price: {purchasePrice}</Typography>
+          <Typography color={theme.palette.mode==='dark' ? theme.palette.secondary.main : '#0d47a1'}>id: {_id}</Typography>
 
           {coupon && coupon.length > 0 && (
             <Box mt="20px" p="10px" borderRadius="8px" sx={{ backgroundColor: theme.palette.background.paper, boxShadow: 2 }}>
@@ -222,10 +222,10 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
                       borderRadius="8px"
                       sx={{ backgroundColor: theme.palette.background.default, boxShadow: 1 }}
                     >
-                      <Typography variant="body2" fontWeight="bold" color={theme.palette.primary.main}>
+                      <Typography variant="body2" fontWeight="bold" color={theme.palette.mode==='dark' ? theme.palette.secondary.main:theme.palette.primary.main}>
                         {coupon.couponName}
                       </Typography>
-                      <Typography variant="body2" fontWeight="bold" color={theme.palette.secondary.main}>
+                      <Typography variant="body2" fontWeight="bold" color={theme.palette.mode==='dark' ? theme.palette.text.secondary:theme.palette.text.secondary}>
                         Type : {coupon.type}
                       </Typography>
                       <Typography variant="caption" color={theme.palette.success.main}>
@@ -261,10 +261,10 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
                       borderRadius="8px"
                       sx={{ backgroundColor: theme.palette.background.default, boxShadow: 1 }}
                     >
-                      <Typography variant="body2" fontWeight="bold" color={theme.palette.primary.main}>
+                      <Typography variant="body2" fontWeight="bold" color={theme.palette.mode==='dark' ? theme.palette.secondary.main:theme.palette.primary.main}>
                         {coupon.couponName}
                       </Typography>
-                      <Typography variant="body2" fontWeight="bold" color={theme.palette.secondary.main}>
+                      <Typography variant="body2" fontWeight="bold" color={theme.palette.mode==='dark' ? theme.palette.text.secondary:theme.palette.text.secondary}>
                         Type : {coupon.type}
                       </Typography>
                       <Typography variant="caption" color={theme.palette.success.main}>
@@ -300,10 +300,10 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
                       borderRadius="8px"
                       sx={{ backgroundColor: theme.palette.background.default, boxShadow: 1 }}
                     >
-                      <Typography variant="body2" fontWeight="bold" color={theme.palette.primary.main}>
+                      <Typography variant="body2" fontWeight="bold" color={theme.palette.mode==='dark' ? theme.palette.secondary.main:theme.palette.primary.main}>
                         {coupon.couponName}
                       </Typography>
-                      <Typography variant="body2" fontWeight="bold" color={theme.palette.secondary.main}>
+                      <Typography variant="body2" fontWeight="bold" color={theme.palette.mode==='dark' ? theme.palette.text.secondary:theme.palette.text.secondary}>
                         Type : {coupon.type}
                       </Typography>
                       <Typography variant="caption" color={theme.palette.success.main}>

@@ -95,20 +95,20 @@ const Orders: React.FC = () => {
       <Box>
         <IconButton
           onClick={(event) => handleDelete(_id, event)}
-          color="secondary"
+          color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
         >
           <DeleteIcon />
         </IconButton>
         
         <Link to={`/dashboard/orders/${_id}`}>
-          <IconButton color="primary">
+          <IconButton color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
             <ListIcon />
           </IconButton>
         </Link>
         {payedAmount !== totalAmount && (
           <IconButton
             onClick={(event) => handleOpenPaymentForm(_id, event)}
-            color="success"
+            color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
           >
             <PaymentIcon />
           </IconButton>
@@ -127,7 +127,7 @@ const Orders: React.FC = () => {
         {selectedRows.length > 1 && (
           <Button
             variant="contained"
-            color="secondary"
+            color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
             onClick={handleBulkDelete}
             startIcon={<DeleteIcon />}
           >

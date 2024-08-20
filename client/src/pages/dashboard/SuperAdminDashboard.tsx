@@ -57,7 +57,7 @@ const SuperAdminDashboard: React.FC = () => {
           }}
         >
           <Toolbar sx={{ justifyContent: "space-between" }}>
-            <Typography variant="h2" color="primary">
+            <Typography variant="h2" color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
               LOGO
             </Typography>
             <FlexBetween gap="1.5rem">

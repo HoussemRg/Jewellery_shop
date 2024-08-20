@@ -21,13 +21,13 @@ const createClient=(client:ClientData):AppThunk<Promise<void>> =>{
                 }
             });
             dispatch(clientActions.setIsClientCreated(true));
-            toast.update(id, { render: "Client created successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Client created successfully", type: "success", isLoading: false, autoClose: 800 });
         }catch(err){
             const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 800 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 800 });
             }
         }
     }
@@ -47,9 +47,9 @@ const getAllClients = ():AppThunk<Promise<void>> => {
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 800 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 800 });
             }
         }
     }
@@ -68,9 +68,9 @@ const getClientsNumber = ():AppThunk<Promise<void>> => {
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 800 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 800 });
             }
         }
     }
@@ -89,9 +89,9 @@ const getSingleClient=(clientId:string):AppThunk=> async(dispatch:Dispatch,getSt
     }catch(err){
         const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 800 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 800 });
             }
     }
 }
@@ -99,7 +99,7 @@ const getSingleClient=(clientId:string):AppThunk=> async(dispatch:Dispatch,getSt
 const updateClient = (newClient:Partial<ClientEditData>,userId:string):AppThunk<Promise<void>> => {
     let id: Id | undefined;
     return async (dispatch: Dispatch,getState: () => RootState) => {
-        id = toast.loading("Updating  user, Please wait...");
+        id = toast.loading("Updating  client, Please wait...");
         try {
             
             const res = await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/clients/${userId}`,newClient, {
@@ -110,11 +110,11 @@ const updateClient = (newClient:Partial<ClientEditData>,userId:string):AppThunk<
             dispatch(clientActions.updateClient(res.data));
             dispatch(clientActions.setIsClientUpdated(true));
          
-            toast.update(id, { render: "Client updated successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Client updated successfully", type: "success", isLoading: false, autoClose: 800 });
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (id) {
-                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 800 });
             }
         }
     }
@@ -132,11 +132,11 @@ const deleteClient= (clientId:string):AppThunk<Promise<void>> => {
             });
             dispatch(clientActions.deleteClient(clientId));
             dispatch(clientActions.setIsClientDeleted(true));
-            toast.update(id, { render: "Client deleted successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Client deleted successfully", type: "success", isLoading: false, autoClose: 800 });
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (id) {
-                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 800 });
             }
         }
     }

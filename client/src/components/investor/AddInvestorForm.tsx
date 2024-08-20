@@ -78,7 +78,7 @@ const AddInvestorForm: React.FC<FormProps> = ({ handleClose, open }) => {
         <Box>Add New Investor</Box>
         <Button
           onClick={handleClose}
-          color="warning"
+          color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
           sx={{ padding: 0 }}
         >
           <HighlightOffOutlined />
@@ -168,10 +168,10 @@ const AddInvestorForm: React.FC<FormProps> = ({ handleClose, open }) => {
           
           
           <DialogActions>
-            <Button autoFocus onClick={handleClose} color="warning">
+            <Button autoFocus onClick={handleClose} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
               Cancel
             </Button>
-            <Button type="submit" color="success">
+            <Button type="submit" color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
               Submit
             </Button>
           </DialogActions>

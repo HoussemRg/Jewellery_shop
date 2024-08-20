@@ -70,15 +70,15 @@ const Dashboard = () => {
         { name: 'Product D', value: 200 },
     ];
     const COLORS = [
-        theme.palette.primary.main,
+        '#ff5722',
         '#FFD700',
-        theme.palette.warning.main,
+        '#ce93d8',
         '#8A2BE2',
         '#FF6347',
-        theme.palette.info.main,
+        '#2196f3',
         '#4682B4',
         '#32CD32',
-        theme.palette.secondary.main,
+        '#607d8b',
         '#FF1493',
     ];
 
@@ -174,7 +174,11 @@ const Dashboard = () => {
                                     </Select>
                                 </Box>
                                 <LineChart width={600} height={300} data={gainPerYear}>
-                                    <Line type="monotone" dataKey="gain" stroke={theme.palette.primary.main} />
+                                <Line 
+                                    type="monotone" 
+                                    dataKey="gain" 
+                                    stroke={theme.palette.mode === 'light' ? theme.palette.primary.main : theme.palette.secondary.main} 
+                                    />
                                     <CartesianGrid stroke={theme.palette.divider} />
                                     <XAxis dataKey="month" stroke={theme.palette.text.primary} />
                                     <YAxis stroke={theme.palette.text.primary} />
@@ -278,9 +282,9 @@ const Dashboard = () => {
             </Grid>
         </Grid>) 
            : 
-           (<Box width="100%" display="flex" justifyContent="center" alignItems="center" mt="100px">
-            <Typography>No Stats yet </Typography>
-            </Box>) }
+           (<Box sx={{ width: '100%' }}>
+            <LinearProgress />
+          </Box>) }
             </Box>
        
         

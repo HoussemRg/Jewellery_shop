@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Box, IconButton, Grid, styled, Paper, Button, CardActions } from '@mui/material';
+import { Card, CardContent, Typography, Box, IconButton, Grid, styled, Paper, Button, CardActions, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import { useSelector } from 'react-redux';
@@ -33,6 +33,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const TopRightCard: React.FC<CardParams> = ({handleClose}) => {
     const dispatch=useDispatch();
+    const theme=useTheme();
     const {productsList,clientId} = useSelector((state:RootState)=>state.card);
     const {isOrderCreated}=useSelector((state:RootState)=>state.order);
     const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
@@ -54,7 +55,6 @@ const TopRightCard: React.FC<CardParams> = ({handleClose}) => {
                     quantity: quantities[product._id],
                 })),
             };
-            console.log(items);
             dispatch(createOrder(items));
             
             
@@ -81,12 +81,12 @@ const TopRightCard: React.FC<CardParams> = ({handleClose}) => {
       }}>
         <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
             
-            <Typography variant="h5" color="primary" component="div">
+            <Typography variant="h5" color={theme.palette.mode === 'light' ? 'primary' : 'secondary'} component="div">
             Items to buy
             </Typography>
             <IconButton
               onClick={handleClose}
-              color="primary"
+              color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
               sx={{ padding: 0 }}
             >
               <HighlightOffOutlinedIcon />
@@ -96,9 +96,9 @@ const TopRightCard: React.FC<CardParams> = ({handleClose}) => {
         <Grid container spacing={0.5}>
             {productsList.map((product:ProductToBuyType)=>{
                 return (
-                    <Grid item xs={12} key={product._id}>
-                    <Item>
-                        <CardItem product={product}  onQuantityChange={handleQuantityChange} />
+                    <Grid item xs={12} key={product._id} >
+                    <Item sx={{ backgroundColor:theme.palette.background.paper}}>
+                        <CardItem product={product}  onQuantityChange={handleQuantityChange}  />
                     </Item>
                     </Grid>
                 )

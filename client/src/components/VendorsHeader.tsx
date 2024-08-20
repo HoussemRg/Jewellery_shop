@@ -29,7 +29,7 @@ const VendorsHeader :React.FC = () => {
           </Typography>
         </Box>
         <Box>
-        {user?.role !== "vendor" && <Button variant="contained" endIcon={<AddIcon />} onClick={handleClickOpen} color="secondary">
+        {user?.role !== "vendor" && <Button variant="contained" endIcon={<AddIcon />} onClick={handleClickOpen} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
         <Typography variant='h5' >
             Add
           </Typography> 

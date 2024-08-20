@@ -106,27 +106,27 @@ const Stores:React.FC = () => {
             <Box>
               <IconButton
                 onClick={(event) => handleDelete(params.row._id, event)}
-                color="secondary"
+                color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
               >
                 <DeleteIcon />
               </IconButton>
               <IconButton
                 onClick={(event) => handleClickOpenEditForm(params.row._id, event)}
-                color="success"
+                color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
               >
                 <EditIcon />
               </IconButton>
               
               
-                <IconButton color='primary' onClick={()=>handleNavigateToStoreDetail(params.row._id)}>
+                <IconButton color={theme.palette.mode === 'light' ? 'primary' : 'secondary'} onClick={()=>handleNavigateToStoreDetail(params.row._id)}>
                   <ListIcon />
                 </IconButton>
                 
-                <IconButton onClick={()=> handleNavigateToStoreUsers(params.row._id)} color='primary'>
+                <IconButton onClick={()=> handleNavigateToStoreUsers(params.row._id)} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                   <PersonIcon />
                 </IconButton>
               
-                <IconButton onClick={()=> handleNavigateToMainDashboard(params.row._id)} color='primary'>
+                <IconButton onClick={()=> handleNavigateToMainDashboard(params.row._id)} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                   <DashboardIcon />
                 </IconButton>
                 

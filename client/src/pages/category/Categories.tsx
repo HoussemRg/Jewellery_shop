@@ -92,19 +92,19 @@ const Categories:React.FC = () => {
             <Box>
               <IconButton
                 onClick={(event) => handleDelete(params.row._id, event)}
-                color="secondary"
+                color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
               >
                 <DeleteIcon />
               </IconButton>
               <IconButton
                 onClick={(event) => handleClickOpenEditForm(params.row._id, event)}
-                color="success"
+                color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
               >
                 <EditIcon />
               </IconButton>
               {filteredCoupons.length>0 && <IconButton
                 onClick={(event) => handleOpenCouponForm(params.row._id, event)}
-                color="success"
+                color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
               >
                 <DiscountIcon />
               </IconButton>}
@@ -131,7 +131,7 @@ const Categories:React.FC = () => {
           {selectedRows.length > 1 && (
             <Button
               variant="contained"
-              color="secondary"
+              color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
               onClick={handleBulkDelete}
               startIcon={<DeleteIcon />}
             >

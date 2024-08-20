@@ -127,7 +127,7 @@ const EditProductForm: React.FC<EditFormProps> = ({ handleCloseEditForm, open, c
         >
             <DialogTitle display="flex" justifyContent="space-between" alignItems="center">
                 <Box>Update Product</Box>
-                <Button onClick={handleCloseEditForm} color="warning" sx={{ padding: 0 }}>
+                <Button onClick={handleCloseEditForm} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'} sx={{ padding: 0 }}>
                     <HighlightOffOutlined />
                 </Button>
             </DialogTitle>
@@ -256,10 +256,10 @@ const EditProductForm: React.FC<EditFormProps> = ({ handleCloseEditForm, open, c
                     />
 
                     <DialogActions>
-                        <Button autoFocus onClick={handleCloseEditForm} color="warning">
+                        <Button autoFocus onClick={handleCloseEditForm} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                             Cancel
                         </Button>
-                        <Button type="submit" color="success">
+                        <Button type="submit" color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                             Submit
                         </Button>
                     </DialogActions>

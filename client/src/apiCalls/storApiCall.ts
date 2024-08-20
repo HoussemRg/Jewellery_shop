@@ -19,11 +19,11 @@ const createStore=(store:StoreData):AppThunk<Promise<void>> =>{
                 }
             });
             dispatch(storeActions.setIsStoreCreated(true));
-            toast.update(id, { render: "Store created successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Store created successfully", type: "success", isLoading: false, autoClose: 800 });
         }catch(err){
             const error = err as AxiosError;
             if (id) {
-                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 800 });
             }
         }
     }
@@ -45,9 +45,9 @@ const getAllStores = ():AppThunk<Promise<void>> => {
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 800 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 800 });
             }
         }
     }
@@ -66,9 +66,9 @@ const getSingleStore=(storeId:string):AppThunk=> async(dispatch:AppDispatch,getS
     }catch(err){
         const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 800 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 800 });
             }
     }
 }
@@ -87,11 +87,11 @@ const updateStore = (newStore:Partial<StoreEditData>,storeId:string):AppThunk<Pr
             dispatch(storeActions.updateStore(res.data));
             dispatch(storeActions.setIsStoreUpdated(true));
          
-            toast.update(id, { render: "Store updated successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Store updated successfully", type: "success", isLoading: false, autoClose: 800 });
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (id) {
-                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 800 });
             }
         }
     }
@@ -109,11 +109,11 @@ const deleteStore= (storeId:string):AppThunk<Promise<void>> => {
             });
             dispatch(storeActions.deleteStore(storeId));
             dispatch(storeActions.setIsStoreDeleted(true));
-            toast.update(id, { render: "Store deleted successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Store deleted successfully", type: "success", isLoading: false, autoClose: 800 });
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (id) {
-                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 800 });
             }
         }
     }

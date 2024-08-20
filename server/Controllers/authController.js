@@ -40,7 +40,7 @@ const { sendLoginMail } = require('../lib/sendMailLoginVerification');
     });
     const storeModel= userConnection.model('Store',Store.schema);
     let store= await storeModel.findById(user.store);
-    if(!store) return res.status(400).send('Store not found');
+    if(!store) return res.status(404).send('Store not found');
     store.user.push(user._id);
     await store.save();
 
@@ -112,7 +112,7 @@ const regenrateTokenForSuperAdmin=asyncHandler(async(req,res)=>{
     const userConnection=await getConnection('Users');
     const userModel= userConnection.model('User',User.schema);
     let user=await userModel.findById(userId);
-    if(!user) return res.status(400).send('Server error,please login again');
+    if(!user) return res.status(404).send('Server error,please login again');
     user.store=storeId;
     const newToken=user.generateAuthToken();
     return res.status(200).send({

@@ -48,7 +48,7 @@ export const tokensDark: TokenPalette = {
     900: "#141414",
     1000: "#000000",
   },
-  mainColor: { // Previously 'primary'
+  mainColor: { 
     100: "#d3d4de",
     200: "#a6a9be",
     300: "#7a7f9d",
@@ -59,7 +59,7 @@ export const tokensDark: TokenPalette = {
     800: "#0d1025",
     900: "#070812",
   },
-  accentColor: { // Previously 'secondary'
+  accentColor: { 
     50: "#f0f0f0",
     100: "#fff6e0",
     200: "#ffedc2",
@@ -82,7 +82,7 @@ export const tokensDark: TokenPalette = {
     800: "#292929",
     900: "#141414",
   },
-  green: { // New color category
+  green: { 
     50: "#e0f2f1",
     100: "#b9e0dc",
     200: "#80cbc4",
@@ -94,7 +94,7 @@ export const tokensDark: TokenPalette = {
     800: "#004d40",
     900: "#00251a",
   },
-  red: { // New color category
+  red: { 
     50: "#ffebee",
     100: "#ffcdd2",
     200: "#ef9a9a",

@@ -81,7 +81,7 @@ const UpdateClientForm: React.FC<UpdateClientProps> = ({ handleCloseEditForm, op
           <Box>Update Client</Box>
           <Button
             onClick={handleCloseEditForm}
-            color="warning"
+            color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
             sx={{ padding: 0 }}
           >
             <HighlightOffOutlined />
@@ -151,10 +151,10 @@ const UpdateClientForm: React.FC<UpdateClientProps> = ({ handleCloseEditForm, op
               {...register('phoneNumber')}
             />
             <DialogActions>
-              <Button autoFocus onClick={handleCloseEditForm} color="warning">
+              <Button autoFocus onClick={handleCloseEditForm} color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                 Cancel
               </Button>
-              <Button type="submit" color="success">
+              <Button type="submit" color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}>
                 Submit
               </Button>
             </DialogActions>

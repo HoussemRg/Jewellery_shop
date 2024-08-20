@@ -96,7 +96,7 @@ const createCategory=(category:CategoryData):AppThunk<Promise<void>> =>{
 const updateCategory = (newCategory:Partial<CategoryEditData>,categoryId:string):AppThunk<Promise<void>> => {
     let id: Id | undefined;
     return async (dispatch: Dispatch,getState: () => RootState) => {
-        id = toast.loading("Updating  store, Please wait...");
+        id = toast.loading("Updating  category, Please wait...");
         try {
             
             const res = await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/categories/${categoryId}`,newCategory, {
