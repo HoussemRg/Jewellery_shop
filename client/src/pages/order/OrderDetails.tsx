@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box, LinearProgress, Typography, useTheme } from '@mui/material';
 import React, { useEffect } from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -54,7 +54,7 @@ const columns: GridColDef[] = [
 
 const OrderDetails: React.FC = () => {
   const theme = useTheme();
-  const { singleOrder } = useSelector((state: RootState) => state.order);
+  const { singleOrder ,isLoading} = useSelector((state: RootState) => state.order);
   const dispatch = useDispatch();
   const { id } = useParams();
 
@@ -69,7 +69,10 @@ const OrderDetails: React.FC = () => {
   };
 
   return (
-    <Box display='flex' flexDirection="column" justifyContent="center" alignItems="start" gap={5} p={3}>
+    <Box width="100%" height="100%">
+      {isLoading ? (<Box sx={{ width: '100%' }}>
+          <LinearProgress />
+        </Box>) : (<Box display='flex' flexDirection="column" justifyContent="center" alignItems="start" gap={5} p={3}>
          <Box display='flex' flexDirection="column" justifyContent="center" alignItems="start" gap={2} width="100%">
          <Typography variant='h3' color="primary">Order #{singleOrder?._id}</Typography>
       <List sx={{ ...style, mb: 3 }} aria-label="order details">
@@ -189,7 +192,10 @@ const OrderDetails: React.FC = () => {
           />
         </Box>
       </Box>
+    </Box>)}
     </Box>
+    
+    
   );
 };
 

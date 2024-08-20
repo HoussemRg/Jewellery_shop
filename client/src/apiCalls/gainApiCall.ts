@@ -34,13 +34,15 @@ const getGain = ():AppThunk<Promise<void>> => {
 const getGainPerYear = (year:string):AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         try {
-            
+            dispatch(gainActions.setIsLoading(true));
             const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/gain/${year}`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             });
-            dispatch(gainActions.getGainPerYear(res.data));
+            dispatch(gainActions.getGainPerYear(res.data.stats));
+            dispatch(gainActions.getAvailableYearq(res.data.availableYears))
+            dispatch(gainActions.setIsLoading(false));
             
         } catch (err: unknown) {
             const error = err as AxiosError;
@@ -52,5 +54,7 @@ const getGainPerYear = (year:string):AppThunk<Promise<void>> => {
         }
     }
 }
+
+
 
 export {getGain,getGainPerYear};

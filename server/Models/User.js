@@ -27,6 +27,7 @@ const userSchema=new mongoose.Schema({
         maxlength:8,
         trim:true,
         match:/^[0-9]+$/,
+   
     },
     email:{
         type :String,

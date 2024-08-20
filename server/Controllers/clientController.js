@@ -38,7 +38,7 @@ const createClient=asyncHandler(async(req,res)=>{
 const getAllClients=asyncHandler(async(req,res)=>{
  
     const ClientModel=req.storeDb.models.Client || req.storeDb.model('Client', Client.schema);
-    const clients=await ClientModel.find().select('-order');
+    const clients=await ClientModel.find().sort({createdAt:-1}).select('-order');
     res.status(200).send(clients);
  })
 

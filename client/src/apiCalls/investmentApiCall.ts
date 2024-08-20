@@ -101,12 +101,14 @@ const controlInvestmentsState = ():AppThunk<Promise<void>> => {
 
 const getSingleInvestment=(investmentId:string):AppThunk=> async(dispatch:Dispatch,getState)=>{
     try{
+        dispatch(investmentActions.setIsLoading(true));
         const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/investments/${investmentId}`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
             }
         });
         dispatch(investmentActions.getSingleInvestment(res.data));
+        dispatch(investmentActions.setIsLoading(false));
     }catch(err){
         const error = err as AxiosError;
             if (error.response) {

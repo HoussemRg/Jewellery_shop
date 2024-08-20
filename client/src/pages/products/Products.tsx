@@ -107,6 +107,7 @@ const Products: React.FC = () => {
           isNonMobile={isNonMobile}
           filteredProducts={filteredProducts}
           deleteProductFunction={deleteProductFunction}
+          isLoading={isLoading}
         />
       )}
       {productsCount > PRODUCT_PER_PAGE && !filtered && (

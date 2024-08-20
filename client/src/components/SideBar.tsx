@@ -31,7 +31,15 @@ const SideBar: React.FC<SideBarProps> = ({ isNonMobile, drawerWidth, isSideBarOp
     const [activeItem, setActiveItem] = useState<string>('Dashboard');
     const { user } = useSelector((state: RootState) => state.auth);
     const location = useLocation();
-
+    const vendorNavItems:NavItem[]=[
+        { text: "Client Facing", icon: null, link: "" },
+        { text: "Products", icon: <ShoppingCartOutlined />, link: "/dashboard/products" },
+        { text: "Customers", icon: <Groups2Outlined />, link: "/dashboard/clients" },
+        { text: "Transactions", icon: <ReceiptLongOutlined />, link: "/dashboard/orders" },
+        { text: "Categories", icon: <CategoryOutlined />, link: "/dashboard/categories" },
+        { text: "Sub-Categories", icon: <CategoryOutlined />, link: "/dashboard/subCategories" },
+        
+    ]
     const navItems: NavItem[] = [
         { text: "Dashboard", icon: <HomeOutlined />, link: "/dashboard/main" },
         { text: "Client Facing", icon: null, link: "" },
@@ -49,7 +57,6 @@ const SideBar: React.FC<SideBarProps> = ({ isNonMobile, drawerWidth, isSideBarOp
         { text: "Vendors", icon: <PersonPinOutlined />, link: "/dashboard/vendors" },
     ];
 
-    // Close sidebar when location changes
     useEffect(() => {
         if (!isNonMobile) {
             setIsSideBarOpened(false);
@@ -71,7 +78,48 @@ const SideBar: React.FC<SideBarProps> = ({ isNonMobile, drawerWidth, isSideBarOp
                 </FlexBetween>
             </Box>
             <List sx={{ overflowY: 'auto', flexGrow: 1 }}>
-                {navItems.map(({ text, icon, link }) => {
+                {user?.role==="vendor" ? vendorNavItems.map(({ text, icon, link }) => {
+                    if (!icon) {
+                        return (
+                            <Typography key={text} sx={{ m: "2rem 0 3rem 3rem" }}> 
+                                {text}
+                            </Typography>
+                        )
+                    }
+
+                    return (
+                        <ListItem disablePadding key={text} sx={{ mb: 0.5 }}> 
+                            <ListItemButton
+                                component={Link}
+                                to={link}
+                                sx={{
+                                    backgroundColor: activeItem === text ? theme.palette.secondary[300] : "transparent",
+                                    ":hover": {
+                                        backgroundColor: theme.palette.secondary[300],
+                                        color: theme.palette.primary[600]
+                                    },
+                                    color: activeItem === text ? theme.palette.primary[600] : theme.palette.secondary[100],
+                                    py: 1, 
+                                    px: 2, 
+                                    borderRadius: '4px',
+                                }}
+                                onClick={() => setActiveItem(text)}
+                            >
+                                <ListItemIcon
+                                    sx={{
+                                        ":hover": { color: theme.palette.primary[600] },
+                                        color: activeItem === text ? theme.palette.primary[600] : theme.palette.secondary[100],
+                                        ml: "1rem",
+                                        minWidth: 32
+                                    }}
+                                >
+                                    {icon}
+                                </ListItemIcon>
+                                <ListItemText primary={text} />
+                            </ListItemButton>
+                        </ListItem>
+                    );
+                }) : ( navItems.map(({ text, icon, link }) => {
                     if (!icon) {
                         return (
                             <Typography key={text} sx={{ m: "0.5rem 0 1rem 3rem" }}> {/* Increased bottom margin */}
@@ -112,7 +160,7 @@ const SideBar: React.FC<SideBarProps> = ({ isNonMobile, drawerWidth, isSideBarOp
                             </ListItemButton>
                         </ListItem>
                     );
-                })}
+                }))}
             </List>
         </Box>
     );

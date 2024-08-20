@@ -36,7 +36,7 @@ const getAllSubCategories=asyncHandler(async(req,res)=>{
     
     const SubCategoryModel=req.storeDb.model('SubCategory',SubCategory.schema);
    
-    const subCategories=await SubCategoryModel.find();
+    const subCategories=await SubCategoryModel.find().sort({createdAt:-1});
 
     return res.status(200).send(subCategories)
 })

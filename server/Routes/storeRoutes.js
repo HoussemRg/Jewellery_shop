@@ -5,7 +5,7 @@ const { validateId } = require('../Middlewares/verifyId');
 
 const storeRoute=express.Router();
 
-storeRoute.post('/create',createStore);
+storeRoute.post('/create',verifyTokenForOnlySuperAdmin,createStore);
 
 storeRoute.get('/',verifyTokenForOnlySuperAdmin,getAllStores);
 

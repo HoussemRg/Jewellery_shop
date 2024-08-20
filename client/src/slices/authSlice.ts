@@ -13,7 +13,8 @@ export interface UserLoggedInState {
 export interface AuthState{
     user: UserLoggedInState |null;
     isEmailVerified:boolean;
-    tokenRegenrated:boolean
+    tokenRegenrated:boolean;
+    isLoading:boolean
 
 }
 const storedUser = localStorage.getItem("user");
@@ -21,6 +22,7 @@ const initialState: AuthState = {
     user: storedUser ? JSON.parse(storedUser) : null,
     isEmailVerified:false,
     tokenRegenrated:false,
+    isLoading:false,
 };
 
 
@@ -30,6 +32,9 @@ const authSlice = createSlice({
     reducers: {
         login: (state, action: PayloadAction<UserLoggedInState>) => {
             state.user = action.payload;
+        },
+        setIsLoading: (state, action: PayloadAction<boolean>) => {
+            state.isLoading = action.payload;
         },
         setIsTokenRegenrated: (state, action: PayloadAction<boolean>) => {
             state.tokenRegenrated = action.payload;

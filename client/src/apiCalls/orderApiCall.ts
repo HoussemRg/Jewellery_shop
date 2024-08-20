@@ -32,8 +32,6 @@ const getAllOrders = (): AppThunk => async (dispatch: AppDispatch, getState) => 
 
 const getOrdersNumber = (): AppThunk => async (dispatch: AppDispatch, getState) => {
     try {
-    
-
         const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/orders/count`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
@@ -126,12 +124,14 @@ const payForOrder=(paymentAmount:PaymentData,orderId:string):AppThunk<Promise<vo
 
 const getSingleOrder=(orderId:string):AppThunk<Promise<void>>=> async(dispatch:Dispatch,getState:()=>RootState)=>{
     try{
+        dispatch(orderActions.setIsLoading(true));
         const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/orders/${orderId}`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
             }
         });
         dispatch(orderActions.getSingleOrder(res.data));
+        dispatch(orderActions.setIsLoading(false));
     }catch(err){
         const error = err as AxiosError;
             if (error.response) {

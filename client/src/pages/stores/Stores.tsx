@@ -15,44 +15,17 @@ import UpdateStoreForm from '../../components/store/UpdateStoreForm';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { regenerateTokenForSuperAdmin } from '../../apiCalls/authApiCall';
 import PersonIcon from '@mui/icons-material/Person';
-import { productActions } from '../../slices/productSlice';
-import { categoryActions } from '../../slices/categorySlice';
-import { subCategoryActions } from '../../slices/subCategorySlice';
-import { clientActions } from '../../slices/clientSlice';
-import { orderActions } from '../../slices/orderSlice';
-import { cardActions } from '../../slices/cardSlice';
-import { userActions } from '../../slices/userSlice';
-import { couponActions } from '../../slices/couponSlice';
-import { investmentActions } from '../../slices/investmentSlice';
-import { investorActions } from '../../slices/investorSlice';
-import { gainActions } from '../../slices/gainSlice';
-import { authActions } from '../../slices/authSlice';
+
+
 
 const Stores:React.FC = () => {
     const theme = useTheme();
-   const {user,tokenRegenrated}=useSelector((state:RootState)=> state.auth)
+   const {user}=useSelector((state:RootState)=> state.auth)
     const {isStoreDeleted,stores,isLoading} =useSelector((state:RootState)=> state.store)
-
     const dispatch = useDispatch();
    const navigate=useNavigate()
     const [selectedRows, setSelectedRows] = useState<string[]>([]);
-    useEffect(()=>{
-        dispatch(userActions.getAllVendorsPerStore([]));
-        dispatch(productActions.getProducts([]));
-        dispatch(productActions.getProductsNumber(0));
-        dispatch(productActions.resetFiltredProducts());
-        dispatch(categoryActions.getAllCategories([]));
-        dispatch(subCategoryActions.getAllSubCategories([]));
-        dispatch(clientActions.getAllClients([]));
-        dispatch(orderActions.getAllOrders([]));
-        dispatch(cardActions.clearProductsList());
-        dispatch(productActions.resetFiltredProductsCount());
-        dispatch(couponActions.getAllCoupons([]));
-        dispatch(investmentActions.getAllInvestments([]));
-        dispatch(investorActions.getAllInvestors([]));
-        dispatch(gainActions.getGain(null));
-
-    })
+    
     useEffect(()=>{
       dispatch(getAllStores());
     },[])
@@ -94,29 +67,31 @@ const Stores:React.FC = () => {
         setOpenEditForm(false);
               
       };
-      const handleNavigateToStoreDetail=(storeId:string)=>{
-        if(user?.role ==='superAdmin'){
-          dispatch(regenerateTokenForSuperAdmin(storeId));
-        }
-        
-        navigate(`/dashboard/stores/${storeId}`)
+      
+
+    const handleNavigateToStoreDetail = (storeId: string) => {
+      if (user?.role === 'superAdmin') {
+          dispatch(regenerateTokenForSuperAdmin(storeId, () => navigate(`/dashboard/stores/${storeId}`)));
+      } else {
+          navigate(`/dashboard/stores/${storeId}`);
       }
-      const handleNavigateToStoreUsers=(storeId:string)=>{
-        if(user?.role ==='superAdmin'){
-          dispatch(userActions.getAllVendorsPerStore([]));
-          dispatch(regenerateTokenForSuperAdmin(storeId));
-          if(tokenRegenrated){
-            navigate(`/admin-dashboard/users`);
-            dispatch(authActions.setIsTokenRegenrated(false));
-          }
-        }        
+  };
+
+  const handleNavigateToStoreUsers = (storeId: string) => {
+      if (user?.role === 'superAdmin') {
+          dispatch(regenerateTokenForSuperAdmin(storeId, () => navigate('/admin-dashboard/users')));
+      } else {
+          navigate('/admin-dashboard/users');
       }
-      const handleNavigateToMainDashboard=(storeId:string)=>{
-        dispatch(regenerateTokenForSuperAdmin(storeId));
-        
-        navigate(`/dashboard/main`);
-        
+  };
+
+  const handleNavigateToMainDashboard = (storeId: string) => {
+      if (user?.role === 'superAdmin') {
+          dispatch(regenerateTokenForSuperAdmin(storeId, () => navigate('/dashboard/main')));
+      } else {
+          navigate('/dashboard/main');
       }
+  };
     const columns: GridColDef[] = [
       { field: '_id', headerName: 'ID', flex: 1 },
       { field: 'storeName', headerName: 'Store Name', flex: 1 },

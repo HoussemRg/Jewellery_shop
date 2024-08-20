@@ -10,13 +10,13 @@ couponRoutes.post('/create',verifyTokenForOnlySuperAdminOrAdmin,connectStoreDb,c
 
 couponRoutes.get('/',verifyToken,connectStoreDb,getAllCoupons);
 
-couponRoutes.get('/filter/:couponType',verifyTokenForOnlySuperAdminOrAdmin,connectStoreDb,getCouponsPerType);
+couponRoutes.get('/filter/:couponType',verifyToken,connectStoreDb,getCouponsPerType);
 
 
 couponRoutes.put('/:couponId',verifyTokenForOnlySuperAdminOrAdmin,validateId,connectStoreDb,updateCoupon);
 
 couponRoutes.delete('/:couponId',verifyTokenForOnlySuperAdminOrAdmin,validateId,connectStoreDb,deleteCoupon);
 
-couponRoutes.post('/apply/:couponId/:itemId',verifyTokenForOnlySuperAdminOrAdmin,validateId,connectStoreDb,applyCoupon);
+couponRoutes.post('/apply/:couponId/:itemId',verifyToken,validateId,connectStoreDb,applyCoupon);
 
 module.exports={couponRoutes}

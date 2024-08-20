@@ -28,6 +28,8 @@ export interface StoreState {
   isStoreDeleted:boolean;
   isLoading:boolean;
   singleStore:SingleStoreType |null
+  mainDashboardNavigation:boolean,
+  usersNavigation:boolean,
 }
 
 const initialState: StoreState = {
@@ -36,6 +38,8 @@ const initialState: StoreState = {
   isStoreUpdated:false,
   isStoreDeleted:false,
   isLoading:false,
+  mainDashboardNavigation:false,
+  usersNavigation:false,
   singleStore:null
 };
 
@@ -46,6 +50,12 @@ const storeSlice = createSlice({
     getAllStores: (state, action: PayloadAction<StoreOriginalType[]>) => {
       state.stores = action.payload;
     },
+    setDashboardNavigationCreated:(state, action: PayloadAction<boolean>)=>{
+      state.mainDashboardNavigation=action.payload;
+  },
+  setUsersNavigation:(state, action: PayloadAction<boolean>)=>{
+    state.usersNavigation=action.payload;
+},
     setIsStoreCreated:(state, action: PayloadAction<boolean>)=>{
         state.isStoreCreated=action.payload;
     },

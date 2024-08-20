@@ -58,6 +58,7 @@ const getAllClients = ():AppThunk<Promise<void>> => {
 const getClientsNumber = ():AppThunk<Promise<void>> => {
     return async (dispatch: Dispatch,getState: () => RootState) => {
         try {
+            
             const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/clients/count`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
@@ -77,12 +78,14 @@ const getClientsNumber = ():AppThunk<Promise<void>> => {
 
 const getSingleClient=(clientId:string):AppThunk=> async(dispatch:Dispatch,getState)=>{
     try{
+        dispatch(clientActions.setIsLoading(true));
         const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/clients/${clientId}`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
             }
         });
         dispatch(clientActions.getSingleClient(res.data));
+        dispatch(clientActions.setIsLoading(false));
     }catch(err){
         const error = err as AxiosError;
             if (error.response) {

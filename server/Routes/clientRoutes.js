@@ -8,11 +8,11 @@ const clientRoutes=express.Router();
 
 clientRoutes.post('/create',verifyTokenForOnlySuperAdminOrAdmin,connectStoreDb,createClient);
 
-clientRoutes.get('/',verifyTokenForOnlySuperAdminOrAdmin,connectStoreDb,getAllClients);
+clientRoutes.get('/',verifyToken,connectStoreDb,getAllClients);
 
 clientRoutes.get('/count',verifyTokenForOnlySuperAdminOrAdmin,connectStoreDb,getClientsNumber);
 
-clientRoutes.get('/:clientId',verifyTokenForOnlySuperAdminOrAdmin,validateId,connectStoreDb,getSingleClient);
+clientRoutes.get('/:clientId',verifyToken,validateId,connectStoreDb,getSingleClient);
 
 clientRoutes.put('/:clientId',verifyTokenForOnlySuperAdminOrAdmin,validateId,connectStoreDb,updateClient);
 

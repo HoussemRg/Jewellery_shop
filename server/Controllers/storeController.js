@@ -31,12 +31,7 @@ const { Product } = require('../Models/Product');
     });  
     const newConnection=await getConnection(sanitizedStoreName);
     const ProductModel=newConnection.models.Product || newConnection.model('Product', Product.schema);
-    //console.log(ProductModel);
-    /*const newDatabase =mongoose.createConnection(
-        `${process.env.DB_URI_P1}${sanitizedStoreName}${process.env.DB_URI_P2}`,      
-    );
-    console.log(newDatabase)*/
-    //createDatabase(sanitizedStoreName);
+ 
     
     return res.status(201).send(store);
 });
@@ -50,7 +45,7 @@ const getAllStores=asyncHandler(async(req,res)=>{
     const connection =await  getConnection('Users');
     const StoreModel = connection.model('Store', Store.schema);
     
-    const stores = await StoreModel.find().select("-database -user -product");
+    const stores = await StoreModel.find().sort({createdAt:-1}).select("-database -user -product");
     const count=await StoreModel.countDocuments();
     res.status(200).send({stores:stores,count:count});
 

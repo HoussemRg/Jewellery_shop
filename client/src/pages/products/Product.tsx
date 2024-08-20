@@ -23,9 +23,7 @@ import { useSelector } from 'react-redux';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import { useDispatch } from '../../hooks';
 import { cardActions, ProductToBuyType } from '../../slices/cardSlice';
-import ApplyCouonForm from '../../components/product/ApplyCouonForm';
 import { getCouponPerType } from '../../apiCalls/couponApiCall';
-import DiscountIcon from '@mui/icons-material/Discount';
 
 interface ProductProps {
   product: ProductType;
@@ -52,13 +50,10 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
   const theme = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
   const dispatch = useDispatch();
-  const { user } = useSelector((state: RootState) => state.auth);
   const [openEditForm, setOpenEditForm] = useState<boolean>(false);
-  const [openCouponForm, setOpenCouponForm] = useState<boolean>(false);
   const { categories } = useSelector((state: RootState) => state.category);
   const { subCategories } = useSelector((state: RootState) => state.subCategory);
   const { productsList, isCardOpened,clientId } = useSelector((state: RootState) => state.card);
-  const { filteredCoupons } = useSelector((state: RootState) => state.coupon);
 
   const handleOpenForm = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation();
@@ -88,15 +83,7 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
     }
   };
 
-  const handleOpenCouponForm = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    event.stopPropagation();
-    setOpenCouponForm(true);
-  };
-
-  const handleCloseCouponForm = (event?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    if (event) event.stopPropagation();
-    setOpenCouponForm(false);
-  };
+  
 
   useEffect(() => {
     dispatch(getCouponPerType('product'));
@@ -119,23 +106,14 @@ const Product: React.FC<ProductProps> = ({ product, delete: deleteProduct }) => 
           <Typography variant="h5" component="div" color={theme.palette.primary.main}>
             {productName}
           </Typography>
-          <ApplyCouonForm
-            handleCloseCouponForm={handleCloseCouponForm}
-            open={openCouponForm}
-            FilteredCoupon={filteredCoupons}
-            itemId={product._id}
-          />
+          
           <Box display="flex" justifyContent="center" alignItems="center">
             {!productsList.find((product: ProductToBuyType) => product._id === _id) && stockQuantity > 0 && clientId && (
               <IconButton onClick={handleAddProduct} color="primary">
                 <AddCircleOutlineOutlinedIcon />
               </IconButton>
             )}
-            {user?.role !== 'vendor ' && (
-              <IconButton onClick={handleOpenCouponForm} color="primary">
-                <DiscountIcon />
-              </IconButton>
-            )}
+            
           </Box>
         </Box>
 

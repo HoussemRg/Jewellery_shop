@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, LinearProgress, Typography } from '@mui/material'
 import React from 'react'
 import Product from './Product'
 import { ProductType } from '../../slices/productSlice'
@@ -6,12 +6,14 @@ import { ProductType } from '../../slices/productSlice'
 interface FilteredProductGridProps{
     isNonMobile:boolean,
     filteredProducts:ProductType[],
-    deleteProductFunction:(id:string)=> void
+    deleteProductFunction:(id:string)=> void,
+    isLoading:boolean
 }
 
-const ProductsFiltred:React.FC<FilteredProductGridProps> = ({isNonMobile,filteredProducts,deleteProductFunction}) => {
+const ProductsFiltred:React.FC<FilteredProductGridProps> = ({isNonMobile,filteredProducts,deleteProductFunction,isLoading}) => {
   return (
-    <Box
+    <>
+    {  !isLoading   ? filteredProducts.length>0 ? (<Box
                     mt="20px"
                     display="grid"
                     gridTemplateColumns="repeat(4, minmax(0, 1fr))"
@@ -31,7 +33,17 @@ const ProductsFiltred:React.FC<FilteredProductGridProps> = ({isNonMobile,filtere
             />
           ))}
           
-                </Box>
+                </Box>) : (<Box
+            width="100%"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            mt="100px"
+          >
+            <Typography>No Products Found</Typography>
+          </Box>)     :   <Box sx={{ width: '100%' }}>
+            <LinearProgress />
+          </Box>}</>
   )
 }
 

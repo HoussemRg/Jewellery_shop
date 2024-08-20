@@ -24,9 +24,9 @@ const getAllSubCategories=():ThunkResult<Promise<void>> =>{
         }catch(err){
             const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 900 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 900 });
             }
         }
     }
@@ -44,9 +44,9 @@ const getSubCategoriesNumber=():ThunkResult<Promise<void>> =>{
         }catch(err){
             const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 900 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 900 });
             }
         }
     }
@@ -66,9 +66,9 @@ const getTopSubCategories=():ThunkResult<Promise<void>> =>{
         }catch(err){
             const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 900 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 900 });
             }
         }
     }
@@ -86,11 +86,11 @@ const createSubCategory=(subCategory:SubCategoryData):AppThunk<Promise<void>> =>
                 }
             });
             dispatch(subCategoryActions.setIsSubCategoryCreated(true));
-            toast.update(id, { render: "SubC-ategory updated successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "SubC-ategory created successfully", type: "success", isLoading: false, autoClose: 900 });
         }catch(err){
             const error = err as AxiosError;
             if (id) {
-                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 900 });
             }
         }
     }
@@ -109,11 +109,11 @@ const updateSubCategory = (newSubCategory:Partial<SubCategoryEditData>,subCatego
             dispatch(subCategoryActions.updateSubCategory(res.data));
             dispatch(subCategoryActions.setIsSubCategoryUpdated(true));
          
-            toast.update(id, { render: "Sub-Category updated successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Sub-Category updated successfully", type: "success", isLoading: false, autoClose: 900 });
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (id) {
-                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 900 });
             }
         }
     }
@@ -130,11 +130,11 @@ const deleteSubCategory= (subCategoryId:string):AppThunk<Promise<void>> => {
             });
             dispatch(subCategoryActions.deleteSubCategory(subCategoryId));
             dispatch(subCategoryActions.setIsSubCategoryDeleted(true));
-            toast.update(id, { render: "Sub-Category deleted successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Sub-Category deleted successfully", type: "success", isLoading: false, autoClose: 900 });
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (id) {
-                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 900 });
             }
         }
     }

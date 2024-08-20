@@ -105,9 +105,10 @@ const Navbar: React.FC<NavbarProps> = ({ user, isSideBarOpened, setIsSideBarOpen
           </IconButton>}
           <IconButton onClick={() => dispatch(themeActions.setMode())}>
             {theme.palette.mode === 'dark' ? (
-              <DarkModeOutlined sx={{ fontSize: '25px' }} />
-            ) : (
               <LightModeOutlined sx={{ fontSize: '25px' }} />
+              
+            ) : (
+              <DarkModeOutlined sx={{ fontSize: '25px' }} />
             )}
           </IconButton>
           

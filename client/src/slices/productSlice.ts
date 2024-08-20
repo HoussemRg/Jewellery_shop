@@ -45,11 +45,13 @@ export interface ProductType {
 export interface ProductState {
     products: ProductType[];
     topProducts:TopProductsType[];
+    productsList:ProductType[];
     currentPage:number
     productsCount: number;
     isProductCreated: boolean;
     isProductUpdated:boolean;
     isLoading:boolean;
+    isLoadingFullDahsboard:boolean;
     filteredProducts:ProductType[];
     filteredProductsCount:number;
     isProductsFiltered:boolean
@@ -58,11 +60,13 @@ export interface ProductState {
 const initialState: ProductState = {
     products: [],
     topProducts:[],
+    productsList:[],
     currentPage:1,
     productsCount: 0,
     isProductCreated: false,
     isProductUpdated:false,
     isLoading:false,
+    isLoadingFullDahsboard:false,
     filteredProducts:[],
     filteredProductsCount:0,
     isProductsFiltered:false
@@ -74,6 +78,9 @@ const productSlice = createSlice({
     reducers: {
         getProducts: (state, action: PayloadAction<ProductType[]>) => {
             state.products = action.payload;
+        },
+        getAllProducts: (state, action: PayloadAction<ProductType[]>) => {
+            state.productsList = action.payload;
         },
         getTopProducts:(state, action: PayloadAction<TopProductsType[]>) => {
             state.topProducts = action.payload;
@@ -117,6 +124,9 @@ const productSlice = createSlice({
             state.filteredProductsCount=0
         },
         setIsLoading:(state,action:PayloadAction<boolean>)=>{
+            state.isLoading=action.payload;
+          },
+          setIsLoadingFullDashboard:(state,action:PayloadAction<boolean>)=>{
             state.isLoading=action.payload;
           },
     }

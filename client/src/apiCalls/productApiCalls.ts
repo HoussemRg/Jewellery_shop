@@ -30,14 +30,38 @@ const getAllProducts = (page: number): AppThunk => async (dispatch: AppDispatch,
     }
 };
 
+const getAllProductsList = (): AppThunk => async (dispatch: AppDispatch, getState) => {
+    try {
+        
+
+        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/products/all`, {
+            headers: {
+                Authorization: "Bearer " + getState().auth.user?.token
+            }
+        });
+        dispatch(productActions.getAllProducts(res.data));
+
+
+    } catch (err: unknown) {
+        const error = err as AxiosError;
+        if (error.response) {
+            toast.error(error.response.data as string, { autoClose: 1200 });
+        } else {
+            toast.error('An unknown error occurred', { autoClose: 1200 });
+        }
+    }
+};
+
 const getProductsNumber = (): AppThunk => async (dispatch:AppDispatch,getState) => {
         try {
+            dispatch(productActions.setIsLoadingFullDashboard(true));
             const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/products/count`, {
                 headers: {
                     Authorization: "Bearer " + getState().auth.user?.token
                 }
             });
             dispatch(productActions.getProductsNumber(res.data.count));
+            dispatch(productActions.setIsLoadingFullDashboard(false));
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (error.response) {
@@ -166,4 +190,4 @@ const getFilteredProducts=(params:Partial<FilterProductData>,page:number): Thunk
         }
     }
 }
-export { getAllProducts, getProductsNumber, createProduct ,deleteProduct,updateProduct,getFilteredProducts,getTopProductsSales };
+export { getAllProducts, getProductsNumber, createProduct ,deleteProduct,updateProduct,getFilteredProducts,getTopProductsSales ,getAllProductsList};

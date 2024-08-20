@@ -6,16 +6,16 @@ const { connectStoreDb } = require('../Middlewares/connectStoreDb');
 
 const orderRoutes=express.Router();
 
-orderRoutes.post('/create',verifyTokenForOnlySuperAdminOrAdmin,connectStoreDb,createOrder);
+orderRoutes.post('/create',verifyToken,connectStoreDb,createOrder);
 
-orderRoutes.get('/',verifyTokenForOnlySuperAdminOrAdmin,connectStoreDb,getAllOrders);
+orderRoutes.get('/',verifyToken,connectStoreDb,getAllOrders);
 
-orderRoutes.get('/count',verifyTokenForOnlySuperAdminOrAdmin,connectStoreDb,getOrdersNumber);
+orderRoutes.get('/count',verifyToken,connectStoreDb,getOrdersNumber);
 
-orderRoutes.get('/:orderId',verifyTokenForOnlySuperAdminOrAdmin,validateId,connectStoreDb,getSingleOrder);
+orderRoutes.get('/:orderId',verifyToken,validateId,connectStoreDb,getSingleOrder);
 
 orderRoutes.delete('/:orderId',verifyTokenForOnlySuperAdminOrAdmin,validateId,connectStoreDb,deleteOrder);
 
-orderRoutes.put('/:orderId',verifyTokenForOnlySuperAdminOrAdmin,validateId,connectStoreDb,payForOrder);
+orderRoutes.put('/:orderId',verifyToken,validateId,connectStoreDb,payForOrder);
 
 module.exports={orderRoutes};

@@ -13,12 +13,16 @@ export interface GainPerYearType{
 export interface GainState {
   gain: GainType | null;
   gainPerYear:GainPerYearType[];
+  availableYears:number[];
+  isLoading:boolean;
   
 }
 
 const initialState: GainState = {
   gain:null,
-  gainPerYear:[]
+  gainPerYear:[],
+  availableYears:[],
+  isLoading:false,
 };
 
 const gainSlice = createSlice({
@@ -30,6 +34,12 @@ const gainSlice = createSlice({
     },
     getGainPerYear: (state, action: PayloadAction<GainPerYearType[]>) => {
         state.gainPerYear = action.payload;
+      },
+      getAvailableYearq: (state, action: PayloadAction<number[]>) => {
+        state.availableYears = action.payload;
+      },
+      setIsLoading: (state, action: PayloadAction<boolean>) => {
+        state.isLoading = action.payload;
       },
   },
 });

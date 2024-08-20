@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { couponActions } from '../../slices/couponSlice';
 import { createCoupon, getAllCoupons } from '../../apiCalls/couponApiCall';
+import { getAllProductsList } from '../../apiCalls/productApiCalls';
 
 export interface FormProps {
   handleClose: () => void,
@@ -35,7 +36,7 @@ const AddCouponForm: React.FC<FormProps> = ({ handleClose, open }) => {
   const dispatch = useDispatch();
   const {isCouponCreated} =useSelector((state:RootState)=> state.coupon)
   const {categories} =useSelector((state:RootState)=> state.category)
-  const {products} =useSelector((state:RootState)=> state.product)
+  const {productsList} =useSelector((state:RootState)=> state.product)
   const {subCategories} =useSelector((state:RootState)=> state.subCategory)
 
   const theme = useTheme();
@@ -60,7 +61,9 @@ const AddCouponForm: React.FC<FormProps> = ({ handleClose, open }) => {
 
   const selectedType = watch('type');
  
-  
+  useEffect(()=>{
+    dispatch(getAllProductsList());
+  },[])
 
   const submitForm = (data: CouponData) => {
     const formattedData = {
@@ -184,7 +187,7 @@ const AddCouponForm: React.FC<FormProps> = ({ handleClose, open }) => {
               helperText={errors.product?.message}
               {...register('product')}
             >
-              {products.map((product) => (
+              {productsList.map((product) => (
                 <MenuItem key={product._id} value={product._id}>
                   {product.productName}
                 </MenuItem>

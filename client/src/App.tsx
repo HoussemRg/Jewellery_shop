@@ -28,6 +28,7 @@ import InvestorProfile from './pages/investor/investorProfile';
 import Investments from './pages/investment/Investments';
 import InvestmentDetails from './pages/investment/InvestmentDetails';
 import InvestmentsPerInvestor from './pages/investment/InvestmentsPerInvestor';
+import NotFound from './pages/global/NotFound';
 
 
 function App() {
@@ -53,7 +54,7 @@ function App() {
         </Route>
        
         <Route   element={<Layout />}>
-          <Route  path='/dashboard/main' element={ user && user.role!=='vendor'  ? <Dashboard /> : <Navigate to="/"  />} />
+          <Route  path='/dashboard/main' element={ user && user.role!=='vendor'  ? <Dashboard /> : <Navigate to="/dashboard/products"  />} />
           <Route  path='/dashboard/products' element={ user  ? <Products /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/categories' element={ user  ? <Categories /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/subCategories' element={ user  ? <SubCategories /> : <Navigate to="/"  />} />
@@ -71,7 +72,7 @@ function App() {
           <Route  path='/dashboard/investments/:id' element={ user  ? <InvestmentDetails /> : <Navigate to="/"  />} />
           <Route  path='/dashboard/investments/investor/:investorId' element={ user  ? <InvestmentsPerInvestor /> : <Navigate to="/"  />} />
         </Route>
-
+        <Route path='*' element={<NotFound />} />
       </Routes>
     </ThemeProvider>
   )

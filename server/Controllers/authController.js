@@ -54,7 +54,7 @@ const { sendLoginMail } = require('../lib/sendMailLoginVerification');
     const template=generateEmailTemplate(link);
     await sendLoginMail(user.email,"verify your Account",template); 
 
-    return res.status(201).send("we sent to you an email,please verify your email address");
+    return res.status(201).send("we sent an email of verification");
  })
 
 
@@ -88,9 +88,9 @@ const { sendLoginMail } = require('../lib/sendMailLoginVerification');
             const link=`${process.env.APP_URL}/users/${user._id}/verify/${verificationToken.token}`
             const template=generateEmailTemplate(link);
             await sendLoginMail(user.email,"verify your Account",template);
-            return res.status(201).send("we sent to you an email,please verify your email address");
+            return res.status(201).send("we sent an email of verification");
         }
-        res.status(400).send("we sent to you an email,please verify your email address");
+        res.status(400).send("we sent an email of verification ");
         
     }
 

@@ -59,6 +59,11 @@ const { OrderDetails } = require('../Models/OrderDetails');
                 $unwind: "$productDetails"
             },
             {
+                $match: {
+                    "productDetails.purchaseSource": "Owner"
+                }
+            },
+            {
                 $group: {
                     _id: null,
                     totalGain: {
@@ -82,7 +87,25 @@ const { OrderDetails } = require('../Models/OrderDetails');
         stats.push({ month: months[i], gain: gain[0]?.totalGain || 0 });
     }
 
-    return res.status(200).send(stats);
+    const years = await OrderDetailsModel.aggregate([
+        {
+            $project: {
+                year: { $year: "$createdAt" }
+            }
+        },
+        {
+            $group: {
+                _id: "$year"
+            }
+        },
+        {
+            $sort: { _id: -1 } 
+        }
+    ]);
+
+    const availableYears = years.map(year => year._id);
+
+    return res.status(200).send({stats:stats,availableYears:availableYears});
     })
 
 

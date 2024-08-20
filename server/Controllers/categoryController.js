@@ -35,7 +35,7 @@ const createCategory=asyncHandler(async(req,res)=>{
 const getAllCategories=asyncHandler(async(req,res)=>{
     const CategoryModel=req.storeDb.model('Category',Category.schema);
    
-    const categoryies=await CategoryModel.find();
+    const categoryies=await CategoryModel.find().sort({createdAt:-1});
     return res.status(200).send(categoryies)
 })
 

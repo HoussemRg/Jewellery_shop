@@ -18,6 +18,7 @@ const { couponRoutes } = require("./Routes/couponRoutes");
 const { investorRoutes } = require("./Routes/investorRoutes");
 const { investmentRoutes } = require("./Routes/investmentRoutes");
 const { gainRoute } = require("./Routes/gainRoutes");
+const { notFound, errorHandler } = require("./Middlewares/errors");
 
 const app=express();
 app.use(express.json());
@@ -47,6 +48,11 @@ redisClient.on('ready', async () => {
   app.use('/api/investors', investorRoutes);
   app.use('/api/investments', investmentRoutes);
   app.use('/api/gain', gainRoute);
+
+  app.use(notFound);
+
+  app.use(errorHandler);
+
 
   app.listen(port, () => console.log(`http://localhost:${port}`));
 });

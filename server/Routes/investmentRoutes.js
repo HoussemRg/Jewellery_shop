@@ -8,13 +8,13 @@ const investmentRoutes=express.Router();
 
 investmentRoutes.post('/create',verifyTokenForOnlySuperAdminOrAdmin,connectStoreDb,createInvestment);
 
-investmentRoutes.get('/',verifyTokenForOnlySuperAdminOrAdmin,connectStoreDb,getAllInvestments);
+investmentRoutes.get('/',verifyToken,connectStoreDb,getAllInvestments);
 
-investmentRoutes.put('/status',verifyTokenForOnlySuperAdminOrAdmin,connectStoreDb,controlInvestments);
+investmentRoutes.put('/status',verifyToken,connectStoreDb,controlInvestments);
 
-investmentRoutes.get('/investor/:investorId',verifyTokenForOnlySuperAdminOrAdmin,validateId,connectStoreDb,getAllInvestmentsPerInvestor);
+investmentRoutes.get('/investor/:investorId',verifyToken,validateId,connectStoreDb,getAllInvestmentsPerInvestor);
 
-investmentRoutes.get('/:investmentId',verifyTokenForOnlySuperAdminOrAdmin,validateId,connectStoreDb,getSingleInvestment);
+investmentRoutes.get('/:investmentId',verifyToken,validateId,connectStoreDb,getSingleInvestment);
 
 investmentRoutes.put('/:investmentId',verifyTokenForOnlySuperAdminOrAdmin,validateId,connectStoreDb,updateInvestment);
 

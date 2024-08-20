@@ -73,12 +73,14 @@ const getVendorsNumber = ():AppThunk<Promise<void>> => {
 
 const getSingleUser=(userId:string):AppThunk<Promise<void>>=> async(dispatch:Dispatch,getState:()=>RootState)=>{
     try{
+        dispatch(userActions.setIsLoading(true));
         const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/users/${userId}`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
             }
         });
         dispatch(userActions.getSingleUser(res.data));
+        dispatch(userActions.setIsLoading(false));
     }catch(err){
         const error = err as AxiosError;
             if (error.response) {

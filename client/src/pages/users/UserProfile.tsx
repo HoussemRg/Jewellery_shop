@@ -1,4 +1,4 @@
-import { Box, Grid, IconButton, Typography, useTheme } from '@mui/material';
+import { Box, Grid, IconButton, LinearProgress, Typography, useTheme } from '@mui/material';
 import React, { useEffect } from 'react';
 import image from '../../assets/photo.png';
 import EditIcon from '@mui/icons-material/Edit';
@@ -19,7 +19,7 @@ const UserProfile: React.FC = () => {
     const navigate=useNavigate();
     const { id } = useParams();
     const { user } = useSelector((state: RootState) => state.auth);
-    const { singleUser,isUserDeleted } = useSelector((state: RootState) => state.user);
+    const { singleUser,isUserDeleted,isLoading } = useSelector((state: RootState) => state.user);
     const [openEditForm, setOpenEditForm] = React.useState<boolean>(false);
     const handleClickOpenEditForm = () => {
         setOpenEditForm(true);
@@ -58,7 +58,11 @@ const UserProfile: React.FC = () => {
     };
 
     return (
-        <Box 
+        <Box width="100%" height="100%">
+        {isLoading ? (<Box sx={{ width: '100%' }}>
+        <LinearProgress />
+      </Box>) :(
+            <Box 
             bgcolor={theme.palette.background.default} 
             height="100%" 
             p={2}
@@ -199,6 +203,8 @@ const UserProfile: React.FC = () => {
                 </Grid>
             </Grid>
         </Box>
+      ) } </Box>
+        
     );
 };
 

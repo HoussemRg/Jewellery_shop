@@ -39,7 +39,7 @@ const createInvestor=asyncHandler(async(req,res)=>{
 const getAllInvestors=asyncHandler(async(req,res)=>{
  
     const InvestorModel=req.storeDb.models.Investor || req.storeDb.model('Investor', Investor.schema);
-    const investors=await InvestorModel.find();
+    const investors=await InvestorModel.find().sort({createdAt:-1});
  
     res.status(200).send(investors);
  })

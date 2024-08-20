@@ -27,7 +27,7 @@ const subCategorySchema=new mongoose.Schema({
         ref:'Coupon',
         default:[]
     }],
-});
+},{timestamps:true});
 
 const validateCreateSubCategory=(obj)=>{
     const schema=joi.object({

@@ -23,9 +23,9 @@ const getAllCategories=():ThunkResult<Promise<void>> =>{
         }catch(err){
             const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 900 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 900 });
             }
         }
     }
@@ -42,9 +42,9 @@ const getCategoriesNumber=():ThunkResult<Promise<void>> =>{
         }catch(err){
             const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 900 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 900 });
             }
         }
     }
@@ -63,9 +63,9 @@ const getTopCategories=():ThunkResult<Promise<void>> =>{
         }catch(err){
             const error = err as AxiosError;
             if (error.response) {
-                toast.error(error.response.data as string, { autoClose: 1200 });
+                toast.error(error.response.data as string, { autoClose: 900 });
             } else {
-                toast.error('An unknown error occurred', { autoClose: 1200 });
+                toast.error('An unknown error occurred', { autoClose: 900 });
             }
         }
     }
@@ -74,7 +74,7 @@ const getTopCategories=():ThunkResult<Promise<void>> =>{
 const createCategory=(category:CategoryData):AppThunk<Promise<void>> =>{
     let id: Id | undefined;
     return async(dispatch:AppDispatch,getState:()=>RootState)=>{
-        id = toast.loading("Creating  store, Please wait...");
+        id = toast.loading("Creating  category, Please wait...");
         try{
             await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/categories/create`,category,{
                 headers:{
@@ -82,11 +82,11 @@ const createCategory=(category:CategoryData):AppThunk<Promise<void>> =>{
                 }
             });
             dispatch(categoryActions.setIsCategoryCreated(true));
-            toast.update(id, { render: "Category updated successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Category created successfully", type: "success", isLoading: false, autoClose: 900 });
         }catch(err){
             const error = err as AxiosError;
             if (id) {
-                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 900 });
             }
         }
     }
@@ -107,11 +107,11 @@ const updateCategory = (newCategory:Partial<CategoryEditData>,categoryId:string)
             dispatch(categoryActions.updateCategory(res.data));
             dispatch(categoryActions.setIsCategoryUpdated(true));
          
-            toast.update(id, { render: "Category updated successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Category updated successfully", type: "success", isLoading: false, autoClose: 900 });
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (id) {
-                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 900 });
             }
         }
     }
@@ -129,11 +129,11 @@ const deleteCategory= (categoryId:string):AppThunk<Promise<void>> => {
             });
             dispatch(categoryActions.deleteCategory(categoryId));
             dispatch(categoryActions.setIsCategoryDeleted(true));
-            toast.update(id, { render: "Category deleted successfully", type: "success", isLoading: false, autoClose: 1200 });
+            toast.update(id, { render: "Category deleted successfully", type: "success", isLoading: false, autoClose: 900 });
         } catch (err: unknown) {
             const error = err as AxiosError;
             if (id) {
-                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 1200 });
+                toast.update(id, { render: String(error?.response?.data) || 'An unknown error occurred', type: "error", isLoading: false, autoClose: 900 });
             }
         }
     }

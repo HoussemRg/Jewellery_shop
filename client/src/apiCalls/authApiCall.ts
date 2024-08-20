@@ -20,11 +20,12 @@ export interface AuthData {
 
 const loginUser=(user:AuthData)=> async(dispatch:AppDispatch)=>{
       try{
-          
+          dispatch(authActions.setIsLoading(true));
           const res=await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/login`,user);
           
           dispatch(authActions.login(res.data));
           localStorage.setItem("user",JSON.stringify(res.data))
+          dispatch(authActions.setIsLoading(false));
       }catch (err:unknown) {
           const error = err as AxiosError;
           if (error.response) {
@@ -34,7 +35,7 @@ const loginUser=(user:AuthData)=> async(dispatch:AppDispatch)=>{
             }
         }
       }
-const regenerateTokenForSuperAdmin=(storeId:string)=>async(dispatch:AppDispatch,getState: () => RootState)=>{
+const regenerateTokenForSuperAdmin=(storeId:string, callback: () => void)=>async(dispatch:AppDispatch,getState: () => RootState)=>{
   try{
       const res=await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/regenerate-token`,{storeId},{
         headers: {
@@ -54,7 +55,7 @@ const regenerateTokenForSuperAdmin=(storeId:string)=>async(dispatch:AppDispatch,
         dispatch(userActions.getAllVendorsPerStore([]));
         
         dispatch(productActions.resetFiltredProductsCount());
-        dispatch(authActions.setIsTokenRegenrated(true));
+        callback();
   }catch (err:unknown) {
       const error = err as AxiosError;
       if (error.response) {
@@ -68,10 +69,11 @@ const regenerateTokenForSuperAdmin=(storeId:string)=>async(dispatch:AppDispatch,
   const verifyEmail=(userId:string,token:string):AppThunk<Promise<void>>=>{
     return async (dispatch:Dispatch)=>{
       try{
+        dispatch(authActions.setIsLoading(true));
           const res=await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/auth/${userId}/verify/${token}`);
           dispatch(authActions.verifyEmail());
           toast.success(res.data,{autoClose:1200})
-
+          dispatch(authActions.setIsLoading(false));
       }catch(err){
         const error = err as AxiosError;
             if (error.response) {

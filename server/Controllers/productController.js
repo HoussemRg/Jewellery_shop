@@ -9,6 +9,8 @@ const { Coupon } = require('../Models/Coupon');
 const { Investment } = require('../Models/investment');
 const { OrderDetails } = require('../Models/OrderDetails');
 const { Gain } = require('../Models/Gain');
+const { Store } = require('../Models/Store');
+const { getConnection } = require('../Utils/dbconnection');
 
 /**---------------------------------
  * @desc create new product 
@@ -97,34 +99,69 @@ const getAllProducts=asyncHandler(async(req,res)=>{
     req.storeDb.models.Investment || req.storeDb.model('Investment', Investment.schema);
 
     
-    let products=await ProductModel.find().sort({createdAt:-1}).skip((page-1)*PRODUCTS_PER_PAGE).limit(PRODUCTS_PER_PAGE).populate({
-        path:'category',
-        model:'Category',
-        select:"-product",
-        populate:{
-            path:'coupon',
-            model:'Coupon',
-            select:"-product -category",
+    let products = await ProductModel.find()
+    .sort({ createdAt: -1 })
+    .populate({
+        path: 'category',
+        model: 'Category',
+        select: "-product",
+        populate: {
+            path: 'coupon',
+            model: 'Coupon',
+            select: "-product -category",
         }
-    }).populate({
-        path:'subCategory',
-        model:'SubCategory',
-        select:"-product",
-        populate:{
-            path:'coupon',
-            model:'Coupon',
-            select:"-product -category",
+    })
+    .populate({
+        path: 'subCategory',
+        model: 'SubCategory',
+        select: "-product",
+        populate: {
+            path: 'coupon',
+            model: 'Coupon',
+            select: "-product -category",
         }
-    }).populate({
-        path:'coupon',
-        model:'Coupon',
-        select:"-product"
-    }).populate({
+    })
+    .populate({
+        path: 'coupon',
+        model: 'Coupon',
+        select: "-product"
+    })
+    .populate({
         path: 'investment',
         model: 'Investment',
         select: "investmentState"
     });
 
+products = products.filter(product =>
+    product.purchaseSource === 'Owner' ||
+    (product.purchaseSource === 'Investor' && product.stockQuantity !== 0 && product.investment?.investmentState === 'Active')
+);
+
+const paginatedProducts = products.slice((page - 1) * PRODUCTS_PER_PAGE, page * PRODUCTS_PER_PAGE);
+
+return res.status(200).send(paginatedProducts);
+
+})
+
+/**---------------------------------
+ * @desc get all products list for a store 
+ * @route /api/products
+ * @request Get
+ * @access for only admin or super admin
+ ------------------------------------*/
+
+ const getAllProductsList=asyncHandler(async(req,res)=>{
+    
+    const ProductModel=req.storeDb.models.Product || req.storeDb.model('Product', Product.schema);
+    
+    req.storeDb.models.Investment || req.storeDb.model('Investment', Investment.schema);
+
+    
+    let products=await ProductModel.find().sort({createdAt:-1}).select('productName purchaseSource stockQuantity investment').populate({
+        path: 'investment',
+        model: 'Investment',
+        select: "investmentState"
+    });
     products = products.filter(product => 
         product.purchaseSource === 'Owner' || 
         (product.purchaseSource === 'Investor' && product.stockQuantity !== 0 && product.investment?.investmentState === 'Active')
@@ -144,8 +181,41 @@ const getAllProducts=asyncHandler(async(req,res)=>{
 
  const getNumberOfProducts=asyncHandler(async(req,res)=>{    
     const ProductModel=req.storeDb.model('Product',Product.schema);
-    const count=await ProductModel.countDocuments();
-    return res.status(200).send({count:count})
+    const count = await ProductModel.aggregate([
+        {
+            $lookup: {
+                from: 'investments',
+                localField: 'investment',
+                foreignField: '_id',
+                as: 'investmentDetails'
+            }
+        },
+        {
+            $unwind: {
+                path: '$investmentDetails',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $match: {
+                $or: [
+                    { purchaseSource: 'Owner' },
+                    { 
+                        purchaseSource: 'Investor', 
+                        stockQuantity: { $ne: 0 },
+                        'investmentDetails.investmentState': 'Active'
+                    }
+                ]
+            }
+        },
+        {
+            $count: 'totalProducts'
+        }
+    ]);
+
+    const productCount = count.length > 0 ? count[0].totalProducts : 0;
+
+    return res.status(200).send({ count: productCount });
 })
 
 /**---------------------------------
@@ -247,6 +317,8 @@ const getSingleProduct=asyncHandler(async(req,res)=>{
  ------------------------------------*/
  const deleteProduct=asyncHandler(async(req,res)=>{
     const {productId}=req.params;
+    const storeConnection=await getConnection('Users');
+    const StoreModel=storeConnection.model('Store',Store.schema)
     const ProductModel=req.storeDb.model('Product',Product.schema);
     const CouponModel=req.storeDb.model('Coupon',Coupon.schema);
     const InvestmentModel=req.storeDb.model('Investment',Investment.schema);
@@ -264,7 +336,7 @@ const getSingleProduct=asyncHandler(async(req,res)=>{
     await CategoryModel.updateMany({ product: productId }, { $pull: { product: productId } });
     await CouponModel.updateMany({ product: productId }, { $pull: { product: productId } });
     await SubCategoryModel.updateMany({ product: productId }, { $pull: { product: productId } });
-    await Store.updateMany({ product: productId }, { $pull: { product: productId } });   
+    await StoreModel.updateMany({ product: productId }, { $pull: { product: productId } });   
     await ProductModel.findByIdAndDelete(product._id);
     return res.status(200).send("Product deleted successfully");
 })
@@ -429,4 +501,4 @@ const filterProducts=asyncHandler(async(req,res)=>{
 })
 
 
-module.exports={createProduct,getAllProducts,getSingleProduct,updateProduct,deleteProduct,updateProductPhoto,getNumberOfProducts,filterProducts,getTopSellingProducts};
+module.exports={createProduct,getAllProducts,getAllProductsList,getSingleProduct,updateProduct,deleteProduct,updateProductPhoto,getNumberOfProducts,filterProducts,getTopSellingProducts};

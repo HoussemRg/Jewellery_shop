@@ -21,7 +21,7 @@ const bcrypt=require('bcrypt');
     let store = await StoreModel.findById(storeId);
     if (!store) return res.status(400).send("Store not found");
     const userModel= storeConnection.model('User',User.schema);
-    const users=await userModel.find({store:storeId}).select("-password");
+    const users=await userModel.find({store:storeId}).sort({createdAt:-1}).select("-password");
     res.status(200).send(users);
  })
 

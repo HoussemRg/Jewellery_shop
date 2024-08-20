@@ -84,7 +84,6 @@ const { Gain } = require('../Models/Gain');
             let discountRatesSum=0;
             discountRates.forEach((dis)=> discountRatesSum+=dis)
             const orderDetail = new OrderDetailsModel({
-                
                 product: product._id,
                 price: (product.unitPrice*quantity*product.weight)-(((product.unitPrice*quantity*product.weight)*discountRatesSum)/100),
                 quantity: quantity
@@ -95,13 +94,14 @@ const { Gain } = require('../Models/Gain');
             if (product.purchaseSource === 'Investor') {
                 const investment = await InvestmentModel.findById(product.investment);
                 if (investment) {
-                    const gain = (product.unitPrice * quantity * product.weight) - (product.purchasePrice * quantity*product.weight);
+                    const gain = orderDetail.price - (product.purchasePrice * quantity*product.weight);
                     investment.gain += gain;
                     await investment.save();
                 }
             }else if(product.purchaseSource === 'Owner'){
                 const gain=await  GainModel.findOne();
                 if(gain){
+                    gain.gain+=orderDetail.price
                     gain.gain-=product.purchasePrice*product.weight*quantity;
                     await gain.save();
                 }
@@ -141,26 +141,21 @@ const { Gain } = require('../Models/Gain');
  const payForOrder=asyncHandler(async(req,res)=>{
     const orderId=req.params.orderId
     const OrderModel = req.storeDb.models.Order || req.storeDb.model('Order', Order.schema);
-    const GainModel = req.storeDb.models.Gain || req.storeDb.model('Gain', Gain.schema);
-
     req.storeDb.models.Client || req.storeDb.model('Client', Client.schema);
-    let order=await OrderModel.findById(orderId).select('-orderDetails').populate({
+    let order=await OrderModel.findById(orderId).populate({
         path:'client',
         model:'Client',
         select:'firstName lastName'
     });
+   
     if(!order) return res.status(400).send("Order not found");
     if(req.body.payedAmount > order.totalAmount-order.payedAmount){
         return res.status(400).send("Your payment amount is higher than the total amount");
     }
-    const gain=await GainModel.findOne();
-    if (!gain) {
-        return res.status(404).send('Gain not found');
-    }
+    
     
     order.payedAmount+=req.body.payedAmount;
-    gain.gain+=req.body.payedAmount;
-    await gain.save();
+    
     if(order.totalAmount-order.payedAmount === 0){
         order.paymentStatus=true;
     }
@@ -177,7 +172,7 @@ const { Gain } = require('../Models/Gain');
  const getAllOrders=asyncHandler(async(req,res)=>{
     const OrderModel = req.storeDb.models.Order || req.storeDb.model('Order', Order.schema);
     req.storeDb.models.Client || req.storeDb.model('Client', Client.schema);
-    const orders=await OrderModel.find().select('-orderDetails').populate({
+    const orders=await OrderModel.find().select('-orderDetails').sort({createdAt:-1}).populate({
         path:'client',
         model:'Client',
         select:'firstName lastName'

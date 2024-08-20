@@ -76,12 +76,14 @@ const getInvestorsNumber = ():AppThunk<Promise<void>> => {
 
 const getSingleInvestor=(investorId:string):AppThunk=> async(dispatch:Dispatch,getState)=>{
     try{
+        dispatch(investorActions.setIsLoading(true));
         const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/investors/${investorId}`, {
             headers: {
                 Authorization: "Bearer " + getState().auth.user?.token
             }
         });
         dispatch(investorActions.getSingleInvestor(res.data));
+        dispatch(investorActions.setIsLoading(false));
     }catch(err){
         const error = err as AxiosError;
             if (error.response) {

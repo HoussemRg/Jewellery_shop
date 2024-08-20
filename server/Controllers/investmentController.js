@@ -63,7 +63,7 @@ const { Product } = require('../Models/Product');
    const InvestorModel=req.storeDb.models.Investor || req.storeDb.model('Investor', Investor.schema);
    const investor=await InvestorModel.findById(investorId);
    if(!investor) return res.status(400).send('Investor not found');
-   const investments=await InvestmentModel.find({investor:investor._id}).populate({
+   const investments=await InvestmentModel.find({investor:investor._id}).sort({createdAt:-1}).populate({
      path:'investor',
      model:'Investor',
      select:'-investment'

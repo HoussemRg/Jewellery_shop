@@ -68,7 +68,7 @@ const { populate } = require('dotenv');
 const getAllCoupons=(async(req,res)=>{
    
     const CouponModel=req.storeDb.models.Coupon || req.storeDb.model('Coupon', Coupon.schema);
-    const coupons=await CouponModel.find();
+    const coupons=await CouponModel.find().sort({createdAt:-1});
     res.status(200).send(coupons);
  })
 
